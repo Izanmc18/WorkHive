@@ -1,5 +1,6 @@
 <?php
 require_once 'ConexionBD.php';
+require_once '../Helpers/Security/PasswordSecurity.php';
 
 class RepositorioUsuarios {
     private static $instancia = null;
@@ -19,7 +20,8 @@ class RepositorioUsuarios {
     public function crear($correo, $clave) {
         $sql = "INSERT INTO usuarios (correo, password) VALUES (:correo, :password)";
         $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['correo' => $correo, 'password' => password_hash($clave, PASSWORD_BCRYPT)]);
+        $hash = PasswordSecurity::encriptar($clave);
+        return $consulta->execute(['correo' => $correo, 'password' => $hash]);
     }
 
     public function buscarPorCorreo($correo) {
@@ -32,7 +34,8 @@ class RepositorioUsuarios {
     public function modificarClave($idUsuario, $nuevaClave) {
         $sql = "UPDATE usuarios SET password = :password WHERE id_user = :idUsuario";
         $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['password' => password_hash($nuevaClave, PASSWORD_BCRYPT), 'idUsuario' => $idUsuario]);
+        $hash = PasswordSecurity::encriptar($nuevaClave);
+        return $consulta->execute(['password' => $hash, 'idUsuario' => $idUsuario]);
     }
 
     public function borrar($idUsuario) {

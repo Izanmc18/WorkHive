@@ -1,12 +1,15 @@
 <?php
 require_once 'ConexionBD.php';
+require_once '../Helpers/Security/TokenSecurity.php';
 
 class RepositorioTokens {
     private static $instancia = null;
     private $bd;
+    private $seguridad;
 
     private function __construct() {
         $this->bd = ConexionBD::getInstancia()->getConexion();
+        $this->seguridad = new TokenSecurity(); // puedes pasar duración aquí
     }
 
     public static function getInstancia() {
@@ -16,21 +19,27 @@ class RepositorioTokens {
         return self::$instancia;
     }
 
-    public function crear($idUsuario, $token, $fechaExpiracion = null) {
-        $sql = "INSERT INTO tokens (id_user, token, fecha_expiracion) VALUES (:idUsuario, :token, :fechaExpiracion)";
+    public function crear($idUsuario) {
+        $datos = $this->seguridad->generarToken($idUsuario);
+        $sql = "INSERT INTO tokens (id_user, token, fecha_creacion, fecha_expiracion)
+                VALUES (:idUsuario, :token, :fechaGeneracion, :fechaExpiracion)";
         $consulta = $this->bd->prepare($sql);
-        return $consulta->execute([
+        $consulta->execute([
             'idUsuario' => $idUsuario,
-            'token' => $token,
-            'fechaExpiracion' => $fechaExpiracion
+            'token' => $datos['token'],
+            'fechaGeneracion' => $datos['fechaGeneracion'],
+            'fechaExpiracion' => $datos['fechaExpiracion']
         ]);
+        return $datos['token'];
     }
 
-    public function buscarPorToken($token) {
+    public function verificar($tokenRecibido) {
         $sql = "SELECT * FROM tokens WHERE token = :token";
         $consulta = $this->bd->prepare($sql);
-        $consulta->execute(['token' => $token]);
-        return $consulta->fetch(PDO::FETCH_ASSOC);
+        $consulta->execute(['token' => $tokenRecibido]);
+        $tokenBD = $consulta->fetch(PDO::FETCH_ASSOC);
+        if (!$tokenBD) return false;
+        return $this->seguridad->verificarToken($tokenBD, $tokenRecibido);
     }
 
     public function borrar($idToken) {
