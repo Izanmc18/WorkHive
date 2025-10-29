@@ -21,7 +21,14 @@ class RepositorioUsuarios {
         $sql = "INSERT INTO usuarios (correo, password) VALUES (:correo, :password)";
         $consulta = $this->bd->prepare($sql);
         $hash = PasswordSecurity::encriptar($clave);
-        return $consulta->execute(['correo' => $correo, 'password' => $hash]);
+        $consulta->execute(['correo' => $correo, 'password' => $hash]);
+        return $this->bd->lastInsertId();
+    }
+
+    public function borrar($idUsuario) {
+        $sql = "DELETE FROM usuarios WHERE id_user = :idUsuario";
+        $consulta = $this->bd->prepare($sql);
+        return $consulta->execute(['idUsuario' => $idUsuario]);
     }
 
     public function buscarPorCorreo($correo) {
@@ -38,10 +45,5 @@ class RepositorioUsuarios {
         return $consulta->execute(['password' => $hash, 'idUsuario' => $idUsuario]);
     }
 
-    public function borrar($idUsuario) {
-        $sql = "DELETE FROM usuarios WHERE id_user = :idUsuario";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['idUsuario' => $idUsuario]);
-    }
 }
 ?>

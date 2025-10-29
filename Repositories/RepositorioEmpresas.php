@@ -16,16 +16,55 @@ class RepositorioEmpresas {
         return self::$instancia;
     }
 
-    public function crear($idUsuario, $nombre, $descripcion, $logoUrl, $direccion) {
-        $sql = "INSERT INTO empresas (id_user, nombre, descripcion, logo_url, direccion) VALUES (:idUsuario, :nombre, :descripcion, :logoUrl, :direccion)";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute([
-            'idUsuario' => $idUsuario,
-            'nombre' => $nombre,
-            'descripcion' => $descripcion,
-            'logoUrl' => $logoUrl,
-            'direccion' => $direccion
-        ]);
+    public function crear($correo, $clave, $nombre, $descripcion, $logoUrl, $direccion) {
+        try {
+            $this->bd->beginTransaction();
+
+            $repoUsuarios = RepositorioUsuarios::getInstancia();
+            $idUsuario = $repoUsuarios->crear($correo, $clave);
+
+            $sql = "INSERT INTO empresas (id_user, nombre, descripcion, logo_url, direccion) 
+                    VALUES (:idUsuario, :nombre, :descripcion, :logoUrl, :direccion)";
+            $consulta = $this->bd->prepare($sql);
+            $consulta->execute([
+                'idUsuario' => $idUsuario,
+                'nombre' => $nombre,
+                'descripcion' => $descripcion,
+                'logoUrl' => $logoUrl,
+                'direccion' => $direccion
+            ]);
+
+            $this->bd->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->bd->rollBack();
+            return false;
+        }
+    }
+
+    public function borrar($idEmpresa) {
+        try {
+            $this->bd->beginTransaction();
+
+            $empresa = $this->leer($idEmpresa);
+            if (!$empresa) {
+                $this->bd->rollBack();
+                return false;
+            }
+
+            $sql = "DELETE FROM empresas WHERE id_empresa = :idEmpresa";
+            $consulta = $this->bd->prepare($sql);
+            $consulta->execute(['idEmpresa' => $idEmpresa]);
+
+            $repoUsuarios = RepositorioUsuarios::getInstancia();
+            $repoUsuarios->borrar($empresa['id_user']);
+
+            $this->bd->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->bd->rollBack();
+            return false;
+        }
     }
 
     public function leer($idEmpresa) {
@@ -41,10 +80,56 @@ class RepositorioEmpresas {
         return $consulta->execute(['nuevaDescripcion' => $nuevaDescripcion, 'idEmpresa' => $idEmpresa]);
     }
 
-    public function borrar($idEmpresa) {
-        $sql = "DELETE FROM empresas WHERE id_empresa = :idEmpresa";
+
+    public function filtrarEmpresas($busqueda = '', $ordenarPor = 'nombre', $direccionOrden = 'ASC') {
+        $camposValidos = ['nombre', 'direccion'];
+        $ordenarPor = in_array($ordenarPor, $camposValidos) ? $ordenarPor : 'nombre';
+        $direccionOrden = strtoupper($direccionOrden) === 'DESC' ? 'DESC' : 'ASC';
+
+        $sql = "SELECT * FROM empresas WHERE 1=1";
+        $parametros = [];
+
+        if (!empty($busqueda)) {
+            $sql .= " AND nombre LIKE :busqueda";
+            $parametros['busqueda'] = "%" . $busqueda . "%";
+        }
+        $sql .= " ORDER BY $ordenarPor $direccionOrden";
+
         $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['idEmpresa' => $idEmpresa]);
+        $consulta->execute($parametros);
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function verFicha($idEmpresa) {
+        $sql = "SELECT nombre, descripcion, logo_url FROM empresas WHERE id_empresa = :idEmpresa";
+        $consulta = $this->bd->prepare($sql);
+        $consulta->execute(['idEmpresa' => $idEmpresa]);
+        return $consulta->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function editar($idEmpresa, $nombre, $descripcion, $logoUrl, $direccion) {
+        try {
+            $this->bd->beginTransaction();
+
+            $sql = "UPDATE empresas 
+                    SET nombre = :nombre, descripcion = :descripcion, logo_url = :logoUrl, direccion = :direccion 
+                    WHERE id_empresa = :idEmpresa";
+            $consulta = $this->bd->prepare($sql);
+            $consulta->execute([
+                'nombre' => $nombre,
+                'descripcion' => $descripcion,
+                'logoUrl' => $logoUrl,
+                'direccion' => $direccion,
+                'idEmpresa' => $idEmpresa
+            ]);
+
+            $this->bd->commit();
+            return true;
+        } catch(Exception $e) {
+            $this->bd->rollBack();
+            return false;
+        }
+    }
+
 }
 ?>
