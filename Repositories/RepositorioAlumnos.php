@@ -1,5 +1,7 @@
 <?php
 require_once 'ConexionBD.php';
+require_once '../Helpers/Security/PasswordSecurity.php';
+require_once 'RepositorioUsuarios.php';
 
 class RepositorioAlumnos {
     private static $instancia = null;
@@ -16,23 +18,59 @@ class RepositorioAlumnos {
         return self::$instancia;
     }
 
-    // Crear un alumno con foto de perfil y apellidos
-    public function crear($idUsuario, $nombre, $apellido1, $apellido2, $direccion, $edad, $curriculumUrl, $fotoPerfil) {
-        $sql = "INSERT INTO alumnos 
-        (id_user, nombre, apellido1, apellido2, direccion, edad, curriculum_url, foto_perfil)
-        VALUES 
-        (:idUsuario, :nombre, :apellido1, :apellido2, :direccion, :edad, :curriculumUrl, :fotoPerfil)";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute([
-            'idUsuario' => $idUsuario,
-            'nombre' => $nombre,
-            'apellido1' => $apellido1,
-            'apellido2' => $apellido2,
-            'direccion' => $direccion,
-            'edad' => $edad,
-            'curriculumUrl' => $curriculumUrl,
-            'fotoPerfil' => $fotoPerfil
-        ]);
+    public function crear($correo, $clave, $nombre, $apellido1, $apellido2, $direccion, $edad, $curriculumUrl, $fotoPerfil) {
+        try {
+            $this->bd->beginTransaction();
+
+            $repoUsuarios = RepositorioUsuarios::getInstancia();
+            $idUsuario = $repoUsuarios->crear($correo, $clave);
+
+            $sql = "INSERT INTO alumnos (id_user, nombre, apellido1, apellido2, direccion, edad, curriculum_url, foto_perfil)
+                    VALUES (:idUsuario, :nombre, :apellido1, :apellido2, :direccion, :edad, :curriculumUrl, :fotoPerfil)";
+            $consulta = $this->bd->prepare($sql);
+
+            $consulta->execute([
+                'idUsuario' => $idUsuario,
+                'nombre' => $nombre,
+                'apellido1' => $apellido1,
+                'apellido2' => $apellido2,
+                'direccion' => $direccion,
+                'edad' => $edad,
+                'curriculumUrl' => $curriculumUrl,
+                'fotoPerfil' => $fotoPerfil
+            ]);
+
+            $this->bd->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->bd->rollBack();
+            return false;
+        }
+    }
+
+    public function borrar($idAlumno) {
+        try {
+            $this->bd->beginTransaction();
+
+            $alumno = $this->leer($idAlumno);
+            if (!$alumno) {
+                $this->bd->rollBack();
+                return false;
+            }
+
+            $sql = "DELETE FROM alumnos WHERE id_alumno = :idAlumno";
+            $consulta = $this->bd->prepare($sql);
+            $consulta->execute(['idAlumno' => $idAlumno]);
+
+            $repoUsuarios = RepositorioUsuarios::getInstancia();
+            $repoUsuarios->borrar($alumno['id_user']);
+
+            $this->bd->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->bd->rollBack();
+            return false;
+        }
     }
 
     public function leer($idAlumno) {
@@ -42,29 +80,34 @@ class RepositorioAlumnos {
         return $consulta->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function modificarDireccion($idAlumno, $nuevaDireccion) {
-        $sql = "UPDATE alumnos SET direccion = :nuevaDireccion WHERE id_alumno = :idAlumno";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['nuevaDireccion' => $nuevaDireccion, 'idAlumno' => $idAlumno]);
+    public function editar($idAlumno, $nombre, $apellido1, $apellido2, $direccion, $edad, $curriculumUrl, $fotoPerfil) {
+        try {
+            $this->bd->beginTransaction();
+
+            $sql = "UPDATE alumnos
+                    SET nombre = :nombre, apellido1 = :apellido1, apellido2 = :apellido2,
+                        direccion = :direccion, edad = :edad, curriculum_url = :curriculumUrl,
+                        foto_perfil = :fotoPerfil 
+                    WHERE id_alumno = :idAlumno";
+            $consulta = $this->bd->prepare($sql);
+            $consulta->execute([
+                'nombre' => $nombre,
+                'apellido1' => $apellido1,
+                'apellido2' => $apellido2,
+                'direccion' => $direccion,
+                'edad' => $edad,
+                'curriculumUrl' => $curriculumUrl,
+                'fotoPerfil' => $fotoPerfil,
+                'idAlumno' => $idAlumno
+            ]);
+
+            $this->bd->commit();
+            return true;
+        } catch(Exception $e) {
+            $this->bd->rollBack();
+            return false;
+        }
     }
 
-    public function modificarFotoPerfil($idAlumno, $nuevaFoto) {
-        $sql = "UPDATE alumnos SET foto_perfil = :nuevaFoto WHERE id_alumno = :idAlumno";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['nuevaFoto' => $nuevaFoto, 'idAlumno' => $idAlumno]);
-    }
-
-    public function modificarApellidos($idAlumno, $apellido1, $apellido2) {
-        $sql = "UPDATE alumnos SET apellido1 = :apellido1, apellido2 = :apellido2 WHERE id_alumno = :idAlumno";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['apellido1' => $apellido1, 'apellido2' => $apellido2, 'idAlumno' => $idAlumno]);
-    }
-
-    public function borrar($idAlumno) {
-        $sql = "DELETE FROM alumnos WHERE id_alumno = :idAlumno";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['idAlumno' => $idAlumno]);
-    }
 }
 ?>
-
