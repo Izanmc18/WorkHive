@@ -1,113 +1,106 @@
 <?php
-require_once 'ConexionBD.php';
-require_once '../Helpers/Security/PasswordSecurity.php';
-require_once 'RepositorioUsuarios.php';
+require_once __DIR__ . '/ConexionBD.php';
+require_once __DIR__ . '/../Models/Alumno.php';
+require_once __DIR__ . '/RepositorioUsuarios.php';
 
 class RepositorioAlumnos {
-    private static $instancia = null;
     private $bd;
+    private $repoUsuarios;
 
-    private function __construct() {
+    public function __construct() {
         $this->bd = ConexionBD::getInstancia()->getConexion();
+        $this->repoUsuarios = new RepositorioUsuarios();
     }
 
-    public static function getInstancia() {
-        if (self::$instancia === null) {
-            self::$instancia = new RepositorioAlumnos();
-        }
-        return self::$instancia;
-    }
-
-    public function crear($correo, $clave, $nombre, $apellido1, $apellido2, $direccion, $edad, $curriculumUrl, $fotoPerfil) {
+    public function crear(Alumno $alumno, Usuario $usuario) {
         try {
             $this->bd->beginTransaction();
 
-            $repoUsuarios = RepositorioUsuarios::getInstancia();
-            $idUsuario = $repoUsuarios->crear($correo, $clave);
+            $usuarioCreado = $this->repoUsuarios->crear($usuario);
+            $alumno->setIdUsuario($usuarioCreado->getId());
 
-            $sql = "INSERT INTO alumnos (id_user, nombre, apellido1, apellido2, direccion, edad, curriculum_url, foto_perfil)
-                    VALUES (:idUsuario, :nombre, :apellido1, :apellido2, :direccion, :edad, :curriculumUrl, :fotoPerfil)";
-            $consulta = $this->bd->prepare($sql);
-
-            $consulta->execute([
-                'idUsuario' => $idUsuario,
-                'nombre' => $nombre,
-                'apellido1' => $apellido1,
-                'apellido2' => $apellido2,
-                'direccion' => $direccion,
-                'edad' => $edad,
-                'curriculumUrl' => $curriculumUrl,
-                'fotoPerfil' => $fotoPerfil
+            $sql = "INSERT INTO alumnos (iduser, nombre, apellido1, apellido2, direccion, edad, curriculumurl, fotoperfil) VALUES
+                    (:iduser, :nombre, :apellido1, :apellido2, :direccion, :edad, :curriculumurl, :fotoperfil)";
+            $stmt = $this->bd->prepare($sql);
+            $stmt->execute([
+                ':iduser' => $alumno->getIdUsuario(),
+                ':nombre' => $alumno->getNombre(),
+                ':apellido1' => $alumno->getApellido1(),
+                ':apellido2' => $alumno->getApellido2(),
+                ':direccion' => $alumno->getDireccion(),
+                ':edad' => $alumno->getEdad(),
+                ':curriculumurl' => $alumno->getCurriculumUrl(),
+                ':fotoperfil' => $alumno->getFotoPerfil()
             ]);
 
-            $this->bd->commit();
-            return true;
-        } catch (Exception $e) {
-            $this->bd->rollBack();
-            return false;
-        }
-    }
-
-    public function borrar($idAlumno) {
-        try {
-            $this->bd->beginTransaction();
-
-            $alumno = $this->leer($idAlumno);
-            if (!$alumno) {
-                $this->bd->rollBack();
-                return false;
-            }
-
-            $sql = "DELETE FROM alumnos WHERE id_alumno = :idAlumno";
-            $consulta = $this->bd->prepare($sql);
-            $consulta->execute(['idAlumno' => $idAlumno]);
-
-            $repoUsuarios = RepositorioUsuarios::getInstancia();
-            $repoUsuarios->borrar($alumno['id_user']);
+            $alumno->setIdAlumno($this->bd->lastInsertId());
 
             $this->bd->commit();
-            return true;
+
+            return $alumno;
         } catch (Exception $e) {
             $this->bd->rollBack();
-            return false;
+            throw $e;
         }
     }
 
     public function leer($idAlumno) {
-        $sql = "SELECT * FROM alumnos WHERE id_alumno = :idAlumno";
-        $consulta = $this->bd->prepare($sql);
-        $consulta->execute(['idAlumno' => $idAlumno]);
-        return $consulta->fetch(PDO::FETCH_ASSOC);
+        $sql = "SELECT * FROM alumnos WHERE idalumno = :id";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idAlumno]);
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$fila) {
+            return null;
+        }
+        return new Alumno($fila['idalumno'], $fila['iduser'], null, $fila['nombre'], $fila['apellido1'], $fila['apellido2'], $fila['direccion'], $fila['edad'], $fila['curriculumurl'], $fila['fotoperfil']);
     }
 
-    public function editar($idAlumno, $nombre, $apellido1, $apellido2, $direccion, $edad, $curriculumUrl, $fotoPerfil) {
+    public function editar(Alumno $alumno) {
+        $sql = "UPDATE alumnos SET nombre = :nombre, apellido1 = :apellido1, apellido2 = :apellido2,
+                direccion = :direccion, edad = :edad, curriculumurl = :curriculumurl, fotoperfil = :fotoperfil WHERE idalumno = :id";
+        $stmt = $this->bd->prepare($sql);
+        return $stmt->execute([
+            ':nombre' => $alumno->getNombre(),
+            ':apellido1' => $alumno->getApellido1(),
+            ':apellido2' => $alumno->getApellido2(),
+            ':direccion' => $alumno->getDireccion(),
+            ':edad' => $alumno->getEdad(),
+            ':curriculumurl' => $alumno->getCurriculumUrl(),
+            ':fotoperfil' => $alumno->getFotoPerfil(),
+            ':id' => $alumno->getIdAlumno()
+        ]);
+    }
+
+    public function borrar($idAlumno) {
+        $alumno = $this->leer($idAlumno);
+        if (!$alumno) {
+            return false;
+        }
         try {
             $this->bd->beginTransaction();
 
-            $sql = "UPDATE alumnos
-                    SET nombre = :nombre, apellido1 = :apellido1, apellido2 = :apellido2,
-                        direccion = :direccion, edad = :edad, curriculum_url = :curriculumUrl,
-                        foto_perfil = :fotoPerfil 
-                    WHERE id_alumno = :idAlumno";
-            $consulta = $this->bd->prepare($sql);
-            $consulta->execute([
-                'nombre' => $nombre,
-                'apellido1' => $apellido1,
-                'apellido2' => $apellido2,
-                'direccion' => $direccion,
-                'edad' => $edad,
-                'curriculumUrl' => $curriculumUrl,
-                'fotoPerfil' => $fotoPerfil,
-                'idAlumno' => $idAlumno
-            ]);
+            $sql = "DELETE FROM alumnos WHERE idalumno = :id";
+            $stmt = $this->bd->prepare($sql);
+            $stmt->execute([':id' => $idAlumno]);
+
+            $this->repoUsuarios->borrar($alumno->getIdUsuario());
 
             $this->bd->commit();
             return true;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->bd->rollBack();
             return false;
         }
     }
 
+    public function listar() {
+        $sql = "SELECT * FROM alumnos";
+        $stmt = $this->bd->query($sql);
+        $alumnos = [];
+        while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $alumnos[] = new Alumno($fila['idalumno'], $fila['iduser'], null, $fila['nombre'], $fila['apellido1'], $fila['apellido2'], $fila['direccion'], $fila['edad'], $fila['curriculumurl'], $fila['fotoperfil']);
+        }
+        return $alumnos;
+    }
 }
 ?>

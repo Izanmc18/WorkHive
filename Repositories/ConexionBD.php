@@ -4,13 +4,20 @@ class ConexionBD {
     private $conexion;
 
     private function __construct() {
-        $host = "localhost";
-        $db = "portal_empleo";
-        $usuario = "root";
-        $clave = "1234";
-        $this->conexion = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $clave, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        ]);
+        try {
+            $this->conexion = new PDO(
+                'mysql:host=localhost;dbname=portal_empleo;charset=utf8mb4',
+                'root',
+                '1234',
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ]
+            );
+        } catch (PDOException $e) {
+            throw new Exception('Error conexión BD: ' . $e->getMessage());
+        }
     }
 
     public static function getInstancia() {
@@ -24,4 +31,3 @@ class ConexionBD {
         return $this->conexion;
     }
 }
-?>

@@ -1,49 +1,65 @@
 <?php
-require_once 'ConexionBD.php';
+require_once __DIR__ . '/../ConexionBD.php';
+require_once __DIR__ . '/../Models/Recuperacion.php';
 
 class RepoRecuperacion {
-    private static $instancia = null;
     private $bd;
 
-    private function __construct() {
+    public function __construct() {
         $this->bd = ConexionBD::getInstancia()->getConexion();
     }
 
-    public static function getInstancia() {
-        if (self::$instancia === null) {
-            self::$instancia = new RepoRecuperacion();
+    public function crear(Recuperacion $recuperacion) {
+        $sql = "INSERT INTO recuperacionpassword (iduser, idtoken, fechasolicitud, fechauso) VALUES (:iduser, :idtoken, :fechasolicitud, :fechauso)";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([
+            ':iduser' => $recuperacion->getIdUsuario(),
+            ':idtoken' => $recuperacion->getIdToken(),
+            ':fechasolicitud' => $recuperacion->getFechaSolicitud(),
+            ':fechauso' => $recuperacion->getFechaUso()
+        ]);
+        $recuperacion->setIdRecuperacion($this->bd->lastInsertId());
+        return $recuperacion;
+    }
+
+    public function leer($idRecuperacion) {
+        $sql = "SELECT * FROM recuperacionpassword WHERE idrecuperacion = :id";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idRecuperacion]);
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$fila) return null;
+        return new Recuperacion(
+            $fila['idrecuperacion'], $fila['iduser'], $fila['idtoken'], $fila['fechasolicitud'], $fila['fechauso']
+        );
+    }
+
+    public function editar(Recuperacion $recuperacion) {
+        $sql = "UPDATE recuperacionpassword SET iduser = :iduser, idtoken = :idtoken, fechasolicitud = :fechasolicitud, fechauso = :fechauso WHERE idrecuperacion = :id";
+        $stmt = $this->bd->prepare($sql);
+        return $stmt->execute([
+            ':iduser' => $recuperacion->getIdUsuario(),
+            ':idtoken' => $recuperacion->getIdToken(),
+            ':fechasolicitud' => $recuperacion->getFechaSolicitud(),
+            ':fechauso' => $recuperacion->getFechaUso(),
+            ':id' => $recuperacion->getIdRecuperacion()
+        ]);
+    }
+
+    public function borrar($idRecuperacion) {
+        $sql = "DELETE FROM recuperacionpassword WHERE idrecuperacion = :id";
+        $stmt = $this->bd->prepare($sql);
+        return $stmt->execute([':id' => $idRecuperacion]);
+    }
+
+    public function listar() {
+        $sql = "SELECT * FROM recuperacionpassword";
+        $stmt = $this->bd->query($sql);
+        $recuperaciones = [];
+        while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $recuperaciones[] = new Recuperacion(
+                $fila['idrecuperacion'], $fila['iduser'], $fila['idtoken'], $fila['fechasolicitud'], $fila['fechauso']
+            );
         }
-        return self::$instancia;
-    }
-
-    /* Guardamos en la BD la peticion de recuperacion de la contraseña*/
-    public function crear($idUsuario, $idToken) {
-        $sql = "INSERT INTO recuperacion_password (id_user, id_token, fecha_solicitud) 
-                VALUES (:idUsuario, :idToken, :fechaSolicitud)";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute([
-            'idUsuario' => $idUsuario,
-            'idToken' => $idToken,
-            'fechaSolicitud' => date('Y-m-d H:i:s')
-        ]);
-    }
-
-    /* Buscar la recuperación por id_token en la BD */
-    public function buscarPorToken($idToken) {
-        $sql = "SELECT * FROM recuperacion_password WHERE id_token = :idToken";
-        $consulta = $this->bd->prepare($sql);
-        $consulta->execute(['idToken' => $idToken]);
-        return $consulta->fetch(PDO::FETCH_ASSOC);
-    }
-
-    // Marcar uso del proceso (actualizar fecha)
-    public function marcarUso($idRecuperacion) {
-        $sql = "UPDATE recuperacion_password SET fecha_uso = :fechaUso WHERE id_recuperacion = :idRecuperacion";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute([
-            'fechaUso' => date('Y-m-d H:i:s'),
-            'idRecuperacion' => $idRecuperacion
-        ]);
+        return $recuperaciones;
     }
 }
-?>
