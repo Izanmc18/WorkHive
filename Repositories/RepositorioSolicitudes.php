@@ -1,48 +1,63 @@
 <?php
-require_once 'ConexionBD.php';
+require_once __DIR__ . '/../ConexionBD.php';
+require_once __DIR__ . '/../Models/Solicitud.php';
 
 class RepositorioSolicitudes {
-    private static $instancia = null;
     private $bd;
 
-    private function __construct() {
+    public function __construct() {
         $this->bd = ConexionBD::getInstancia()->getConexion();
     }
 
-    public static function getInstancia() {
-        if (self::$instancia === null) {
-            self::$instancia = new RepositorioSolicitudes();
-        }
-        return self::$instancia;
+    public function crear(Solicitud $solicitud) {
+        $sql = "INSERT INTO solicitudes (idoferta, idalumno, comentario, estado) VALUES (:idoferta, :idalumno, :comentario, :estado)";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([
+            ':idoferta' => $solicitud->getIdOferta(),
+            ':idalumno' => $solicitud->getIdAlumno(),
+            ':comentario' => $solicitud->getComentario(),
+            ':estado' => $solicitud->getEstado()
+        ]);
+        $solicitud->setIdSolicitud($this->bd->lastInsertId());
+        return $solicitud;
     }
 
-    public function crear($idOferta, $idAlumno, $comentario) {
-        $sql = "INSERT INTO solicitudes (id_oferta, id_alumno, comentario) VALUES (:idOferta, :idAlumno, :comentario)";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute([
-            'idOferta' => $idOferta,
-            'idAlumno' => $idAlumno,
-            'comentario' => $comentario
+    public function leer($idSolicitud) {
+        $sql = "SELECT * FROM solicitudes WHERE idsolicitud = :id";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idSolicitud]);
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$fila) return null;
+        return new Solicitud(
+            $fila['idsolicitud'], $fila['idoferta'], $fila['idalumno'], $fila['comentario'], $fila['estado']
+        );
+    }
+
+    public function editar(Solicitud $solicitud) {
+        $sql = "UPDATE solicitudes SET comentario = :comentario, estado = :estado WHERE idsolicitud = :id";
+        $stmt = $this->bd->prepare($sql);
+        return $stmt->execute([
+            ':comentario' => $solicitud->getComentario(),
+            ':estado' => $solicitud->getEstado(),
+            ':id' => $solicitud->getIdSolicitud()
         ]);
     }
 
-    public function leerPorAlumno($idAlumno) {
-        $sql = "SELECT * FROM solicitudes WHERE id_alumno = :idAlumno";
-        $consulta = $this->bd->prepare($sql);
-        $consulta->execute(['idAlumno' => $idAlumno]);
-        return $consulta->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function modificarEstado($idSolicitud, $estado) {
-        $sql = "UPDATE solicitudes SET estado = :estado WHERE id_solicitud = :idSolicitud";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['estado' => $estado, 'idSolicitud' => $idSolicitud]);
-    }
-
     public function borrar($idSolicitud) {
-        $sql = "DELETE FROM solicitudes WHERE id_solicitud = :idSolicitud";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['idSolicitud' => $idSolicitud]);
+        $sql = "DELETE FROM solicitudes WHERE idsolicitud = :id";
+        $stmt = $this->bd->prepare($sql);
+        return $stmt->execute([':id' => $idSolicitud]);
+    }
+
+    public function listar() {
+        $sql = "SELECT * FROM solicitudes";
+        $stmt = $this->bd->query($sql);
+        $solicitudes = [];
+        while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $solicitudes[] = new Solicitud(
+                $fila['idsolicitud'], $fila['idoferta'], $fila['idalumno'], $fila['comentario'], $fila['estado']
+            );
+        }
+        return $solicitudes;
     }
 }
-?>

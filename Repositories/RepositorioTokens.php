@@ -1,51 +1,65 @@
 <?php
-require_once 'ConexionBD.php';
-require_once '../Helpers/Security/TokenSecurity.php';
+require_once __DIR__ . '/../ConexionBD.php';
+require_once __DIR__ . '/../Models/Token.php';
 
 class RepositorioTokens {
-    private static $instancia = null;
     private $bd;
-    private $seguridad;
 
-    private function __construct() {
+    public function __construct() {
         $this->bd = ConexionBD::getInstancia()->getConexion();
-        $this->seguridad = new TokenSecurity(); // puedes pasar duración aquí
     }
 
-    public static function getInstancia() {
-        if (self::$instancia === null) {
-            self::$instancia = new RepositorioTokens();
-        }
-        return self::$instancia;
-    }
-
-    public function crear($idUsuario) {
-        $datos = $this->seguridad->generarToken($idUsuario);
-        $sql = "INSERT INTO tokens (id_user, token, fecha_creacion, fecha_expiracion)
-                VALUES (:idUsuario, :token, :fechaGeneracion, :fechaExpiracion)";
-        $consulta = $this->bd->prepare($sql);
-        $consulta->execute([
-            'idUsuario' => $idUsuario,
-            'token' => $datos['token'],
-            'fechaGeneracion' => $datos['fechaGeneracion'],
-            'fechaExpiracion' => $datos['fechaExpiracion']
+    public function crear(Token $token) {
+        $sql = "INSERT INTO tokens (iduser, token, fechacreacion, fechaexpiracion) VALUES (:iduser, :token, :fechacreacion, :fechaexpiracion)";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([
+            ':iduser' => $token->getIdUsuario(),
+            ':token' => $token->getToken(),
+            ':fechacreacion' => $token->getFechaCreacion(),
+            ':fechaexpiracion' => $token->getFechaExpiracion()
         ]);
-        return $datos['token'];
+        $token->setIdToken($this->bd->lastInsertId());
+        return $token;
     }
 
-    public function verificar($tokenRecibido) {
-        $sql = "SELECT * FROM tokens WHERE token = :token";
-        $consulta = $this->bd->prepare($sql);
-        $consulta->execute(['token' => $tokenRecibido]);
-        $tokenBD = $consulta->fetch(PDO::FETCH_ASSOC);
-        if (!$tokenBD) return false;
-        return $this->seguridad->verificarToken($tokenBD, $tokenRecibido);
+    public function leer($idToken) {
+        $sql = "SELECT * FROM tokens WHERE idtoken = :id";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idToken]);
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$fila) return null;
+        return new Token(
+            $fila['idtoken'], $fila['iduser'], $fila['token'], $fila['fechacreacion'], $fila['fechaexpiracion']
+        );
+    }
+
+    public function editar(Token $token) {
+        $sql = "UPDATE tokens SET iduser = :iduser, token = :token, fechacreacion = :fechacreacion, fechaexpiracion = :fechaexpiracion WHERE idtoken = :id";
+        $stmt = $this->bd->prepare($sql);
+        return $stmt->execute([
+            ':iduser' => $token->getIdUsuario(),
+            ':token' => $token->getToken(),
+            ':fechacreacion' => $token->getFechaCreacion(),
+            ':fechaexpiracion' => $token->getFechaExpiracion(),
+            ':id' => $token->getIdToken()
+        ]);
     }
 
     public function borrar($idToken) {
-        $sql = "DELETE FROM tokens WHERE id_token = :idToken";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['idToken' => $idToken]);
+        $sql = "DELETE FROM tokens WHERE idtoken = :id";
+        $stmt = $this->bd->prepare($sql);
+        return $stmt->execute([':id' => $idToken]);
+    }
+
+    public function listar() {
+        $sql = "SELECT * FROM tokens";
+        $stmt = $this->bd->query($sql);
+        $tokens = [];
+        while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $tokens[] = new Token(
+                $fila['idtoken'], $fila['iduser'], $fila['token'], $fila['fechacreacion'], $fila['fechaexpiracion']
+            );
+        }
+        return $tokens;
     }
 }
-?>
