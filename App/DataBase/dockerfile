@@ -1,0 +1,7 @@
+# Usa la imagen oficial de MariaDB
+FROM mysql:8.0.40
+
+# Copiar scripts de inicialización
+# MariaDB ejecuta automáticamente cualquier script .sql, .sh o .gz en este directorio
+# Esto es útil para crear tablas y poblar datos iniciales.
+COPY Data/ /docker-entrypoint-initdb.d/
