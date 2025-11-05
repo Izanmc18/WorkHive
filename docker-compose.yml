@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  # Servicio de Base de Datos (DB)
+  db:
+    # Usamos la imagen oficial de MariaDB directamente para mayor estabilidad
+    # Usamos el 'build' context solo si se necesita el Dockerfile de inicialización
+    build:
+      context: ./App/DataBase
+    image: mysql_portalempleo
+    container_name: db
+    # Almacenamiento persistente para los datos de la base de datos
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      # Variables de entorno para MariaDB
+      MYSQL_DATABASE: portal_empleo
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 1234 # Contraseña de la DB
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      # Mapeo de puerto opcional para acceder desde el host (ej. con Workbench)
+      - "3307:3306"
+    restart: always
+
+  # Servicio de Aplicación (Core)
+  app:
+    # Construir la imagen usando el Dockerfile en App/
+    build:
+      context: ./App/
+    image: portal_empleo_app
+    container_name: app
+    # Mapeo de volumen para sincronizar el código PHP en tiempo real
+    # Esto te permite editar archivos en el host y ver los cambios inmediatamente
+    volumes:
+      # Mapeo del directorio App (código fuente) al Document Root de Apache
+      - ./App:/var/www/html/
+    # Variables de entorno para el proxy
+    environment:
+      # CRUCIAL: Define el Virtual Host que jwilder/nginx-proxy usará
+      VIRTUAL_HOST: WorkHive.com
+      # Otras variables de entorno que el código PHP puede leer (ej. credenciales de DB)
+      DB_HOST: db # Usa el nombre del servicio de la DB como hostname
+      DB_NAME: portal_empleo
+      DB_USER: user
+      DB_PASS: 1234 # <--- CORREGIDO: DEBE COINCIDIR CON MYSQL_PASSWORD
+    links:
+      - db
+    depends_on:
+      - db
+
+  
+  
+# Volúmenes para persistencia de datos
+volumes:
+  db-data:
