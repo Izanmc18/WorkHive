@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 class Ciclo {
@@ -14,35 +15,28 @@ class Ciclo {
         $this->idFamilia = $idFamilia;
     }
 
-    public function getIdCiclo() { 
-        return $this->idCiclo; 
+    public function getIdCiclo() {
+        return $this->idCiclo;
     }
-
-    public function setIdCiclo($idCiclo) { 
-        $this->idCiclo = $idCiclo; 
+    public function setIdCiclo($idCiclo) {
+        $this->idCiclo = $idCiclo;
     }
-
-    public function getNombre() { 
-        return $this->nombre; 
+    public function getNombre() {
+        return $this->nombre;
     }
-
-    public function setNombre($nombre) { 
-        $this->nombre = $nombre; 
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
     }
-
-    public function getDescripcion() { 
-        return $this->descripcion; 
+    public function getDescripcion() {
+        return $this->descripcion;
     }
-
-    public function setDescripcion($descripcion) { 
-        $this->descripcion = $descripcion; 
+    public function setDescripcion($descripcion) {
+        $this->descripcion = $descripcion;
     }
-
-    public function getIdFamilia() { 
-        return $this->idFamilia; 
+    public function getIdFamilia() {
+        return $this->idFamilia;
     }
-
-    public function setIdFamilia($idFamilia) { 
-        $this->idFamilia = $idFamilia; 
+    public function setIdFamilia($idFamilia) {
+        $this->idFamilia = $idFamilia;
     }
 }

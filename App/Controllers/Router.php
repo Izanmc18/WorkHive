@@ -14,8 +14,8 @@ class Router
 
     public function __construct()
     {
-        $this->templatesPath = __DIR__ . '/../../Templates';
-        $this->engine = new Engine($this->templatesPath);
+        //$this->templatesPath = __DIR__ . '/../Templates';
+        $this->engine = new Engine(__DIR__ . '/../Templates');
     }
 
     public function router()

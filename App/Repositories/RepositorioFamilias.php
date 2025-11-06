@@ -1,22 +1,28 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Models\Familia;
 
 class RepositorioFamilias {
     private $bd;
+    private static $instancia;
 
-    public function __construct() {
+    private function __construct() {
         $this->bd = ConexionBD::getInstancia()->getConexion();
     }
 
+    public static function getInstancia() {
+        if (self::$instancia === null) {
+            self::$instancia = new RepositorioFamilias();
+        }
+        return self::$instancia;
+    }
+
     public function crear(Familia $familia) {
-        $sql = "INSERT INTO familias (nombre, descripcion) VALUES (:nombre, :descripcion)";
+        $sql = "INSERT INTO familias (nombre) VALUES (:nombre)";
         $stmt = $this->bd->prepare($sql);
-        $stmt->execute([
-            ':nombre' => $familia->getNombre(),
-            ':descripcion' => $familia->getDescripcion()
-        ]);
+        $stmt->execute([':nombre' => $familia->getNombre()]);
         $familia->setIdFamilia($this->bd->lastInsertId());
         return $familia;
     }
@@ -27,23 +33,35 @@ class RepositorioFamilias {
         $stmt->execute([':id' => $idFamilia]);
         $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
         if (!$fila) return null;
-        return new Familia($fila['id_familia'], $fila['nombre'], $fila['descripcion']);
+        return new Familia($fila['id_familia'], $fila['nombre']);
     }
 
     public function editar(Familia $familia) {
-        $sql = "UPDATE familias SET nombre = :nombre, descripcion = :descripcion WHERE id_familia = :id";
+        $sql = "UPDATE familias SET nombre = :nombre WHERE id_familia = :id";
         $stmt = $this->bd->prepare($sql);
-        return $stmt->execute([
-            ':nombre' => $familia->getNombre(),
-            ':descripcion' => $familia->getDescripcion(),
-            ':id' => $familia->getIdFamilia()
-        ]);
+        return $stmt->execute([':nombre' => $familia->getNombre(), ':id' => $familia->getIdFamilia()]);
     }
 
     public function borrar($idFamilia) {
-        $sql = "DELETE FROM familias WHERE id_familia = :id";
-        $stmt = $this->bd->prepare($sql);
-        return $stmt->execute([':id' => $idFamilia]);
+        try {
+            $this->bd->beginTransaction();
+
+            // Borro los ciclos relacionados con esta familia
+            $sqlCiclos = "DELETE FROM ciclos WHERE id_familia = :id";
+            $stmtCiclos = $this->bd->prepare($sqlCiclos);
+            $stmtCiclos->execute([':id' => $idFamilia]);
+
+            // Y ahora lo que hago es borrar la familia
+            $sql = "DELETE FROM familias WHERE id_familia = :id";
+            $stmt = $this->bd->prepare($sql);
+            $stmt->execute([':id' => $idFamilia]);
+
+            $this->bd->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->bd->rollBack();
+            return false;
+        }
     }
 
     public function listar() {
@@ -51,7 +69,7 @@ class RepositorioFamilias {
         $stmt = $this->bd->query($sql);
         $familias = [];
         while ($fila = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $familias[] = new Familia($fila['id_familia'], $fila['nombre'], $fila['descripcion']);
+            $familias[] = new Familia($fila['id_familia'], $fila['nombre']);
         }
         return $familias;
     }

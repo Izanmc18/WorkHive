@@ -9,7 +9,7 @@ class ConexionBD {
     private function __construct() {
         try {
             $this->conexion = new \PDO(
-                'mysql:host=localhost;dbname=portal_empleo;charset=utf8mb4',
+                'mysql:host=localhost;port=3307;dbname=portal_empleo;charset=utf8mb4',
                 'root',
                 '1234',
                 [

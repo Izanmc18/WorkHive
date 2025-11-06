@@ -1,5 +1,6 @@
 {
     "require": {
-        "league/plates": "^3.6"
+        "league/plates": "^3.6",
+        "dompdf/dompdf": "^3.1"
     }
 }
