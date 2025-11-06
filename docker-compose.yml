@@ -36,6 +36,9 @@ services:
       # Mapeo del directorio App (código fuente) al Document Root de Apache
       - ./App:/var/www/html/
     # Variables de entorno para el proxy
+    ports:
+      # Mapeo de puerto opcional para acceder desde el host (ej. con Workbench)
+      - "8080:80"
     environment:
       # CRUCIAL: Define el Virtual Host que jwilder/nginx-proxy usará
       VIRTUAL_HOST: WorkHive.com

@@ -6,8 +6,8 @@ class LandingController {
     private $engine;
 
     public function __construct($engine = null) {
-        $this->engine = new Engine(__DIR__ . '/../../Templates/LandingTemplates');
-
+        //$this->engine = new Engine(__DIR__ . '/../../Templates/LandingTemplates');
+        $this->engine = new \League\Plates\Engine(__DIR__ . '/../Templates');
     }
 
     public function renderLanding() {

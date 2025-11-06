@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 class Solicitud {
@@ -16,43 +17,34 @@ class Solicitud {
         $this->estado = $estado;
     }
 
-    public function getIdSolicitud() { 
-        return $this->idSolicitud; 
+    public function getIdSolicitud() {
+        return $this->idSolicitud;
     }
-
-    public function setIdSolicitud($idSolicitud) { 
-        $this->idSolicitud = $idSolicitud; 
+    public function setIdSolicitud($idSolicitud) {
+        $this->idSolicitud = $idSolicitud;
     }
-
-    public function getIdOferta() { 
-        return $this->idOferta; 
+    public function getIdOferta() {
+        return $this->idOferta;
     }
-
     public function setIdOferta($idOferta) {
-        $this->idOferta = $idOferta; 
+        $this->idOferta = $idOferta;
     }
-
     public function getIdAlumno() {
-        return $this->idAlumno; 
+        return $this->idAlumno;
     }
     public function setIdAlumno($idAlumno) {
         $this->idAlumno = $idAlumno;
     }
-
     public function getComentario() {
-        return $this->comentario; 
+        return $this->comentario;
     }
-
     public function setComentario($comentario) {
-        $this->comentario = $comentario; 
+        $this->comentario = $comentario;
     }
-
-    public function getEstado() { 
-        return $this->estado; 
+    public function getEstado() {
+        return $this->estado;
     }
-
-    public function setEstado($estado) { 
-        $this->estado = $estado; 
+    public function setEstado($estado) {
+        $this->estado = $estado;
     }
-
 }

@@ -1,54 +1,74 @@
 <?php
+
 namespace App\Repositories;
 
-require_once __DIR__ . '/ConexionBD.php';
-require_once __DIR__ . '/../Models/Usuario.php';
 use App\Models\Usuario;
+use App\Repositories\ConexionBD;
+
 class RepositorioUsuarios {
     private $bd;
-    private static $instancia = null;
+    private static $instancia;
 
-
-    public function __construct() {
+    private function __construct() {
         $this->bd = ConexionBD::getInstancia()->getConexion();
     }
 
+    public static function getInstancia() {
+        if (self::$instancia === null) {
+            self::$instancia = new RepositorioUsuarios();
+        }
+        return self::$instancia;
+    }
+
     public function crear(Usuario $usuario) {
-        $sql = "INSERT INTO usuarios (correo, password) VALUES (:correo, :password)";
+        $sql = "INSERT INTO usuarios (correo, password, es_admin, verificado) 
+                VALUES (:correo, :password, :es_admin, :verificado)";
         $stmt = $this->bd->prepare($sql);
         $stmt->execute([
             ':correo' => $usuario->getCorreo(),
-            ':password' => $usuario->getClave()
+            ':password' => $usuario->getClave(),
+            ':es_admin' => $usuario->isAdmin(),
+            ':verificado' => $usuario->isVerificado()
         ]);
         $usuario->setId($this->bd->lastInsertId());
         return $usuario;
     }
 
-    public function leer($id_Usuario) {
+    public function leer($idUsuario) {
         $sql = "SELECT * FROM usuarios WHERE id_user = :id";
         $stmt = $this->bd->prepare($sql);
-        $stmt->execute([':id' => $id_Usuario]);
+        $stmt->execute([':id' => $idUsuario]);
         $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
         if (!$fila) {
             return null;
         }
-        return new Usuario($fila['id_user'], $fila['correo'], $fila['password']);
+        return new Usuario(
+            $fila['id_user'], 
+            $fila['correo'], 
+            $fila['password'], 
+            (bool)$fila['es_admin'], 
+            (bool)$fila['verificado']
+        );
     }
 
     public function editar(Usuario $usuario) {
-        $sql = "UPDATE usuarios SET correo = :correo, password = :password WHERE id_user = :id";
+        $sql = "UPDATE usuarios 
+                SET correo = :correo, password = :password, es_admin = :es_admin, verificado = :verificado 
+                WHERE id_user = :id";
         $stmt = $this->bd->prepare($sql);
         return $stmt->execute([
             ':correo' => $usuario->getCorreo(),
             ':password' => $usuario->getClave(),
+            ':es_admin' => $usuario->isAdmin(),
+            ':verificado' => $usuario->isVerificado(),
             ':id' => $usuario->getId()
         ]);
     }
 
-    public function borrar($id_Usuario) {
+    public function borrar($idUsuario) {
         $sql = "DELETE FROM usuarios WHERE id_user = :id";
         $stmt = $this->bd->prepare($sql);
-        return $stmt->execute([':id' => $id_Usuario]);
+        return $stmt->execute([':id' => $idUsuario]);
     }
 
     public function listar() {
@@ -56,24 +76,14 @@ class RepositorioUsuarios {
         $stmt = $this->bd->query($sql);
         $usuarios = [];
         while ($fila = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $usuarios[] = new Usuario($fila['id_user'], $fila['correo'], $fila['password']);
+            $usuarios[] = new Usuario(
+                $fila['id_user'], 
+                $fila['correo'], 
+                $fila['password'], 
+                (bool)$fila['es_admin'], 
+                (bool)$fila['verificado']
+            );
         }
         return $usuarios;
     }
-
-    public static function getInstancia() {
-    if (self::$instancia == null) {
-        self::$instancia = new RepositorioUsuarios();
-    }
-    return self::$instancia;
-}
-
-
-    public function modificarCorreo($idUsuario, $nuevoCorreo) {
-        $sql = "UPDATE usuarios SET correo = :nuevoCorreo WHERE id_user = :idUsuario";
-        $consulta = $this->bd->prepare($sql);
-        return $consulta->execute(['nuevoCorreo' => $nuevoCorreo, 'idUsuario' => $idUsuario]);
-    }
-
-
 }
