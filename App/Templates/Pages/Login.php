@@ -1,4 +1,4 @@
-<?php $this->layout('base', [
+<?php $this->layout('Layout/Layout', [
     'title' => 'Login | WorkHive'
 ]) ?>
 

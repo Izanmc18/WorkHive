@@ -1,9 +1,7 @@
-
+<?php
 // control del verbo y el verbo y los parametros me dicen que hacer cumpliendo la regla de al Api Rest Full
 // asi que en vez de action que llegue el verbo y segun si viene solo o si viene con algun paramaetro lo 
 // llevaremos a ahcer una funcion u otra de esta api
-<?php
-
 namespace App\Api;
 
 use App\Repositories\RepositorioEmpresas;
@@ -38,7 +36,7 @@ if ($metodo === 'POST' && isset($_FILES['logo'])) {
             break;
         default:
             http_response_code(405);
-            echo json_encode(['exito' => false]);
+            echo json_encode(['success' => false]);
             break;
     }
 }
@@ -75,7 +73,7 @@ function crearEmpresa($cuerpo) {
     $datos = json_decode($cuerpo, true);
     if (!$datos || !isset($datos['correo'], $datos['nombre'], $datos['descripcion'], $datos['direccion'], $datos['contrasena'])) {
         http_response_code(400);
-        echo json_encode(['exito' => false, 'error' => 'Datos incompletos']);
+        echo json_encode(['success' => false, 'error' => 'Datos incompletos']);
         return;
     }
     $empresa = new Empresa(
@@ -99,21 +97,21 @@ function crearEmpresa($cuerpo) {
 
     if ($empresaCreada) {
         http_response_code(201);
-        echo json_encode(['exito' => true, 'empresa' => empresaAArray($empresaCreada)]);
+        echo json_encode(['success' => true, 'empresa' => empresaAArray($empresaCreada)]);
     } else {
         http_response_code(400);
-        echo json_encode(['exito' => false]);
+        echo json_encode(['success' => false]);
     }
 }
 
 function crearEmpresaConLogo($datos, $archivoLogo) {
     if (!isset($datos['correo'], $datos['nombre'], $datos['descripcion'], $datos['direccion'], $datos['contrasena'])) {
         http_response_code(400);
-        echo json_encode(['exito' => false, 'error' => 'Datos incompletos']);
+        echo json_encode(['success' => false, 'error' => 'Datos incompletos']);
         return;
     }
     $nombreLogo = uniqid('logo_') . '_' . basename($archivoLogo['name']);
-    $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . '/assets/images/empresas/' . $nombreLogo;
+    $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . '/Assets/Images/Empresa/' . $nombreLogo;
 
     if (move_uploaded_file($archivoLogo['tmp_name'], $rutaLogo)) {
         $empresa = new Empresa(
@@ -137,14 +135,14 @@ function crearEmpresaConLogo($datos, $archivoLogo) {
 
         if ($empresaCreada) {
             http_response_code(201);
-            echo json_encode(['exito' => true, 'empresa' => empresaAArray($empresaCreada)]);
+            echo json_encode(['success' => true, 'empresa' => empresaAArray($empresaCreada)]);
         } else {
             http_response_code(400);
-            echo json_encode(['exito' => false, 'error' => 'No se pudo crear empresa']);
+            echo json_encode(['success' => false, 'error' => 'No se pudo crear empresa']);
         }
     } else {
         http_response_code(500);
-        echo json_encode(['exito' => false, 'error' => 'Error al subir el logo']);
+        echo json_encode(['success' => false, 'error' => 'Error al subir el logo']);
     }
 }
 
@@ -154,21 +152,21 @@ function editarEmpresa($cuerpo) {
     $datos = json_decode($cuerpo, true);
     if (!isset($datos['idEmpresa'])) {
         http_response_code(400);
-        echo json_encode(['exito' => false, 'error' => 'ID de empresa requerido']);
+        echo json_encode(['success' => false, 'error' => 'ID de empresa requerido']);
         return;
     }
     $repo = RepositorioEmpresas::getInstancia();
     $empresa = $repo->leer((int)$datos['idEmpresa']);
     if (!$empresa) {
         http_response_code(404);
-        echo json_encode(['exito' => false]);
+        echo json_encode(['success' => false]);
         return;
     }
     $empresa->setNombre($datos['nombre'] ?? $empresa->getNombre());
     $empresa->setDescripcion($datos['descripcion'] ?? $empresa->getDescripcion());
     $empresa->setDireccion($datos['direccion'] ?? $empresa->getDireccion());
 
-    // Cambia logo si llega nuevo nombre de archivo (ej: edición sólo url, no archivo)
+    // Cambia logo si llega nuevo nombre de archivo
     if (isset($datos['logoUrl']) && $datos['logoUrl'] != '' && $datos['logoUrl'] != $empresa->getLogoUrl()) {
         borrarLogoFisico($empresa->getLogoUrl());
         $empresa->setLogoUrl($datos['logoUrl']);
@@ -185,28 +183,28 @@ function editarEmpresa($cuerpo) {
     $ok = $repo->editar($empresa, $usuario);
     if ($ok) {
         http_response_code(200);
-        echo json_encode(['exito' => true, 'empresa' => empresaAArray($empresa)]);
+        echo json_encode(['success' => true, 'empresa' => empresaAArray($empresa)]);
     } else {
         http_response_code(400);
-        echo json_encode(['exito' => false]);
+        echo json_encode(['success' => false]);
     }
 }
 
 function editarEmpresaConLogo($datos, $archivoLogo) {
     if (!isset($datos['idEmpresa'])) {
         http_response_code(400);
-        echo json_encode(['exito' => false, 'error' => 'ID de empresa requerido']);
+        echo json_encode(['success' => false, 'error' => 'ID de empresa requerido']);
         return;
     }
     $repo = RepositorioEmpresas::getInstancia();
     $empresa = $repo->leer((int)$datos['idEmpresa']);
     if (!$empresa) {
         http_response_code(404);
-        echo json_encode(['exito' => false]);
+        echo json_encode(['success' => false]);
         return;
     }
     $nombreLogo = uniqid('logo_') . '_' . basename($archivoLogo['name']);
-    $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . '/assets/images/empresas/' . $nombreLogo;
+    $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . '/Assets/Images/Empresa/' . $nombreLogo;
 
     if (move_uploaded_file($archivoLogo['tmp_name'], $rutaLogo)) {
         borrarLogoFisico($empresa->getLogoUrl());
@@ -228,10 +226,10 @@ function editarEmpresaConLogo($datos, $archivoLogo) {
     $ok = $repo->editar($empresa, $usuario);
     if ($ok) {
         http_response_code(200);
-        echo json_encode(['exito' => true, 'empresa' => empresaAArray($empresa)]);
+        echo json_encode(['success' => true, 'empresa' => empresaAArray($empresa)]);
     } else {
         http_response_code(400);
-        echo json_encode(['exito' => false]);
+        echo json_encode(['success' => false]);
     }
 }
 
@@ -241,7 +239,7 @@ function borrarEmpresa($cuerpo) {
     $datos = json_decode($cuerpo, true);
     if (!isset($datos['idEmpresa'])) {
         http_response_code(400);
-        echo json_encode(['exito' => false, 'error' => 'Falta ID']);
+        echo json_encode(['success' => false, 'error' => 'Falta ID']);
         return;
     }
     $repo = RepositorioEmpresas::getInstancia();
@@ -250,10 +248,10 @@ function borrarEmpresa($cuerpo) {
     if ($borrado) {
         borrarLogoFisico($empresa->getLogoUrl());
         http_response_code(200);
-        echo json_encode(['exito' => true]);
+        echo json_encode(['success' => true]);
     } else {
         http_response_code(404);
-        echo json_encode(['exito' => false]);
+        echo json_encode(['success' => false]);
     }
 }
 
@@ -261,8 +259,8 @@ function borrarEmpresa($cuerpo) {
 
 function empresaAArray($empresa) {
     $url_logo = ($empresa->getLogoUrl() !== '' && $empresa->getLogoUrl() !== null)
-        ? '/assets/images/empresas/' . $empresa->getLogoUrl()
-        : '/assets/images/empresas/default.png'; 
+        ? '/Assets/Images/Empresa/' . $empresa->getLogoUrl()
+        : '/Assets/Images/Empresa/default.png'; 
     return [
         'idEmpresa' => $empresa->getIdEmpresa(),
         'idUsuario' => $empresa->getIdUsuario(),
@@ -276,7 +274,7 @@ function empresaAArray($empresa) {
 
 function borrarLogoFisico($nombreLogo) {
     if ($nombreLogo && $nombreLogo !== 'default.png') {
-        $ruta = $_SERVER['DOCUMENT_ROOT'] . '/assets/images/empresas/' . $nombreLogo;
+        $ruta = $_SERVER['DOCUMENT_ROOT'] . '/Assets/Images/Empresa/' . $nombreLogo;
         if (file_exists($ruta)) {
             @unlink($ruta);
         }

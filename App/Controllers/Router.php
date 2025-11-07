@@ -14,49 +14,44 @@ class Router
 
     public function __construct()
     {
-        //$this->templatesPath = __DIR__ . '/../Templates';
-        $this->engine = new Engine(__DIR__ . '/../Templates');
+        // Ajusta la ruta a tus plantillas según tu estructura
+        $this->templatesPath = __DIR__ . '/../Templates';
+        $this->engine = new Engine($this->templatesPath);
     }
 
     public function router()
     {
-        if (isset($_GET['menu'])) {
-            $menu = $_GET['menu'];
-        } else {
-            $menu = 'landing';
-        }
+        $menu = isset($_GET['menu']) ? $_GET['menu'] : 'home';
 
         switch ($menu) {
-            case 'landing':
+            case 'home':
                 $landing = new LandingController();
-                $landing->renderLanding();
+                $landing->renderLanding($this->engine);
                 break;
 
             case 'login':
-                $Auth = new AuthController();
-                $Auth->renderLogin($this->engine);
-                break;
-            case 'regRedirect':
-                $Auth = new AuthController();
-                $Auth->renderRegRedirect($this->engine);
-                break;
-            case 'regEmpresa':
-                $Auth = new AuthController();
-                $Auth->renderRegEmpresa($this->engine);
-                break;
-            case 'regAlumno':
-                $Auth = new AuthController();
-                $Auth->renderRegAlumno($this->engine);
+                $auth = new AuthController();
+                $auth->renderLogin($this->engine);
                 break;
 
-            case 'admin-alumnos':
+            case 'regRedirect':
+                $auth = new AuthController();
+                $auth->renderRegRedirect($this->engine);
+                break;
+
+            case 'regEmpresa':
+                $auth = new AuthController();
+                $auth->renderRegEmpresa($this->engine);
+                break;
+
+            case 'regAlumno':
+                $auth = new AuthController();
+                $auth->renderRegAlumno($this->engine);
+                break;
+
+            case 'listado':
                 $alumnoManage = new AlumnoController();
                 $alumnoManage->renderList($this->engine);
-                break;
-
-            case 'admin-empresas':
-                $empresaManage = new EmpresaController();
-                $empresaManage->renderList($this->engine);
                 break;
         }
     }

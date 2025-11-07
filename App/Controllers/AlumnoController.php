@@ -1,23 +1,18 @@
 <?php 
 namespace App\Controllers;
 use League\Plates\Engine;
+use App\Repositories\AlumnoRepo;
+use App\Models\Alumno;
 
-class AlumnoController {
-    private $engine;
+class AlumnoController
+{
 
-    public function __construct($engine = null) {
-        $this->engine = new Engine(__DIR__ . '/../../Templates/AlumnoTemplates');
+    public function renderList($engine)
+    {
+        echo $engine->render('Pages/ListadoAlumnos');
     }
 
-    public function renderList() {
-        echo $this->engine->render('AlumnoLista');
-    }
-
-    public function renderPerfilAlumno() {
-        echo $this->engine->render('PerfilAlumno');
-    }
-
-    // Añade más métodos según tus necesidades
+    public function renderDashboard($engine) {}
 }
 
 ?>

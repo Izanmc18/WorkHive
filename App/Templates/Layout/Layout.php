@@ -1,6 +1,3 @@
-<?php $this->layout('base', [
-    'title' => 'WorkHive | Find Your Future'
-]) ?>
 
 <?php $this->start('css') ?>
     <link rel="stylesheet" href="/Public/Css/styles.css"> <!-- Cambia al path real de tu css -->

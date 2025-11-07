@@ -3,7 +3,7 @@
 echo 'Renderizando landing...<br>';
 ?>
 
-<?php $this->layout('Layout', ['title' => 'WorkHive | Find Your Future']) ?>
+<?php $this->layout('Layout/Layout', ['title' => 'WorkHive | Find Your Future']) ?>
 
 <?php $this->start('body') ?>
     <main class="landing-container">

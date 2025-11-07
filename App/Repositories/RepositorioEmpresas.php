@@ -47,7 +47,7 @@ class RepositorioEmpresas {
             if ($archivoLogo && $archivoLogo['error'] === UPLOAD_ERR_OK) {
                 $extension = pathinfo($archivoLogo['name'], PATHINFO_EXTENSION);
                 $nombreArchivo = $idEmpresa . '.' . $extension;
-                $directorioDestino = __DIR__ . '/../../Public/Assets/Images/';
+                $directorioDestino = __DIR__ . '/../../Public/Assets/Images/Empresa';
                 $rutaDestino = $directorioDestino . $nombreArchivo;
 
                 if (!is_dir($directorioDestino)) {
@@ -116,7 +116,7 @@ class RepositorioEmpresas {
             if ($archivoLogo && $archivoLogo['error'] === UPLOAD_ERR_OK) {
                 $extension = pathinfo($archivoLogo['name'], PATHINFO_EXTENSION);
                 $nombreArchivo = $empresa->getIdEmpresa() . '.' . $extension;
-                $directorioDestino = __DIR__ . '/../../Public/Assets/Images/';
+                $directorioDestino = __DIR__ . '/../../Public/Assets/Images/Empresa';
                 $rutaDestino = $directorioDestino . $nombreArchivo;
 
                 if (!is_dir($directorioDestino)) {
