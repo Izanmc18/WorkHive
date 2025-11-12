@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/Public/Assets/Css/style.css"/>
     <?= $this->section('js') ?>
 </head>
+
 <body>
     <header>
         <img src="Assets/Images/unnamed3.png" alt="Logo WorkHive" class="logoImg">
@@ -17,10 +19,19 @@
             <?= $this->section('menu') ?>
         </nav>
     </header>
+
     <main>
-        <?= $this->section('pageContent') ?>
+        <div id="admin-layout-container">
+
+            <div id="admin-content-area">
+                <?php echo $this->section('pageContent'); ?>
+            </div>
+
+            <?php // $this->insert('admin-aside'); ?>
+        </div>
     </main>
-    <footer class="pie">
+
+<footer class="pie">
         <div class="contenedorFooter">
             <div class="divLogoFooter">
                 <img class="logoPie" src="Assets/Images/unnamed3.png" width="500px" height="500px">
@@ -67,5 +78,5 @@
         </div>
     </footer>
 </body>
-</html>
 
+</html>

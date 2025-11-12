@@ -86,4 +86,24 @@ class RepositorioUsuarios {
         }
         return $usuarios;
     }
+
+    public function findByEmail($correo) {
+        $sql = "SELECT * FROM usuarios WHERE correo = :correo";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':correo' => $correo]);
+        $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$fila) {
+            return null;
+        }
+
+        return new Usuario(
+            $fila['id_user'],
+            $fila['correo'],
+            $fila['password'], // Viene cifrada y esta es la que verificamos a continuacion en ProcesaLogin
+            (bool)$fila['es_admin'],
+            (bool)$fila['verificado']
+        );
+    }
+
 }

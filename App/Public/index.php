@@ -9,5 +9,5 @@ use App\Controllers\Router;
 $router = new Router();
 $router->router();
 
-echo 'funciona';
+
 ?>

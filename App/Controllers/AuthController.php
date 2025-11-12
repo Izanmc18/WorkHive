@@ -7,21 +7,21 @@ class AuthController
 
     public function renderLogin($engine)
     {
-        echo $engine->render('Pages/Login');
+        echo $engine->render('Pages/Auth/Login');
     }
 
     public function renderRegRedirect($engine)
     {
-        echo $engine->render('Pages/RegRedirect');
+        echo $engine->render('Pages/Auth/RegRedirect');
     }
 
     public function renderRegAlumno($engine)
     {
-        echo $engine->render('Pages/RegisterAlumno');
+        echo $engine->render('Pages/Auth/RegisterAlumno');
     }
 
     public function renderRegEmpresa($engine)
     {
-        echo $engine->render('Pages/RegisterEmpresa');
+        echo $engine->render('Pages/Auth/RegisterEmpresa');
     }
 }

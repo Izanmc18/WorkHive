@@ -213,4 +213,28 @@ class RepositorioEmpresas {
         }
         return $empresas;
     }
+
+    public function findById(int $idEmpresa) {
+        $sql = "SELECT e.*, u.correo FROM empresas e JOIN usuarios u ON e.iduser = u.iduser WHERE e.idempresa = ?";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([$idEmpresa]);
+        $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$fila) {
+            return null;
+        }
+
+        $empresa = new Empresa(
+            $fila['idempresa'],
+            $fila['iduser'],
+            $fila['correo'],
+            $fila['nombre'],
+            $fila['descripcion'],
+            $fila['logourl'],
+            $fila['direccion']
+        );
+
+        return $empresa;
+    }
+
 }

@@ -9,10 +9,12 @@ class AlumnoController
 
     public function renderList($engine)
     {
-        echo $engine->render('Pages/ListadoAlumnos');
+        echo $engine->render('Pages/Alumno/ListadoAlumnos');
     }
 
-    public function renderDashboard($engine) {}
+    public function renderDashboard($engine) {
+        echo $engine->render('Pages/Alumno/DashboardAlumno');
+    }
 }
 
 ?>

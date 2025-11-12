@@ -12,6 +12,7 @@ class Alumno {
     private $edad;
     private $curriculumUrl;
     private $fotoPerfil;
+    private $estudios = [];
 
     public function __construct(
         $idAlumno = null, $idUsuario = null, $correo = null, $nombre = null,
@@ -105,5 +106,16 @@ class Alumno {
     }
     public function setFotoPerfil($fotoPerfil) { 
         $this->fotoPerfil = $fotoPerfil; 
+    }
+    // Agregar un ciclo a la lista de estudios
+    public function agregarEstudio(Ciclo $ciclo)
+    {
+        $this->estudios[] = $ciclo;
+    }
+
+    // Obtener todos los ciclos asociados
+    public function getEstudios()
+    {
+        return $this->estudios;
     }
 }

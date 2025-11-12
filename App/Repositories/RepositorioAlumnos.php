@@ -205,4 +205,29 @@ class RepositorioAlumnos {
         }
         return $alumnos;
     }
+
+    public function findById(int $idAlumno) {
+        $sql = "SELECT * FROM alumnos WHERE idalumno = ?";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([$idAlumno]);
+        $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$fila) {
+            return null;
+        }
+
+        return new Alumno(
+            $fila['idalumno'],
+            $fila['iduser'],
+            null,
+            $fila['nombre'],
+            $fila['apellido1'],
+            $fila['apellido2'],
+            $fila['direccion'],
+            $fila['edad'],
+            $fila['curriculumurl'],
+            $fila['fotoperfil']
+        );
+    }
+
 }

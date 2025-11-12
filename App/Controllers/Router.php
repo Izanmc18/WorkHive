@@ -14,17 +14,17 @@ class Router
 
     public function __construct()
     {
-        // Ajusta la ruta a tus plantillas según tu estructura
+        
         $this->templatesPath = __DIR__ . '/../Templates';
         $this->engine = new Engine($this->templatesPath);
     }
 
     public function router()
     {
-        $menu = isset($_GET['menu']) ? $_GET['menu'] : 'home';
+        $menu = isset($_GET['menu']) ? $_GET['menu'] : 'landing';
 
         switch ($menu) {
-            case 'home':
+            case 'landing':
                 $landing = new LandingController();
                 $landing->renderLanding($this->engine);
                 break;
@@ -53,6 +53,7 @@ class Router
                 $alumnoManage = new AlumnoController();
                 $alumnoManage->renderList($this->engine);
                 break;
+            
         }
     }
 }

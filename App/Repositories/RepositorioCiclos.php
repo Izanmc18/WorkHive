@@ -89,4 +89,23 @@ class RepositorioCiclos {
         }
         return $ciclos;
     }
+
+    public function findById(int $idCiclo) {
+        $sql = "SELECT * FROM ciclos WHERE idciclo = ?";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([$idCiclo]);
+        $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$fila) {
+            return null;
+        }
+
+        return new Ciclo(
+            $fila['idciclo'],
+            $fila['nombre'],
+            $fila['descripcion'],
+            $fila['idfamilia']
+        );
+    }
+
 }
