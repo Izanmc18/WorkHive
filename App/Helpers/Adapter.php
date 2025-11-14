@@ -148,7 +148,8 @@ class Adapter
                 $empresa->getNombre(),
                 $empresa->getDescripcion(),
                 $empresa->getLogoUrl(),
-                $empresa->getDireccion()
+                $empresa->getDireccion(),
+                $empresa->getValidacion()
             );
         }
 
@@ -170,7 +171,8 @@ class Adapter
             $empresa->getNombre(),
             $empresa->getDescripcion(),
             $empresa->getLogoUrl(),
-            $empresa->getDireccion()
+            $empresa->getDireccion(),
+            $empresa->getValidacion()
         );
     }
 

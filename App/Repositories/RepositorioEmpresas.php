@@ -237,4 +237,50 @@ class RepositorioEmpresas {
         return $empresa;
     }
 
+    // Listar solo empresas validadas (validacion=1)
+    public function listarEmpresasValidadas() {
+        $sql = "SELECT e.*, u.correo FROM empresas e JOIN usuarios u ON e.id_user = u.id_user WHERE e.validacion = 1";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute();
+        $empresas = [];
+        while ($fila = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $empresas[] = new Empresa(
+                $fila['id_empresa'],
+                $fila['id_user'],
+                $fila['correo'],
+                $fila['nombre'],
+                $fila['descripcion'],
+                $fila['logo_url'],
+                $fila['direccion']
+            );
+        }
+        return $empresas;
+    }
+
+    // Listar solo empresas no validadas (validacion=0)
+    public function listarEmpresasPendientes() {
+        $sql = "SELECT e.*, u.correo FROM empresas e JOIN usuarios u ON e.id_user = u.id_user WHERE e.validacion = 0";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute();
+        $empresas = [];
+        while ($fila = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $empresas[] = new Empresa(
+                $fila['id_empresa'],
+                $fila['id_user'],
+                $fila['correo'],
+                $fila['nombre'],
+                $fila['descripcion'],
+                $fila['logo_url'],
+                $fila['direccion']
+            );
+        }
+        return $empresas;
+    }
+
+    // Aprobar una empresa (poner validacion = 1)
+    public function aprobarEmpresa(int $idEmpresa) {
+        $sql = "UPDATE empresas SET validacion = 1 WHERE id_empresa = :id_empresa";
+        $stmt = $this->bd->prepare($sql);
+        return $stmt->execute([':id_empresa' => $idEmpresa]);
+    }
 }

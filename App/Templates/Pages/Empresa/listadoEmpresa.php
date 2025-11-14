@@ -1,6 +1,7 @@
 <?php
 $this->layout('Layout/Layout', [
-    'title' => 'WorkHive - Lista de Empresas']);
+    'title' => 'WorkHive - Lista de Empresas'
+]);
 ?>
 
 <?php $this->start('pageContent') ?>
@@ -24,26 +25,24 @@ $this->layout('Layout/Layout', [
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>CIF</th>
+                    <th>Correo</th>
                     <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
+                    <th>Dirección</th>
                     <th class="columnaAcciones">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($empresasTotal as $empresa): ?>
                     <tr>
-                        <td><?= $empresa->id ?></td>
-                        <td><?= $empresa->cif ?></td>
-                        <td><?= $empresa->nombre ?></td>
-                        <td><?= $empresa->email ?></td>
-                        <td><?= $empresa->telefono ?></td>
+                        <td><?= $empresa->getIdempresa() ?></td>
+                        <td><?= $empresa->getCorreo() ?></td>
+                        <td><?= $empresa->getNombre() ?></td>
+                        <td><?= $empresa->getDireccion() ?></td>
                         <td class="columnaAcciones">
                             <form action="" method="post">
-                                <button type="submit" class="botonAccion botonEditar" name="btnEditar" value="<?= $empresa->id ?>">Editar</button>
-                                <button type="submit" class="botonAccion botonEliminar" name="btnBorrar" value="<?= $empresa->id ?>">Eliminar</button>
-                                <button type="submit" class="botonAccion botonEditar" name="btnVerFicha" value="<?= $empresa->id ?>">Ver Ficha</button>
+                                <button type="submit" class="botonAccion botonEditar" name="btnEditarEmpresa" value="<?= $empresa->getIdempresa() ?>">Editar</button>
+                                <button type="submit" class="botonAccion botonEliminar" name="btnEliminarEmpresa" value="<?= $empresa->getIdempresa() ?>">Eliminar</button>
+                                <button type="submit" class="botonAccion botonVerFicha" name="btnVerFichaEmpresa" value="<?= $empresa->getIdempresa() ?>">Ver Ficha</button>
                             </form>
                         </td>
                     </tr>
@@ -62,21 +61,21 @@ $this->layout('Layout/Layout', [
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Correo</th>
                     <th>Nombre</th>
-                    <th>Email</th>
                     <th class="columnaAccionesPendientes">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($pendientes as $empresa): ?>
                     <tr>
-                        <td><?= $empresa->id ?></td>
-                        <td><?= $empresa->nombre ?></td>
-                        <td><?= $empresa->username ?></td>
+                        <td><?= $empresa->getIdempresa() ?></td>
+                        <td><?= $empresa->getCorreo() ?></td>
+                        <td><?= $empresa->getNombre() ?></td>
                         <td class="columnaAccionesPendientes">
                             <form action="#" method="post">
-                                <button type="submit" class="botonAccion botonEditar" name="btnConfirmar" value="<?= $empresa->id ?>">Confirmar</button>
-                                <button type="submit" class="botonAccion botonEliminar" name="btnRechazar" value="<?= $empresa->id ?>">Rechazar</button>
+                                <button type="submit" class="botonAccion botonConfirmar" name="btnConfirmarEmpresa" value="<?= $empresa->getIdempresa() ?>">Confirmar</button>
+                                <button type="submit" class="botonAccion botonEliminar" name="btnRechazarEmpresa" value="<?= $empresa->getIdempresa() ?>">Rechazar</button>
                             </form>
                         </td>
                     </tr>

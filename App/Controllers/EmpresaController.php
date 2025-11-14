@@ -16,9 +16,9 @@ class EmpresaController
 
     public function mostrarListado($engine)
     {
-        $rutaSelf = "Location: " . $_SERVER['PHP_SELF'] . "?menu=admin-empresas";
+        $rutaSelf = "Location: " . $_SERVER['PHP_SELF'] . "?menu=adminEmpresas";
 
-        // Detectar qué botón fue presionado
+        
         $accion = null;
         $botones = [
             'btnAñadirEmpresa',
@@ -35,13 +35,12 @@ class EmpresaController
         foreach ($botones as $boton) {
             if (isset($_POST[$boton])) {
                 $accion = $boton;
-                break;
             }
         }
 
         switch ($accion) {
             case 'btnAñadirEmpresa':
-                echo $engine->render('Empresa/AñadirEmpresa');
+                echo $engine->render('Pages/Empresa/AñadirEmpresa');
                 break;
 
             case 'btnGuardarEmpresa':
@@ -53,7 +52,7 @@ class EmpresaController
             case 'btnEditarEmpresa':
                 $id = $_POST['btnEditarEmpresa'];
                 $empresaDTO = Adapter::empresaADTO($id);
-                echo $engine->render('Empresa/EditarEmpresa', [
+                echo $engine->render('Pages/Empresa/EditarEmpresa', [
                     'empresaEdit' => $empresaDTO
                 ]);
                 exit();
@@ -61,7 +60,7 @@ class EmpresaController
             case 'btnVerFichaEmpresa':
                 $id = $_POST['btnVerFichaEmpresa'];
                 $empresa = $this->repositorio->findById($id);
-                echo $engine->render('Empresa/VerFichaEmpresa', [
+                echo $engine->render('Pages/Empresa/VerFichaEmpresa', [
                     'empresaVer' => $empresa
                 ]);
                 exit();
@@ -104,17 +103,14 @@ class EmpresaController
                         $empresasLista = Adapter::todasEmpresasADTO($empresasFiltradas);
                     }
                 }
-                /** PREGUNTAR A MANGEL PORQUE TIENE EMPRESAS PENDIENTES DE VALIDAR Y DEMAS */
-                /** PREGUNTAR A MANGEL PORQUE TIENE EMPRESAS PENDIENTES DE VALIDAR Y DEMAS */
-                /** PREGUNTAR A MANGEL PORQUE TIENE EMPRESAS PENDIENTES DE VALIDAR Y DEMAS */
-                /**preguntar joder y no olvidarme*/
+                
                 foreach ($empresasTodasDTO as $empresa) {
-                    //if (!$empresa->validacion) {
-                    //    $empresasPendientes[] = $empresa;
-                    //}
+                    if (!$empresa->getValidacion()) {
+                        $empresasPendientes[] = $empresa;
+                    }
                 }
 
-                echo $engine->render('Empresa/ListadoEmpresas', [
+                echo $engine->render('Pages/Empresa/ListadoEmpresas', [
                     'empresasTotal' => $empresasLista,
                     'pendientes' => $empresasPendientes
                 ]);
