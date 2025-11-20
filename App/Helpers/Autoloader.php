@@ -1,20 +1,22 @@
 <?php
-//namespace App\Helpers;
+namespace App\Helpers;
 
 spl_autoload_register(function ($clase) {
+    
+    $prefijo = 'App\\';
 
-    $clase = str_replace('App\\', '', $clase);
-    $clase = str_replace('\\', '/', $clase);
+    $directorio_base = dirname(__DIR__) . '/';
 
-    $fichero = __DIR__ . '/../' . $clase . '.php';
+    $longitud = strlen($prefijo);
+    if (strncmp($prefijo, $clase, $longitud) !== 0) {
+        return;
+    }
 
-    if (file_exists($fichero)) {
-        require_once($fichero);
-    } else {
-        try {
-            throw new \Exception("Clase no encontrada: Se buscó el archivo '$fichero' para la clase '$clase'");
-        } catch (\Exception $e) {
-            error_log("AUTOLOAD ERROR: " . $e->getMessage());
-        }
+    $clase_relativa = substr($clase, $longitud);
+
+    $archivo = $directorio_base . str_replace('\\', '/', $clase_relativa) . '.php';
+
+    if (file_exists($archivo)) {
+        require $archivo;
     }
 });

@@ -16,18 +16,49 @@ class CicloDTO
         $this->idfamilia = $idfamilia;
     }
 
-    public function getPropiedad($propiedad)
+    // --- Getters Explícitos ---
+
+    public function getIdCiclo()
     {
-        if (property_exists($this, $propiedad)) {
-            return $this->$propiedad;
-        }
-        return null;
+        return $this->idciclo;
     }
 
-    public function setPropiedad($propiedad, $valor)
+    public function getNombre()
     {
-        if (property_exists($this, $propiedad)) {
-            $this->$propiedad = $valor;
-        }
+        return $this->nombre;
     }
+
+    public function getTipo()
+    {
+        return $this->tipo;
+    }
+
+    public function getIdFamilia()
+    {
+        return $this->idfamilia;
+    }
+
+    // --- Setters Explícitos ---
+
+    public function setIdCiclo($idciclo)
+    {
+        $this->idciclo = $idciclo;
+    }
+
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+    }
+
+    public function setTipo($tipo)
+    {
+        $this->tipo = $tipo;
+    }
+
+    public function setIdFamilia($idfamilia)
+    {
+        $this->idfamilia = $idfamilia;
+    }
+
+    
 }

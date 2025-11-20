@@ -6,30 +6,34 @@ $this->layout('Layout/Layout', [
 
 
 <?php $this->start('pageContent') ?>
-<section class="registerContainer">
-    <h2>Registrar una Empresa</h2>
-    <form class="registerForm" action="" method="POST" enctype="multipart/form-data">
-        <div class="registerColums">
-            <div class="registerColumn">
-                <label for="nombre">Nombre de la empresa</label>
-                <input type="text" id="nombre" name="nombre" required>
-                <label for="descripcion">Descripción</label>
-                <textarea id="descripcion" name="descripcion" rows="4"></textarea>
-                <label for="logourl">Logo</label>
-                <input type="file" id="logourl" name="logourl" accept="image/*">
-                <label for="direccion">Dirección</label>
-                <input type="text" id="direccion" name="direccion">
-            </div>
-            <div class="registerColumn">
-                <label for="correo">Correo electrónico</label>
-                <input type="email" id="correo" name="correo" required>
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required>
-                <button type="submit" class="btnRegister">Crear cuenta de empresa</button>
-            </div>
-        </div>
-        
+<div class="registerContainer"> 
+    <h2>Añadir Nueva Empresa</h2>
+
+    <form class="registerForm" action="index.php?menu=admin-empresas" method="POST" enctype="multipart/form-data">
+
+        <label for="nombre">Nombre de la Empresa </label><br>
+        <input type="text" id="nombre" name="nombre" required placeholder="Ej: Tech Solutions"><br><br>
+
+        <label for="correo">Correo Electrónico</label><br>
+        <input type="email" id="correo" name="correo" required placeholder="email@empresa.com"><br><br>
+
+        <label for="clave">Contraseña </label><br>
+        <input type="password" id="clave" name="clave" required><br><br>
+
+        <label for="direccion">Dirección Física</label><br>
+        <input type="text" id="direccion" name="direccion"><br><br>
+
+        <label for="descripcion">Descripción</label><br>
+        <textarea id="descripcion" name="descripcion" rows="5"></textarea><br><br>
+
+        <label for="logo">Logo de la Empresa</label><br>
+        <input type="file" id="logo" name="logo" accept="image/*"><br><br>
+
+        <hr>
+
+        <button type="submit" name="btnGuardarEmpresa" class="btnRegister">Guardar Empresa</button>
+
+        <a href="index.php?menu=admin-empresas" class="btnCancelarEditar">Cancelar</a>
     </form>
-    <p class="volverInicio"><a href="menu=adminEmpresas" class="btnVolver">Volver al listado</a></p>
-</section>
+</div>
 <?php $this->stop() ?>

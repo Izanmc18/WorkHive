@@ -23,16 +23,22 @@
 }
 /* Cuerpo */
 body {
- font-family: 'Roboto', Arial, sans-serif;
- margin: 0;
- padding: 0;
- background: var(--color-bg);
- color: var(--color-main);
+  font-family: 'Roboto', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-main); 
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
 }
 /* Titulos */
 h1, h2, h3, nav, .menuLista a, .btnRegistro, .btnLogin, .btnRegister {
   font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
 }
+
 
 
 /*Cabecera*/
@@ -44,6 +50,17 @@ header {
   padding: 20px 10px;
   box-shadow: 0 2px 4px var(--color-box-shadow);
 }
+
+/*MAIN*/
+
+main {
+    /* CRÍTICO: El contenido principal absorbe todo el espacio vertical disponible */
+    flex-grow: 1; 
+    width: 100%; 
+    box-sizing: border-box;
+    padding: 20px 0; /* Añade un pequeño padding vertical general */
+}
+
 /* FOOTER*/
 /*FOOTER*/
 .pie {
@@ -1267,4 +1284,541 @@ tbody tr:nth-child(even):hover {
     background: url('/Public/Assets/Images/StaticArrow.svg') no-repeat center center/contain;
     vertical-align: middle;
 }
+
+/* ================================================= */
+/* --- ESTILOS DE LISTADO DE ALUMNOS (ADMIN/EMPRESA) --- */
+/* ================================================= */
+
+.listaAlumnosContenedor {
+    background: var(--color-box-bg);
+    border: 2px solid var(--color-accent); /* Borde azul de alumno */
+    border-radius: 1.5em;
+    padding: 2.2em;
+    margin: 2.5em auto;
+    max-width: 1200px;
+    box-shadow: 0 5px 15px var(--color-box-shadow);
+    font-family: 'Roboto', sans-serif;
+}
+
+.cabeceraAlumnos h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.1em;
+    color: var(--color-main);
+    margin: 0 0 1em 0;
+    font-weight: 700;
+}
+
+.busquedaAlumnos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 450px;
+}
+
+.busquedaAlumnos input[type="text"] {
+    padding: 0.7em;
+    border: 2px solid var(--color-form-input-border);
+    border-radius: 0.6em;
+    font-size: 1em;
+}
+
+.btnBuscarAlumnos {
+    background-color: var(--color-accent);
+    color: var(--color-btn-text);
+    border: none;
+    padding: 0.7em 1.5em;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1em;
+    border-radius: 0.6em;
+    transition: background-color 0.2s;
+}
+.btnBuscarAlumnos:hover {
+    background-color: var(--color-main);
+}
+
+.botonesAlumnos {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1em;
+    margin-bottom: 20px;
+}
+
+#addAlumno,
+#cargaMasivaAlumnos {
+    background: var(--color-header-dark);
+    color: var(--color-main);
+    border: 2px solid var(--color-main);
+    padding: 0.7em 1.2em;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.95em;
+    border-radius: 0.6em;
+    transition: all 0.2s ease;
+}
+#addAlumno:hover,
+#cargaMasivaAlumnos:hover {
+    background: var(--color-main);
+    color: var(--color-header-light);
+}
+
+/* Tablas */
+.tablaAlumnosContenedor {
+    overflow-x: auto;
+    border: 1px solid #ddd;
+    border-radius: 0.5em;
+}
+
+.tablaAlumnos {
+    min-width: 900px;
+}
+
+.tablaAlumnos thead {
+    background: var(--color-accent); /* Fondo azul principal */
+}
+
+.tablaAlumnos thead th {
+    color: var(--color-btn-text);
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95em;
+    padding: 15px 12px;
+}
+.tablaAlumnos thead th:hover {
+    background: var(--color-main);
+}
+
+.tablaAlumnos tbody tr {
+    border-bottom: 1px solid var(--color-bg);
+}
+.tablaAlumnos tbody tr:nth-child(even) {
+    background: #f0f4ff; /* Un azul muy claro */
+}
+
+.tablaAlumnos tbody td {
+    color: var(--color-card-text);
+    font-size: 0.95em;
+    padding: 12px;
+}
+.tablaAlumnos tbody tr:hover {
+    background: var(--color-header-light);
+    color: var(--color-main);
+}
+
+.action-btn {
+    padding: 6px 10px;
+    border: 1px solid var(--color-main);
+    cursor: pointer;
+    font-size: 0.85em;
+    border-radius: 0.4em;
+    margin: 0 2px;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.edit-btn {
+    background: var(--color-header-light);
+    color: var(--color-main);
+    border-color: var(--color-header-dark);
+}
+.edit-btn:hover {
+    background: var(--color-header-dark);
+}
+
+.delete-btn {
+    background: #d32f2f;
+    color: var(--color-btn-text);
+    border-color: #a82424;
+}
+.delete-btn:hover {
+    background: #a82424;
+}
+
+.ver-ficha-btn {
+    background: var(--color-accent);
+    color: var(--color-btn-text);
+    border-color: var(--color-main);
+}
+.ver-ficha-btn:hover {
+    background: var(--color-main);
+}
+
+
+/* ================================================= */
+/* --- ESTILOS DE MODALES (FICHA Y EDICIÓN) --- */
+/* ================================================= */
+
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(29, 53, 87, 0.7); /* Fondo semi-transparente (color-main con opacidad) */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content-wrapper {
+    background-color: var(--color-box-bg);
+    margin: 5% auto;
+    padding: 30px;
+    border: 3px solid var(--color-header-dark);
+    border-radius: 15px;
+    width: 90%; 
+    max-width: 700px; /* Ancho estándar para ficha */
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+}
+
+.modal-content-large {
+    max-width: 850px; /* Ancho mayor para el formulario de edición */
+}
+
+.close-button {
+    color: var(--color-main);
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    transition: color 0.2s;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #d32f2f;
+    text-decoration: none;
+}
+
+/* Estilos de Ficha de Lectura */
+
+.ficha-alumno-header {
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--color-accent);
+    margin-bottom: 20px;
+}
+
+.modal-foto-perfil, .modal-foto-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 4px solid var(--color-header-dark);
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+.ficha-alumno-header h2 {
+    color: var(--color-main);
+    font-size: 1.6em;
+    margin: 5px 0 0;
+}
+
+.modal-correo {
+    color: var(--color-card-text);
+    font-size: 1em;
+}
+
+.ficha-alumno-body h3 {
+    color: var(--color-accent);
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.modal-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px 30px;
+}
+
+.info-item strong {
+    color: var(--color-main);
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Estilos de estudios (Tags) */
+.modal-estudios {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag-estudio {
+    background-color: var(--color-header-light);
+    color: var(--color-main);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+    border: 1px solid var(--color-header-dark);
+}
+
+/* Documentos CV */
+.modal-documentos {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-documento {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--color-accent);
+    color: var(--color-btn-text);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    font-weight: bold;
+}
+
+.btn-documento.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ================================================= */
+/* --- ESTILOS DE FORMULARIO DE EDICIÓN --- */
+/* ================================================= */
+
+.editar-alumno-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.editar-alumno-form h2 {
+    color: var(--color-main);
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 0;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.editar-alumno-form label {
+    font-weight: 600;
+    color: var(--color-main);
+    margin-top: 5px;
+}
+
+.editar-alumno-form input:not([type="submit"]),
+.editar-alumno-form textarea {
+    padding: 10px;
+    border: 1px solid var(--color-form-input-border);
+    border-radius: 5px;
+    font-size: 1em;
+    background: var(--color-bg);
+}
+
+.foto-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px dashed var(--color-accent);
+    border-radius: 10px;
+}
+
+.cv-actual {
+    font-size: 0.9em;
+    color: var(--color-card-text);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btnAceptarEditar, .btnCancelarEditar {
+    padding: 10px 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Reutilizamos los colores del botón de edición */
+.btnAceptarEditar {
+    background: var(--color-header-dark);
+    color: var(--color-main);
+}
+.btnAceptarEditar:hover {
+    background: var(--color-accent);
+    color: var(--color-btn-text);
+}
+
+.btnCancelarEditar {
+    background: #ccc;
+    color: var(--color-main);
+}
+.btnCancelarEditar:hover {
+    background: #aaa;
+}
+
+
+/* EMPRESA DASHBOARD */
+
+.contenedor-dashboard {
+    max-width: 75em; 
+    margin: 2.5em auto;
+    padding: 0 1.5em;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Cabecera del Dashboard */
+.seccion-cabecera {
+    text-align: center;
+    margin-bottom: 3em;
+}
+
+.seccion-cabecera h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    color: var(--color-main); 
+    margin-bottom: 0.5em;
+    font-weight: 800;
+}
+
+.seccion-cabecera .resaltado {
+    color: var(--color-accent); 
+    font-weight: 700;
+}
+
+.subtitulo-dashboard {
+    color: var(--color-card-text); 
+    font-size: 1.1em;
+}
+
+
+.grid-kpi {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18em, 1fr));
+    gap: 2em;
+    margin-bottom: 3em;
+}
+
+.tarjeta-kpi {
+    background-color: var(--color-box-bg); /* Token usado */
+    border-radius: 0.75em; /* 12px */
+    padding: 1.5em;
+    display: flex;
+    align-items: center;
+    gap: 1.5em;
+    box-shadow: 0 0.25em 0.9em var(--color-box-shadow); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 0.3em solid transparent; 
+}
+
+.tarjeta-kpi:hover {
+    transform: translateY(-0.3em);
+    box-shadow: 0 0.5em 1.5em rgba(41, 91, 167, 0.2);
+}
+
+
+.kpi-ofertas {
+    border-left-color: var(--color-alumno-border); 
+}
+
+.kpi-solicitudes {
+    border-left-color: var(--color-empresa-border); 
+}
+
+.icono-kpi {
+    width: 3.75em; 
+    height: 3.75em;
+    object-fit: contain;
+    background-color: var(--color-bg); 
+    padding: 0.6em;
+    border-radius: 50%;
+}
+
+.contenido-kpi {
+    display: flex;
+    flex-direction: column;
+}
+
+.titulo-kpi {
+    font-size: 0.9em;
+    color: var(--color-card-text); 
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 0.3em 0;
+    font-weight: 600;
+}
+
+.valor-kpi {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--color-main); 
+    margin: 0;
+}
+
+/* Filas de Gráficos */
+.fila-graficos {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 2em;
+    margin-bottom: 2em;
+}
+
+.tarjeta-grafico {
+    background-color: var(--color-box-bg); 
+    border-radius: 0.75em;
+    padding: 1.5em;
+    box-shadow: 0 0.25em 0.9em var(--color-box-shadow); 
+    flex: 1; 
+    min-width: 22em; 
+    display: flex;
+    flex-direction: column;
+    border-top: 4px solid var(--color-main);
+}
+
+.titulo-grafico {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2em;
+    color: var(--color-main); 
+    margin-bottom: 1.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid var(--color-bg); 
+}
+
+/* Contenedor del Canvas (Importante para Chart.js) */
+.contenedor-canvas {
+    position: relative;
+    height: 18.75em; /* 300px */
+    width: 100%;
+}
+
+
+
 

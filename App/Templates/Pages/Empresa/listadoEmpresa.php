@@ -5,20 +5,24 @@ $this->layout('Layout/Layout', [
 ?>
 
 <?php $this->start('pageContent') ?>
+
+<?php if (isset($message)): ?>
+    <div class="alert-message"><?= $this->e($message) ?></div>
+<?php endif; ?>
+
 <div class="listaContenedor">
     <div class="seccionEncabezado">
-        <form action="" method="post">
+        <form action="index.php?menu=admin-empresas" method="get">
             <h1>Listado de Empresas</h1>
             <div class="seccionBusqueda">
-                <input type="text" name="buscar" id="buscar" placeholder="Buscar empresa...">
+                <input type="hidden" name="menu" value="admin-empresas">
+                <input type="text" name="buscar" id="buscar" placeholder="Buscar empresa..." value="<?= $_GET['buscar'] ?? '' ?>">
                 <button type="submit" id="botonBuscar" class="botonBusqueda">Buscar</button>
             </div>
         </form>
     </div>
     <div class="contenedorBotonAgregar">
-        <form action="" method="post">
-            <input type="submit" id="agregar" name="btnAgregar" value="AÑADIR EMPRESA">
-        </form>
+        <a href="index.php?menu=admin-empresas&action=add" id="agregar" class="botonBusqueda">AÑADIR EMPRESA</a>
     </div>
     <div class="contenedorTabla">
         <table>
@@ -39,10 +43,13 @@ $this->layout('Layout/Layout', [
                         <td><?= $empresa->getNombre() ?></td>
                         <td><?= $empresa->getDireccion() ?></td>
                         <td class="columnaAcciones">
-                            <form action="" method="post">
-                                <button type="submit" class="botonAccion botonEditar" name="btnEditarEmpresa" value="<?= $empresa->getIdempresa() ?>">Editar</button>
-                                <button type="submit" class="botonAccion botonEliminar" name="btnEliminarEmpresa" value="<?= $empresa->getIdempresa() ?>">Eliminar</button>
-                                <button type="submit" class="botonAccion botonVerFicha" name="btnVerFichaEmpresa" value="<?= $empresa->getIdempresa() ?>">Ver Ficha</button>
+                            
+                            <a href="index.php?menu=admin-empresas&action=view&id=<?= $empresa->getIdempresa() ?>" class="botonAccion botonVerFicha">Ver Ficha</a>
+                            <a href="index.php?menu=admin-empresas&action=edit&id=<?= $empresa->getIdempresa() ?>" class="botonAccion botonEditar">Editar</a>
+                            
+                            <form action="index.php?menu=admin-empresas" method="post" style="display:inline;">
+                                <input type="hidden" name="id_empresa" value="<?= $empresa->getIdempresa() ?>">
+                                <button type="submit" class="botonAccion botonEliminar" name="btnEliminarEmpresa">Eliminar</button>
                             </form>
                         </td>
                     </tr>
@@ -73,9 +80,10 @@ $this->layout('Layout/Layout', [
                         <td><?= $empresa->getCorreo() ?></td>
                         <td><?= $empresa->getNombre() ?></td>
                         <td class="columnaAccionesPendientes">
-                            <form action="#" method="post">
-                                <button type="submit" class="botonAccion botonConfirmar" name="btnConfirmarEmpresa" value="<?= $empresa->getIdempresa() ?>">Confirmar</button>
-                                <button type="submit" class="botonAccion botonEliminar" name="btnRechazarEmpresa" value="<?= $empresa->getIdempresa() ?>">Rechazar</button>
+                            <form action="index.php?menu=admin-empresas" method="post" style="display:inline;">
+                                <input type="hidden" name="id_empresa" value="<?= $empresa->getIdempresa() ?>">
+                                <button type="submit" class="botonAccion botonConfirmar" name="btnConfirmarEmpresa">Confirmar</button>
+                                <button type="submit" class="botonAccion botonEliminar" name="btnRechazarEmpresa">Rechazar</button>
                             </form>
                         </td>
                     </tr>

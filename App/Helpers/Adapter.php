@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Alumno;
+use App\Models\Usuario;
 use App\Models\Empresa;
 use App\Models\Ciclo;
 use App\DTO\AlumnoDTO;
@@ -14,7 +15,7 @@ use App\Repositories\RepositorioCiclos;
 
 class Adapter
 {
-    static public function dtoAAlumno($data)
+    public static function dtoAAlumno($data)
     {
         $alumno = new Alumno(
             null,
@@ -25,14 +26,14 @@ class Adapter
             $data['apellido2'],
             $data['direccion'],
             $data['edad'],
-            $data['curriculumUrl'],
-            $data['fotoPerfil']
+            $data['curriculumUrl'] ?? '', 
+            $data['fotoPerfil'] ?? ''     
         );
 
         return $alumno;
     }
 
-    static public function todosAlumnoADTO($alumnos)
+    public static function todosAlumnoADTO($alumnos)
     {
         $alumnosDTO = [];
 
@@ -44,6 +45,7 @@ class Adapter
             $alumnosDTO[] = new AlumnoDTO(
                 $alumno->getIdAlumno(),
                 $alumno->getIdUsuario(),
+                $alumno->getCorreo(), 
                 $alumno->getNombre(),
                 $alumno->getApellido1(),
                 $alumno->getApellido2(),
@@ -57,7 +59,7 @@ class Adapter
         return $alumnosDTO;
     }
 
-    static public function alumnoADTO($id)
+    public static function alumnoADTO($id)
     {
         $repositorio = RepositorioAlumnos::getInstancia();
         $alumno = $repositorio->findById($id);
@@ -69,6 +71,7 @@ class Adapter
         return new AlumnoDTO(
             $alumno->getIdAlumno(),
             $alumno->getIdUsuario(),
+            $alumno->getCorreo(),
             $alumno->getNombre(),
             $alumno->getApellido1(),
             $alumno->getApellido2(),
@@ -79,27 +82,29 @@ class Adapter
         );
     }
 
-    static public function datosEditadosADTO($data)
+    public static function datosEditadosADTO($data)
     {
         return new AlumnoDTO(
             $data['idAlumno'],
             $data['idUsuario'],
+            $data['correo'],
             $data['nombre'],
             $data['apellido1'],
             $data['apellido2'],
             $data['direccion'],
             $data['edad'],
-            $data['curriculumUrl'],
-            $data['fotoPerfil']
+            $data['curriculumUrl'] ?? '',
+            $data['fotoPerfil'] ?? ''
         );
     }
 
-    static public function grupoDTOAAlumno($alumnosDTO)
+    public static function grupoDTOAAlumno($alumnosDTO)
     {
         $alumnos = [];
         $repositorioCiclos = RepositorioCiclos::getInstancia();
 
         foreach ($alumnosDTO as $aluDTO) {
+            
             $alumno = new Alumno(
                 null,
                 null,
@@ -113,9 +118,13 @@ class Adapter
                 $aluDTO->getPropiedad('fotoperfil')
             );
 
-            $ciclo = $repositorioCiclos->findById($aluDTO->getPropiedad('idciclo'));
-            if ($ciclo) {
-                $alumno->agregarEstudio($ciclo);
+            
+            $idCiclo = $aluDTO->getPropiedad('idciclo');
+            if ($idCiclo) {
+                $ciclo = $repositorioCiclos->findById($idCiclo);
+                if ($ciclo) {
+                    $alumno->agregarEstudio($ciclo);
+                }
             }
 
             $alumnos[] = $alumno;
@@ -124,20 +133,21 @@ class Adapter
         return $alumnos;
     }
 
-    static public function dtoAEmpresa()
+    
+    public static function dtoAEmpresa($data)
     {
         return new Empresa(
             null,
             null,
-            $_POST['correo'],
-            $_POST['nombre'],
-            $_POST['descripcion'],
-            $_POST['logoUrl'],
-            $_POST['direccion']
+            $data['correo'],
+            $data['nombre'],
+            $data['descripcion'],
+            $data['logoUrl'] ?? '', 
+            $data['direccion']
         );
     }
 
-    static public function todasEmpresasADTO($empresas)
+    public static function todasEmpresasADTO($empresas)
     {
         $empresasDTO = [];
 
@@ -156,7 +166,7 @@ class Adapter
         return $empresasDTO;
     }
 
-    static public function empresaADTO($id)
+    public static function empresaADTO($id)
     {
         $repositorio = RepositorioEmpresas::getInstancia();
         $empresa = $repositorio->findById($id);
@@ -176,7 +186,7 @@ class Adapter
         );
     }
 
-    static public function editarEmpresa($id, $postData)
+    public static function editarEmpresa($id, $postData)
     {
         $repositorio = RepositorioEmpresas::getInstancia();
         $empresa = $repositorio->findById($id);
@@ -188,13 +198,26 @@ class Adapter
         $empresa->setCorreo($postData['correo']);
         $empresa->setNombre($postData['nombre']);
         $empresa->setDescripcion($postData['descripcion']);
-        $empresa->setLogoUrl($postData['logoUrl']);
+        
+        if (isset($postData['logoUrl'])) {
+            $empresa->setLogoUrl($postData['logoUrl']);
+        }
         $empresa->setDireccion($postData['direccion']);
+        
+        
+        
+        $usuario = new Usuario(
+            $empresa->getIdUsuario(),
+            $postData['correo'],
+            '', 
+            false,
+            false
+        );
 
-        return $repositorio->editar($empresa);
+        return $repositorio->editar($empresa, $usuario);
     }
 
-    static public function ciclosADTO($ciclos)
+    public static function ciclosADTO($ciclos)
     {
         $ciclosDTO = [];
 

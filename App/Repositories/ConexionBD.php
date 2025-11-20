@@ -9,15 +9,16 @@ class ConexionBD {
     private function __construct() {
         try {
             $this->conexion = new \PDO(
-                'mysql:host=localhost;port=3307;dbname=portal_empleo;charset=utf8mb4',
-                'root',
+                'mysql:host=db;port=3306;dbname=portal_empleo;charset=utf8mb4',
+                'user',
                 '1234',
                 [
                     \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                     \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
                     \PDO::ATTR_EMULATE_PREPARES => false,
+                    
                 ]
-            );
+            ); 
         } catch (\PDOException $e) {
             throw new \Exception('Error conexión BD: ' . $e->getMessage());
         }

@@ -1,12 +1,12 @@
 <?php
-$this->layout('layout/adminLayout', [
+$this->layout('Layout/LayoutAdmin', [
     'title' => 'WorkHive - Gestión de Empresas',
     'navItems' => []
 ]);
 ?>
 
 <?php $this->start('js') ?>
-<script src="/public/assets/js/elements.js"></script>
+<script src="Assets/Js/elements.js"></script>
 <?php $this->stop() ?>
 
 <?php $this->start('pageContent') ?>

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Helpers;
 
 use App\Models\Alumno;
@@ -10,65 +9,75 @@ class Sesion
 
     public static function iniciar()
     {
+        
         if (session_status() === PHP_SESSION_NONE) {
+            
             session_start();
         }
     }
 
-    public static function establecerSesion($usuario)
+    /**
+     * Establece las variables de sesión usando los datos verificados 
+     * y el rol específico proporcionado por el AuthController.
+     * @param array $datosSesion Array con las claves 'usuario', 'token' y 'rol'.
+     */
+    public static function establecerSesion($datosSesion)
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        
+        self::iniciar();
 
-        $_SESSION['id_usuario'] = $usuario['user']->id;
-        $_SESSION['nombre_usuario'] = $usuario['user']->username;
-        $_SESSION['token'] = $usuario['token'];
+        
+        $_SESSION = array(); 
+        
+        
+        $_SESSION['id_usuario'] = $datosSesion['usuario']->getId();
+        
+        
+        $_SESSION['nombre_usuario'] = $datosSesion['usuario']->getCorreo(); 
+        
+        $_SESSION['token'] = $datosSesion['token'];
 
-        if ($usuario['user'] instanceof Alumno) {
-            $_SESSION['rol'] = "ROL_ALUMNO";
-        } else if ($usuario['user'] instanceof Empresa) {
-            $_SESSION['rol'] = "ROL_EMPRESA";
-        } else {
-            $_SESSION['rol'] = "ROL_ADMIN";
+        
+        $rolBase = $datosSesion['rol'] ?? 'admin';
+        $_SESSION['rol'] = strtoupper($rolBase); 
+    }
+
+    public static function cerrarSesion()
+    {
+        self::iniciar();
+        $_SESSION = array();
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
         }
+        session_destroy();
     }
 
     public static function obtenerToken()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        self::iniciar();
         return $_SESSION['token'] ?? null;
     }
 
     public static function obtenerNombreUsuario()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        self::iniciar();
         return $_SESSION['nombre_usuario'] ?? null;
     }
 
     public static function obtenerRol()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        return $_SESSION['rol'] ?? null;
+        self::iniciar();
+        
+        return $_SESSION['rol'] ?? null; 
     }
 
     public static function obtenerIdUsuario()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        self::iniciar();
         return $_SESSION['id_usuario'] ?? null;
-    }
-
-    public static function cerrarSesion()
-    {
-        unset($_SESSION);
-        session_destroy();
     }
 }

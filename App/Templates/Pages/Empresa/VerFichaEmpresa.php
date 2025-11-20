@@ -5,26 +5,21 @@ $this->layout('Layout/Layout', [
 ?>
 
 
-
 <?php $this->start('pageContent') ?>
 <div class="fichaEmpresaContenedor">
     <div class="fichaEncabezado">
-        <h1>Ficha de empresa</h1>
+        <h1>Ficha de empresa: <?= $empresaVer->getNombre() ?></h1>
     </div>
-    <form action="" method="post" class="fichaForm">
-        <input type="hidden" name="id" value="<?= $empresaVer->getIdempresa() ?>">
+    <div class="fichaForm"> 
         <div class="fichaGrid">
             <div class="fichaLogoNombre">
                 <div class="fichaLogo">
                     <img src="<?= $empresaVer->getLogoUrl() 
-                    ? '/Public/Assets/Images/Empresa/' . $empresaVer->getLogoUrl() 
-                    : '/Public/Assets/Images/placeholderUsers.png' 
+                    ? '/Assets/Images/Empresa/' . $empresaVer->getLogoUrl() 
+                    : '/Assets/Images/Empresa/placeholderUsers.png' 
                     ?>" alt="logo_empresa" />
                 </div>
-                <div class="fichaCampo">
-                    <label>CIF</label>
-                    <input type="text" value="<?= $empresaVer->getCif() ?>" readonly>
-                </div>
+                
                 <div class="fichaCampo">
                     <label>Nombre de la empresa</label>
                     <input type="text" value="<?= $empresaVer->getNombre() ?>" readonly>
@@ -34,35 +29,22 @@ $this->layout('Layout/Layout', [
                     <input type="text" value="<?= $empresaVer->getCorreo() ?>" readonly>
                 </div>
             </div>
+            
             <div class="fichaCampo">
-                <label>Teléfono empresa</label>
-                <input type="text" value="<?= $empresaVer->getTelefono() ?>" readonly>
-            </div>
-            <div class="fichaCampo">
-                <label>Persona de contacto</label>
-                <input type="text" value="<?= $empresaVer->getNombrePersona() ?>" readonly>
-            </div>
-            <div class="fichaCampo">
-                <label>Teléfono persona</label>
-                <input type="text" value="<?= $empresaVer->getTelPersona() ?>" readonly>
-            </div>
-            <div class="fichaCampo">
-                <label>Provincia</label>
-                <input type="text" value="<?= $empresaVer->getProvincia() ?>" readonly>
-            </div>
-            <div class="fichaCampo">
-                <label>Localidad</label>
-                <input type="text" value="<?= $empresaVer->getLocalidad() ?>" readonly>
+                <label>Descripción</label>
+                <textarea readonly rows="4"><?= $empresaVer->getDescripcion() ?></textarea>
             </div>
             <div class="fichaCampo">
                 <label>Dirección</label>
                 <input type="text" value="<?= $empresaVer->getDireccion() ?>" readonly>
             </div>
+            
+            <div class="fichaCampo fichaCampoVacio"></div>
             <div class="fichaCampo fichaCampoVacio"></div>
         </div>
         <div class="fichaBotonera">
-            <input type="submit" class="fichaBtnVolver" name="btnVolver" value="Volver">
+            <a href="index.php?menu=admin-empresas" class="fichaBtnVolver">Volver</a>
         </div>
-    </form>
+    </div>
 </div>
 <?php $this->stop() ?>

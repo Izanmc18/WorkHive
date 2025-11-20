@@ -10,13 +10,13 @@ $this->layout('Layout/Layout', [
     <div class="editarEncabezado">
         <h1>Editar empresa</h1>
     </div>
-    <form class="editarForm" action="" method="post" enctype="multipart/form-data">
+    <form class="editarForm" action="index.php?menu=admin-empresas" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id_empresa" value="<?= $empresaEdit->getIdEmpresa() ?>">
         <input type="hidden" name="id_user" value="<?= $empresaEdit->getIdUsuario() ?>">
         
         <div class="editarGrid">
             <div class="editarLogo">
-                <img src="/Public/Assets/Images/Empresa/<?= $empresaEdit->getLogoUrl() ?>" alt="logo_empresa" />
+                <img src="/Assets/Images/Empresa/<?= $empresaEdit->getLogoUrl() ?>" alt="logo_empresa" />
                 <label for="nuevoLogo" class="labelLogo">Cambiar logo</label>
                 <input type="file" name="nuevoLogo" id="nuevoLogo" accept="image/*">
             </div>
@@ -39,7 +39,7 @@ $this->layout('Layout/Layout', [
         </div>
         <div class="editarBotonera">
             <input type="submit" name="btnAceptar" class="btnAceptarEditar" value="Aceptar">
-            <input type="submit" name="btnCancelar" class="btnCancelarEditar" value="Cancelar">
+            <a href="index.php?menu=admin-empresas" class="btnCancelarEditar">Cancelar</a>
         </div>
     </form>
 </div>

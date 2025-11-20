@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\ConexionBD;
 use App\Models\Solicitud;
 use PDO;
 
@@ -21,7 +22,8 @@ class RepositorioSolicitudes {
     }
 
     public function crear(Solicitud $solicitud) {
-        $sql = "INSERT INTO solicitudes (idoferta, idalumno, comentario, estado) 
+        // No incluimos fecha_solicitud en el INSERT porque la BD usa DEFAULT CURRENT_TIMESTAMP
+        $sql = "INSERT INTO solicitudes (id_oferta, id_alumno, comentario, estado) 
                 VALUES (:idoferta, :idalumno, :comentario, :estado)";
         $stmt = $this->bd->prepare($sql);
         $stmt->execute([
@@ -35,22 +37,25 @@ class RepositorioSolicitudes {
     }
 
     public function leer($idSolicitud) {
-        $sql = "SELECT * FROM solicitudes WHERE idsolicitud = :id";
+        // Asegúrate de que los nombres de columna coincidan con tu BD (he usado id_solicitud según tu imagen)
+        $sql = "SELECT * FROM solicitudes WHERE id_solicitud = :id";
         $stmt = $this->bd->prepare($sql);
         $stmt->execute([':id' => $idSolicitud]);
         $fila = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$fila) return null;
+        
         return new Solicitud(
-            $fila['idsolicitud'],
-            $fila['idoferta'],
-            $fila['idalumno'],
+            $fila['id_solicitud'],
+            $fila['id_oferta'],
+            $fila['id_alumno'],
             $fila['comentario'],
-            $fila['estado']
+            $fila['estado'],
+            $fila['fecha_solicitud'] // 🆕
         );
     }
 
     public function editar(Solicitud $solicitud) {
-        $sql = "UPDATE solicitudes SET comentario = :comentario, estado = :estado WHERE idsolicitud = :id";
+        $sql = "UPDATE solicitudes SET comentario = :comentario, estado = :estado WHERE id_solicitud = :id";
         $stmt = $this->bd->prepare($sql);
         return $stmt->execute([
             ':comentario' => $solicitud->getComentario(),
@@ -60,7 +65,7 @@ class RepositorioSolicitudes {
     }
 
     public function borrar($idSolicitud) {
-        $sql = "DELETE FROM solicitudes WHERE idsolicitud = :id";
+        $sql = "DELETE FROM solicitudes WHERE id_solicitud = :id";
         $stmt = $this->bd->prepare($sql);
         return $stmt->execute([':id' => $idSolicitud]);
     }
@@ -71,13 +76,61 @@ class RepositorioSolicitudes {
         $solicitudes = [];
         while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $solicitudes[] = new Solicitud(
-                $fila['idsolicitud'],
-                $fila['idoferta'],
-                $fila['idalumno'],
+                $fila['id_solicitud'],
+                $fila['id_oferta'],
+                $fila['id_alumno'],
                 $fila['comentario'],
-                $fila['estado']
+                $fila['estado'],
+                $fila['fecha_solicitud'] // 🆕
             );
         }
         return $solicitudes;
+    }
+
+    // --- MÉTODOS PARA DASHBOARD ---
+
+    // Cuenta total de solicitudes recibidas por una empresa
+    public function contarSolicitudesPorEmpresa($idEmpresa) {
+        $sql = "SELECT COUNT(s.id_solicitud) as total
+                FROM solicitudes s
+                JOIN ofertas o ON s.id_oferta = o.id_oferta
+                WHERE o.id_empresa = :id";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idEmpresa]);
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $fila ? (int)$fila['total'] : 0;
+    }
+
+    
+    public function obtenerTendenciaMensual($idEmpresa) {
+        $sql = "SELECT 
+                    DATE_FORMAT(s.fecha_solicitud, '%Y-%m') as mes, 
+                    COUNT(*) as total
+                FROM solicitudes s
+                JOIN ofertas o ON s.id_oferta = o.id_oferta
+                WHERE o.id_empresa = :id
+                GROUP BY mes
+                ORDER BY mes ASC
+                LIMIT 12"; 
+                
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idEmpresa]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+    }
+    
+    public function obtenerDistribucionPorCiclos($idEmpresa) {
+        $sql = "SELECT c.nombre, COUNT(s.id_solicitud) as total
+                FROM solicitudes s
+                JOIN ofertas o ON s.id_oferta = o.id_oferta
+                JOIN oferta_ciclo oc ON o.id_oferta = oc.id_oferta
+                JOIN ciclos c ON oc.id_ciclo = c.id_ciclo
+                WHERE o.id_empresa = :id
+                GROUP BY c.id_ciclo
+                ORDER BY total DESC
+                LIMIT 5";
+                
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idEmpresa]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

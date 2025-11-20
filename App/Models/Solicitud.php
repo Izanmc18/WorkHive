@@ -8,13 +8,15 @@ class Solicitud {
     private $idAlumno;
     private $comentario;
     private $estado;
+    private $fechaSolicitud;
 
-    public function __construct($idSolicitud = null, $idOferta = null, $idAlumno = null, $comentario = null, $estado = null) {
+    public function __construct($idSolicitud = null, $idOferta = null, $idAlumno = null, $comentario = null, $estado = null, $fechaSolicitud = null) {
         $this->idSolicitud = $idSolicitud;
         $this->idOferta = $idOferta;
         $this->idAlumno = $idAlumno;
         $this->comentario = $comentario;
         $this->estado = $estado;
+        $this->fechaSolicitud = $fechaSolicitud;
     }
 
     public function getIdSolicitud() {
@@ -46,5 +48,13 @@ class Solicitud {
     }
     public function setEstado($estado) {
         $this->estado = $estado;
+    }
+    
+    public function getFechaSolicitud() {
+        return $this->fechaSolicitud;
+    }
+    
+    public function setFechaSolicitud($fechaSolicitud) {
+        $this->fechaSolicitud = $fechaSolicitud;
     }
 }

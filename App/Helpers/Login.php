@@ -1,6 +1,6 @@
 <?php
 
-namespace App\core\helper;
+namespace App\Helpers;
 
 use App\Helpers\Sesion;
 
