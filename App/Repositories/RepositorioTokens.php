@@ -1,25 +1,35 @@
 <?php
 namespace App\Repositories;
 
-require_once __DIR__ . '/../ConexionBD.php';
-require_once __DIR__ . '/../Models/Token.php';
+use App\Repositories\ConexionBD;
 use App\Models\Token;
 
 class RepositorioTokens {
+    
+    private static $instancia = null;
     private $bd;
 
-    public function __construct() {
+    private function __construct()
+    {
         $this->bd = ConexionBD::getInstancia()->getConexion();
     }
 
+    public static function getInstancia()
+    {
+        if (self::$instancia === null) {
+            self::$instancia = new self();
+        }
+        return self::$instancia;
+    }
+
     public function crear(Token $token) {
-        $sql = "INSERT INTO tokens (iduser, token, fechacreacion, fechaexpiracion) VALUES (:iduser, :token, :fechacreacion, :fechaexpiracion)";
+        $sql = "INSERT INTO tokens (id_User, token, fecha_creacion, fecha_expiracion) VALUES (:id_User, :token, :fecha_creacion, :fecha_expiracion)";
         $stmt = $this->bd->prepare($sql);
         $stmt->execute([
-            ':iduser' => $token->getIdUsuario(),
+            ':id_User' => $token->getIdUsuario(),
             ':token' => $token->getToken(),
-            ':fechacreacion' => $token->getFechaCreacion(),
-            ':fechaexpiracion' => $token->getFechaExpiracion()
+            ':fecha_creacion' => $token->getfechacreacion(),
+            ':fecha_expiracion' => $token->getFechaExpiracion()
         ]);
         $token->setIdToken($this->bd->lastInsertId());
         return $token;
@@ -32,18 +42,18 @@ class RepositorioTokens {
         $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
         if (!$fila) return null;
         return new Token(
-            $fila['idtoken'], $fila['iduser'], $fila['token'], $fila['fechacreacion'], $fila['fechaexpiracion']
+            $fila['idtoken'], $fila['id_User'], $fila['token'], $fila['fecha_creacion'], $fila['fecha_expiracion']
         );
     }
 
     public function editar(Token $token) {
-        $sql = "UPDATE tokens SET iduser = :iduser, token = :token, fechacreacion = :fechacreacion, fechaexpiracion = :fechaexpiracion WHERE idtoken = :id";
+        $sql = "UPDATE tokens SET id_User = :id_User, token = :token, fecha_creacion = :fecha_creacion, fecha_expiracion = :fecha_expiracion WHERE idtoken = :id";
         $stmt = $this->bd->prepare($sql);
         return $stmt->execute([
-            ':iduser' => $token->getIdUsuario(),
+            ':id_User' => $token->getIdUsuario(),
             ':token' => $token->getToken(),
-            ':fechacreacion' => $token->getFechaCreacion(),
-            ':fechaexpiracion' => $token->getFechaExpiracion(),
+            ':fecha_creacion' => $token->getfechacreacion(),
+            ':fecha_expiracion' => $token->getFechaExpiracion(),
             ':id' => $token->getIdToken()
         ]);
     }
@@ -60,7 +70,7 @@ class RepositorioTokens {
         $tokens = [];
         while ($fila = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $tokens[] = new Token(
-                $fila['idtoken'], $fila['iduser'], $fila['token'], $fila['fechacreacion'], $fila['fechaexpiracion']
+                $fila['idtoken'], $fila['id_User'], $fila['token'], $fila['fecha_creacion'], $fila['fecha_expiracion']
             );
         }
         return $tokens;

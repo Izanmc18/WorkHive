@@ -1,7 +1,7 @@
 <?php
-
 namespace App\Repositories;
 
+use App\Repositories\ConexionBD;
 use App\Models\Ciclo;
 use PDO;
 
@@ -53,21 +53,20 @@ class RepositorioCiclos {
         ]);
     }
 
-    // Método de borrado robusto con transacciones
+    
     public function borrar($idCiclo) {
         try {
             $this->bd->beginTransaction();
 
-            // Elimina relaciones many-to-many (solo si NO tienes ON DELETE CASCADE en BD)
-            $sql = "DELETE FROM oferta_ciclo WHERE idciclo = :id";
+            $sql = "DELETE FROM oferta_ciclo WHERE id_ciclo = :id";
             $stmt = $this->bd->prepare($sql);
             $stmt->execute([':id' => $idCiclo]);
 
-            $sql2 = "DELETE FROM alumno_ciclo WHERE idciclo = :id";
+            $sql2 = "DELETE FROM alumno_ciclo WHERE id_ciclo = :id";
             $stmt2 = $this->bd->prepare($sql2);
             $stmt2->execute([':id' => $idCiclo]);
 
-            // Borra el ciclo principal
+            
             $sql3 = "DELETE FROM ciclos WHERE id_ciclo = :id";
             $stmt3 = $this->bd->prepare($sql3);
             $stmt3->execute([':id' => $idCiclo]);
@@ -89,4 +88,46 @@ class RepositorioCiclos {
         }
         return $ciclos;
     }
+
+    public function findById(int $idCiclo) {
+        $sql = "SELECT * FROM ciclos WHERE id_ciclo = ?"; 
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([$idCiclo]);
+        $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$fila) {
+            return null;
+        }
+
+        return new Ciclo(
+            $fila['id_ciclo'],    
+            $fila['nombre'],
+            $fila['descripcion'],
+            $fila['id_familia'] 
+        );
+    }
+
+
+    public function obtenerCiclosDeAlumno(int $idAlumno) : array
+    {
+        $sql = "SELECT c.* FROM ciclos c
+                JOIN alumno_ciclo ac ON c.id_ciclo = ac.id_ciclo
+                WHERE ac.id_alumno = :id_alumno";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id_alumno' => $idAlumno]);
+        
+        $ciclos = [];
+        while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            
+           
+            $ciclos[] = new Ciclo(
+                $fila['id_ciclo'], 
+                $fila['nombre'], 
+                $fila['tipo'],
+                $fila['id_familia']
+            );
+        }
+        return $ciclos;
+    }
+
 }

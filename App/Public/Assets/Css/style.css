@@ -1,0 +1,1824 @@
+/* TOKENS DE LA PALETA DE COLORES*/
+:root {
+  --color-bg: #f6f8fa;
+  --color-main: #1d3557;
+  --color-header-light: #ffd966;
+  --color-header-dark: #f9b233;
+  --color-accent: #295ba7;
+  --color-accent2: #f9b233;
+  --color-footer-bg: #1d3557;
+  --color-btn-bg: #ffd966;
+  --color-btn-hover-bg: #295ba7;
+  --color-btn-text: #fff;
+  --color-btn-alt-bg: #1d3557;
+  --color-btn-alt-text: #ffd966;
+  --color-form-label: #1d3557;
+  --color-form-input-border: #295ba7;
+  --color-box-bg: #fff;
+  --color-box-shadow: rgba(41, 91, 167, 0.10);
+  --color-card-title: #1d3557;
+  --color-card-text: #4b5563;
+  --color-empresa-border: #f9b233;
+  --color-alumno-border: #295ba7;
+}
+/* Cuerpo */
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-main); 
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+}
+/* Titulos */
+h1, h2, h3, nav, .menuLista a, .btnRegistro, .btnLogin, .btnRegister {
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+}
+
+
+
+/*Cabecera*/
+header {
+  background: linear-gradient(90deg, var(--color-header-light), var(--color-header-dark));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 10px;
+  box-shadow: 0 2px 4px var(--color-box-shadow);
+}
+
+/*MAIN*/
+
+main {
+    /* CRÍTICO: El contenido principal absorbe todo el espacio vertical disponible */
+    flex-grow: 1; 
+    width: 100%; 
+    box-sizing: border-box;
+    padding: 20px 0; /* Añade un pequeño padding vertical general */
+}
+
+/* FOOTER*/
+/*FOOTER*/
+.pie {
+  width: 100%;
+  background: var(--color-footer-bg);
+  color: var(--color-btn-text);
+  padding: 2em 0 0.7em 0;
+  font-size: 1em;
+}
+
+.contenedorFooter {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 3em;
+  align-items: flex-start;
+  max-width: 70em;
+  margin: 0 auto 0.8em auto;
+}
+
+.divLogoFooter {
+  flex: 1 1 18em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1em;
+}
+
+.logoPie {
+  width: 12em;
+  height: auto;
+  max-width: 100%;
+  border-radius: 0.3em;
+}
+
+.contenidoFooter {
+  flex: 2 1 39em;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 4em;
+}
+
+/* Columna RRSS y Contacto */
+.footerRRSS, .footerContacto {
+  flex: 1 1 16em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.tituloFooter {
+  font-size: 1.19em;
+  font-weight: bold;
+  margin-bottom: 0.8em;
+  color: var(--color-btn-alt-text);
+  letter-spacing: 0.03em;
+}
+
+.social-links, .linkContacto {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.social-link, .about-link {
+  color: var(--color-btn-text);
+  text-decoration: none;
+  font-size: 1em;
+  margin-bottom: 0.73em;
+  transition: color 0.18s;
+  display: inline-block;
+}
+
+.social-link:hover, .about-link:hover {
+  color: var(--color-header-light);
+  text-decoration: underline;
+}
+
+.pie > div:last-child {
+  margin-top: 1em;
+  text-align: center;
+  font-size: 0.95em;
+  color: var(--color-btn-text);
+}
+
+
+/* MENU */
+/*LOGO NAV*/
+.logoImg {
+  height: 90px;
+  width: auto;
+  margin-right: 50px;
+}
+
+.menuNav {
+  display: flex;
+  align-items: center;
+}
+.menuLista {
+  display: flex;
+  gap: 23px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menuLista a {
+  text-decoration: none;
+  color: var(--color-main);
+  font-weight: bold;
+  font-size: 1.08em;
+  transition: color 0.2s;
+}
+.menuLista a:hover {
+ color: var(--color-accent);
+}
+
+/* BANNER LANDING */
+.banner {
+  background: linear-gradient(90deg, var(--color-header-dark), var(--color-header-light));
+  padding: 44px 10px 30px 10px;
+  text-align: center;
+  border-radius: 0 0 30px 30px;
+  box-shadow: 0 4px 14px var(--color-box-shadow);
+}
+.banner h1 {
+  text-align: center;
+  margin-top: 0;
+  color: var(--color-main);
+}
+.destacados {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin: 38px 10px;
+}
+/*CAJAS REGISTRO*/
+.caja {
+  background: var(--color-box-bg);
+  padding: 34px 20px 30px 20px;
+  border-radius: 18px;
+  box-shadow: 0 2px 14px var(--color-box-shadow);
+  width: 350px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/*CAJA EMREPSA*/
+.empresaBox {
+  border-top: 7px solid var(--color-empresa-border);
+}
+.empresaBox h2 {
+  color: var(--color-empresa-border);
+}
+/*CAJA ALUMNO*/
+.alumnoBox {
+  border-top: 7px solid var(--color-alumno-border);
+}
+/*TITULO CAJA*/
+.caja h2 {
+  color: var(--color-alumno-border);
+  margin-bottom: 12px;
+}
+/*BOTONES*/
+.btnRegistro {
+  display: inline-block;
+  margin-top: 22px;
+  padding: 13px 26px;
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
+  font-weight: bold;
+  border-radius: 24px;
+  text-decoration: none;
+  font-size: 1.07em;
+  box-shadow: 0 2px 10px var(--color-box-shadow);
+  transition: background 0.2s, transform 0.2s;
+}
+.btnAlumno {
+  background: var(--color-accent);
+}
+.btnRegistro:hover, .btnAlumno:hover {
+  background: var(--color-btn-hover-bg);
+  color: var(--color-header-light);
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* EMPRESAS POPULARES */
+.empresasLista {
+  background: var(--color-box-bg);
+  margin: 38px 10px 20px 20px;
+  padding: 28px 4px;
+  border-radius: 12px;
+  box-shadow: 0 1px 8px var(--color-box-shadow);
+  border-left: 7px solid var(--color-header-dark);
+}
+.empresasLista h2 {
+  color: var(--color-alumno-border);
+  text-align: center;
+}
+.empresasGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+  margin-top: 26px;
+  margin-bottom: 26px;
+}
+/* BLOQUES EMPRESA*/
+.empresaCard {
+  background: var(--color-bg);
+  border-radius: 14px;
+  box-shadow: 0 1px 4px var(--color-box-shadow);
+  padding: 22px 16px 18px 16px;
+  width: 230px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s;
+}
+.empresaCard:hover {
+  box-shadow: 0 4px 16px rgba(41, 91, 167, 0.17);
+}
+.empresaLogo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: var(--color-box-bg);
+  border: 2px solid var(--color-header-dark);
+  margin-bottom: 12px;
+}
+.empresaCard h3 {
+  margin: 12px 0 8px 0;
+  color: var(--color-card-title);
+  font-size: 1.13em;
+}
+.empresaCard p {
+  color: var(--color-card-text);
+  font-size: 0.97em;
+  text-align: center;
+}
+
+/*LOGIN*/
+.loginContainer {
+  background: var(--color-header-dark);
+  border-radius: 1.4em;
+  box-shadow: 0 0.13em 1.2em var(--color-box-shadow);
+  max-width: 26em;
+  margin: 5em auto 5em auto;
+  padding: 2.6em 2em 2em 2em;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loginContainer h2 {
+  color: var(--color-main);
+  font-size: 1.75em;
+  font-weight: 700;
+  margin-bottom: 1.5em;
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85em;
+  margin-bottom: 1.1em;
+  align-items: stretch;
+  width: 100%;
+}
+
+.loginForm label {
+  font-weight: bold;
+  color: var(--color-main);
+  margin-bottom: 0.35em;
+  text-align: left;
+  font-size: 1.1em;
+}
+
+.loginForm input {
+  padding: 0.85em;
+  border: 1.7px solid var(--color-form-input-border);
+  border-radius: 0.7em;
+  font-size: 1em;
+  font-family: 'Roboto', Arial, sans-serif;
+  margin-bottom: 0.18em;
+  background: var(--color-box-bg);
+  color: var(--color-main);
+  box-sizing: border-box;
+}
+
+.btnLogin {
+  background: var(--color-btn-bg);
+  color: var(--color-main);
+  border: none;
+  border-radius: 1.5em;
+  padding: 0.95em 0;
+  width: 100%;
+  font-weight: bold;
+  font-size: 1.11em;
+  box-shadow: 0 0.13em 0.63em var(--color-box-shadow);
+  cursor: pointer;
+  margin-top: 0.6em;
+  margin-bottom: 0.99em;
+  transition: background 0.18s, color 0.18s, transform 0.2s;
+}
+.btnLogin:hover {
+  background: var(--color-btn-hover-bg);
+  color: var(--color-header-light);
+  transform: translateY(-0.13em) scale(1.04);
+}
+
+.registerText, .volverInicio {
+  margin-top: 1.18em;
+  font-size: 1em;
+  color: var(--color-main);
+}
+
+.registerText a {
+  color: var(--color-btn-hover-bg);
+  text-decoration: underline;
+  font-weight: bold;
+  transition: color 0.18s;
+}
+.registerText a:hover {
+  color: var(--color-btn-alt-bg);
+}
+
+.btnVolver {
+  background: var(--color-btn-alt-bg);
+  color: var(--color-btn-alt-text);
+  padding: 0.75em 2em;
+  border-radius: 1.4em;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 1.5em;
+  border: none;
+  box-shadow: 0 0.11em 0.53em var(--color-box-shadow);
+  transition: background 0.18s, color 0.18s;
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+}
+.btnVolver:hover {
+  background: var(--color-btn-hover-bg);
+  color: var(--color-header-light);
+}
+
+/*Redireccion*/
+#registro-redireccion {
+  width: 100vw;
+  min-height: 97vh;
+  background: var(--color-bg);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 3em;
+}
+
+.loginContainer {
+  background: var(--color-header-dark);
+  border-radius: 1.4em;
+  box-shadow: 0 0.13em 1.2em var(--color-box-shadow);
+  max-width: 29em;
+  margin: 5 auto;
+  padding: 2.7em 2em 2.3em 2em;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Cabecera título y subtítulo */
+.redirecion-header h2 {
+  color: var(--color-main);
+  font-size: 2em;
+  font-weight: 700;
+  margin-bottom: 0.4em;
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+}
+
+.subtitulo-redirect {
+  color: var(--color-main);
+  font-family: 'Roboto', 'Arial', sans-serif;
+  font-size: 1.15em;
+  margin-top: 0.1em;
+  margin-bottom: 2.2em;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border-radius: 0.5em;
+  padding: 0.2em 0.4em;
+}
+
+/* Elección de usuario */
+.redireccion-elegir {
+  display: flex;
+  flex-direction: column;
+  gap: 1.22em;
+  align-items: center;
+  margin-bottom: 2em;
+  width: 100%;
+}
+
+.btnRegistro {
+  display: block;
+  width: 100%;
+  max-width: 22em;
+  margin: 0 auto;
+  font-size: 1.13em;
+  font-weight: bold;
+  border-radius: 1.5em;
+  box-shadow: 0 0.1em 0.7em var(--color-box-shadow);
+  padding: 0.96em 0;
+  transition: background 0.16s, color 0.16s, box-shadow 0.18s;
+}
+
+.btnAlumno {
+  background: var(--color-btn-hover-bg);
+  color: #fff;
+}
+.btnAlumno:hover {
+  background: var(--color-main);
+  color: var(--color-header-light);
+}
+.btnRegistro:not(.btnAlumno) {
+  background: var(--color-btn-bg);
+  color: var(--color-main);
+  font-weight: bold;
+}
+.btnRegistro:not(.btnAlumno):hover {
+  background: var(--color-header-light);
+  color: var(--color-btn-hover-bg);
+}
+
+/* Botón volver */
+.btnVolver {
+  background: var(--color-btn-alt-bg);
+  color: var(--color-btn-alt-text);
+  border-radius: 1.4em;
+  font-weight: bold;
+  padding: 0.82em 2.4em;
+  font-size: 1.12em;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 1.7em;
+  border: none;
+  box-shadow: 0 0.11em 0.53em var(--color-box-shadow);
+  transition: background 0.18s, color 0.18s;
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+}
+.btnVolver:hover {
+  background: var(--color-btn-hover-bg);
+  color: var(--color-header-light);
+}
+
+@media (max-width: 700px) {
+  .loginContainer {
+    max-width: 96vw;
+    padding: 1.2em 4vw 1.2em 4vw;
+  }
+}
+
+/* REGISTRO ALUMNO */
+.registerContainer {
+  background: var(--color-header-dark);
+  border-radius: 1.4em;
+  box-shadow: 0 0.13em 1.2em var(--color-box-shadow);
+  max-width: 34em;
+  margin: 3em auto 3em auto;
+  padding: 2.3em 2em 2em 2em;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.registerContainer h2 {
+  color: var(--color-main);
+  font-size: 1.7em;
+  font-weight: 700;
+  margin-bottom: 1.2em;
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+}
+
+/* Formulario 2 columnas */
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  width: 100%;
+  align-items: center;
+}
+
+.registerColumns {
+  display: flex;
+  gap: 2em;
+  width: 100%;
+  justify-content: center;
+}
+
+.registerColumn {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  min-width: 12em;
+}
+
+.registerForm label {
+  font-weight: bold;
+  color: var(--color-main);
+  margin-bottom: 0.25em;
+  text-align: left;
+  font-size: 1.08em;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+.registerForm input[type="text"],
+.registerForm input[type="number"],
+.registerForm input[type="email"],
+.registerForm input[type="password"] {
+  padding: 0.7em;
+  border: 0.13em solid var(--color-form-input-border);
+  border-radius: 0.6em;
+  font-size: 1em;
+  font-family: 'Roboto', Arial, sans-serif;
+  background: var(--color-box-bg);
+  color: var(--color-main);
+}
+
+.registerForm input[type="file"] {
+  background: var(--color-box-bg);
+  border: 0.13em solid var(--color-form-input-border);
+  border-radius: 0.6em;
+  font-size: 1em;
+  padding: 0.65em 0.4em;
+  color: var(--color-main);
+  cursor: pointer;
+}
+
+.registerForm input[type="file"]:hover,
+.registerForm input[type="file"]:focus {
+  border-color: var(--color-header-dark);
+  background: var(--color-header-light);
+}
+
+.btnRegister {
+  background: var(--color-btn-bg);
+  color: var(--color-main);
+  border: none;
+  border-radius: 1.5em;
+  padding: 0.8em 0;
+  font-weight: bold;
+  font-size: 1.11em;
+  box-shadow: 0 0.13em 0.63em var(--color-box-shadow);
+  cursor: pointer;
+  margin-top: 1.1em;
+  transition: background 0.17s, color 0.17s, transform 0.16s;
+  width: 100%;
+}
+.btnRegister:hover {
+  background: var(--color-btn-hover-bg);
+  color: var(--color-header-light);
+  transform: translateY(-0.09em) scale(1.03);
+}
+
+.loginText {
+  margin-top: 1.4em;
+  font-size: 1em;
+  color: var(--color-main);
+  font-family: 'Roboto', Arial, sans-serif;
+}
+.loginText a {
+  color: var(--color-btn-hover-bg);
+  font-weight: bold;
+  text-decoration: underline;
+  transition: color 0.15s;
+}
+.loginText a:hover {
+  color: var(--color-btn-alt-bg);
+}
+
+/*LISTADOS*/
+
+/* Fondo base y contenedor principal */
+body {
+  background-color: var(--color-bg); /* #16443D */
+}
+
+.listaContenedor {
+  background-color: var(--color-box-bg); /* #FFFFE9 */
+  border: 3px solid #191919;
+  border-radius: 2em;
+  padding: 1.875em; /* 30px */
+  margin: 2.5em auto; /* 40px */
+  max-width: 75em; /* 1200px */
+  box-shadow: 0 0.3125em 0.9375em rgba(25, 25, 25, 0.2);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Encabezados section */
+.seccionEncabezado {
+  margin-bottom: 1.56em; /* 25px */
+}
+
+h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.5em;
+  color: #191919;
+  margin: 0 0 1.25em 0;
+  font-weight: 800;
+  text-align: left;
+}
+
+/* Buscador */
+.seccionBusqueda {
+  display: flex;
+  align-items: center;
+  gap: 0.625em; /* 10px */
+  max-width: 25em; /* 400px */
+}
+
+.seccionBusqueda input[type="text"] {
+  padding: 0.6em;
+  border: 3px solid #191919;
+  font-family: 'Poppins', sans-serif;
+  flex: 1;
+  font-size: 1em;
+  border-radius: 0.6875em; /* 11px */
+}
+
+.seccionBusqueda input[type="text"]:focus {
+  outline: none;
+  border: 3px solid var(--color-btn-bg); /* #EBD3FD */
+  box-shadow: none;
+}
+
+.botonBusqueda {
+  background-color: var(--color-btn-bg);
+  color: #191919;
+  border: 3px solid #191919;
+  padding: 0.6em 1.5em;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 1.1em;
+  white-space: nowrap;
+  border-radius: 0.6875em;
+  transition: background-color 0.3s ease;
+}
+
+.botonBusqueda:hover {
+  background-color: #d7b4f2;
+}
+
+/* Botón añadir */
+.contenedorBotonAgregar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.25em; /* 20px */
+}
+
+#agregar {
+  background: var(--color-btn-bg);
+  color: #191919;
+  border: 3px solid #191919;
+  padding: 0.6em 1.5em;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 1.1em;
+  border-radius: 0.6875em;
+  transition: background 0.3s ease;
+}
+
+#agregar:hover {
+  background: #d7b4f2;
+}
+
+/* Tabla */
+.contenedorTabla {
+  background: var(--color-box-bg);
+  overflow: hidden;
+  box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.08);
+  border-radius: 0.6875em;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Libre Baskerville', serif;
+}
+
+thead {
+  background: var(--color-bg);
+}
+
+thead th {
+  color: var(--color-box-bg);
+  padding: 1.125em 1.25em; /* 18px 20px */
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.03125em; /* 0.5px */
+  cursor: pointer;
+  user-select: none;
+}
+
+thead th:hover {
+  background: #333333;
+}
+
+tbody tr {
+  border-bottom: 1px solid #E5E7EB;
+  background: #FFFFFF;
+}
+
+tbody tr:hover {
+  background: #E0E0F0;
+}
+
+tbody td {
+  padding: 1em 1.25em; /* 16px 20px */
+  color: #191919;
+  font-size: 0.95em;
+  vertical-align: middle;
+}
+
+tbody tr:nth-child(even) {
+  background: #EDEDF8;
+}
+
+tbody tr:nth-child(even):hover {
+  background: #E0E0F0;
+}
+
+/* Botones de acción */
+.action-btn {
+  padding: 0.5em 1em;
+  border: 3px solid #191919;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 0.85em;
+  border-radius: 0.6875em;
+  margin: 0 0.25em;
+}
+
+.edit-btn {
+  background: var(--color-btn-bg);
+  color: #191919;
+}
+
+.edit-btn:hover {
+  background: #d7b4f2;
+}
+
+.delete-btn {
+  background: #d32f2f;
+  color: var(--color-box-bg);
+}
+
+.delete-btn:hover {
+  background: #a82424;
+}
+
+/* Clases para columna acciones - pendientes */
+.columnaAcciones,
+.columnaAccionesPendientes {
+  white-space: nowrap;
+}
+
+/* Flex para botones en acciones */
+.columnaAcciones form,
+.columnaAccionesPendientes form {
+  display: flex;
+  gap: 0.5em;
+  justify-content: center;
+}
+
+/* Título pendiente */
+.tituloPendiente {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 2em;
+  margin-bottom: 1.25em; /* 20px */
+  color: #191919;
+  text-align: left;
+}
+
+/*FICHA EMPRESA*/
+.fichaEmpresaContenedor {
+    background: var(--color-box-bg);
+    border: 3px solid var(--color-header-dark);
+    border-radius: 2em;
+    box-shadow: 0 0.3em 1.2em var(--color-box-shadow);
+    max-width: 44em;
+    margin: 4em auto 0 auto;
+    padding: 2.4em 1.5em 2.3em 1.5em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.fichaEncabezado h1 {
+    color: var(--color-main);
+    font-size: 2.2em;
+    margin: 0 0 1.5em 0;
+    font-weight: 800;
+    text-align: center;
+}
+
+.fichaForm {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    width: 100%;
+    align-items: center;
+}
+
+.fichaGrid {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr 1fr;
+    gap: 1.5em;
+    width: 100%;
+}
+
+.fichaLogoNombre {
+    grid-row: 1 / span 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1em;
+    background: var(--color-bg);
+    padding: 1.2em;
+    border-radius: 1em;
+    border: 2px dashed var(--color-accent);
+}
+
+.fichaLogo {
+    min-width: 140px;
+    min-height: 140px;
+    border-radius: 50%;
+    background: var(--color-box-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 3px solid var(--color-header-dark);
+    margin-bottom: 0.6em;
+}
+
+.fichaLogo img {
+    width: 86%;
+    height: 86%;
+    object-fit: contain;
+}
+
+.fichaCampo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.33em;
+    margin-bottom: 0.2em;
+}
+
+.fichaCampo label {
+    color: var(--color-main);
+    font-size: 1.02em;
+    font-weight: 600;
+    margin-bottom: 0.12em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.fichaCampo input[type="text"] {
+    padding: 0.7em;
+    border: 2px solid var(--color-form-input-border);
+    border-radius: 0.67em;
+    background-color: var(--color-bg);
+    color: var(--color-main);
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.09em;
+    box-shadow: none;
+    cursor: default;
+}
+.fichaCampo input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-btn-bg);
+}
+
+.fichaCampoVacio {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.fichaBotonera {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2.2em;
+}
+
+.fichaBtnVolver {
+    background: var(--color-btn-bg);
+    color: #191919;
+    border: 3px solid #191919;
+    padding: 0.95em 2.5em;
+    cursor: pointer;
+    font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+    font-size: 1.09em;
+    border-radius: 0.67em;
+    font-weight: bold;
+    transition: background 0.19s;
+}
+
+.fichaBtnVolver:hover {
+    background: var(--color-btn-hover-bg);
+    color: var(--color-header-light);
+}
+
+/*Editar Empresa*/
+.editarEmpresaContenedor {
+    background: var(--color-box-bg);
+    border: 3px solid var(--color-header-dark);
+    border-radius: 2em;
+    box-shadow: 0 0.3em 1.2em var(--color-box-shadow);
+    max-width: 42em;
+    margin: 3.5em auto 0 auto;
+    padding: 2em 2em 2.5em 2em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.editarEncabezado h1 {
+    color: var(--color-main);
+    font-size: 2.2em;
+    margin: 0 0 1.3em 0;
+    font-weight: 800;
+    text-align: center;
+}
+
+.editarForm {
+    width: 100%;
+}
+
+.editarGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.6em 2.4em;
+    align-items: flex-start;
+}
+
+.editarLogo {
+    grid-row: 1 / span 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8em;
+    background: var(--color-bg);
+    padding: 1.2em;
+    border-radius: 1.1em;
+    border: 2px dashed var(--color-accent);
+}
+
+.editarLogo img {
+    width: 115px;
+    height: 115px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 2px solid var(--color-header-dark);
+    margin-bottom: 0.5em;
+    background: #fff;
+}
+.labelLogo {
+    font-size: 1em;
+    color: var(--color-main);
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 0.4em;
+}
+.editarLogo input[type="file"] {
+    margin-top: 0.15em;
+    cursor: pointer;
+}
+
+.editarCampo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.18em;
+}
+
+.editarCampo label {
+    color: var(--color-main);
+    font-size: 1.05em;
+    font-weight: 500;
+    margin-bottom: 0.09em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.editarCampo input[type="text"], .editarCampo textarea {
+    padding: 0.7em;
+    border: 2px solid var(--color-form-input-border);
+    border-radius: 0.67em;
+    background-color: var(--color-bg);
+    color: var(--color-main);
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.08em;
+    box-shadow: none;
+    resize: none;
+    transition: border .2s;
+}
+
+.editarCampo textarea {
+    min-height: 80px;
+    max-height: 170px;
+}
+
+.editarCampo input[readonly] {
+    background: #ede9e3;
+    color: #7b7b7b;
+}
+
+.editarCampo input[type="text"]:focus, 
+.editarCampo textarea:focus {
+    outline: none;
+    border: 2.3px solid var(--color-btn-bg);
+    background: #fffefa;
+}
+
+.editarBotonera {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1.3em;
+    margin-top: 2.5em;
+}
+
+.btnAceptarEditar {
+    background: var(--color-btn-bg);
+    color: #191919;
+    border: 3px solid #191919;
+    padding: 0.85em 2.2em;
+    font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 1.08em;
+    border-radius: 0.67em;
+    transition: background 0.18s;
+    cursor: pointer;
+}
+.btnAceptarEditar:hover {
+    background: var(--color-btn-hover-bg);
+    color: var(--color-header-light);
+}
+
+.btnCancelarEditar {
+    background: #191919;
+    color: #fff;
+    border: 3px solid #191919;
+    padding: 0.85em 2.2em;
+    font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 1.08em;
+    border-radius: 0.67em;
+    transition: background 0.18s;
+    cursor: pointer;
+}
+.btnCancelarEditar:hover {
+    background: #333333;
+}
+
+/*LISTA ALUMNOS*/
+
+.listaAlumnosContenedor {
+    background: var(--color-box-bg);
+    border: 3px solid var(--color-header-dark);
+    border-radius: 2em;
+    padding: 30px;
+    margin: 40px auto;
+    max-width: 1200px;
+    box-shadow: 0 5px 15px var(--color-box-shadow);
+    font-family: 'Poppins', sans-serif;
+}
+
+.cabeceraAlumnos {
+    margin-bottom: 25px;
+}
+
+.cabeceraAlumnos h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.1em;
+    color: var(--color-main);
+    margin: 0 0 20px 0;
+    font-weight: 800;
+}
+
+.busquedaAlumnos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 400px;
+}
+
+.busquedaAlumnos input[type="text"] {
+    padding: 0.6em;
+    border: 3px solid var(--color-form-input-border);
+    font-family: 'Poppins', sans-serif;
+    flex: 1;
+    font-size: 1em;
+    border-radius: 0.6875em;
+}
+
+.busquedaAlumnos input[type="text"]:focus {
+    outline: none;
+    border: 3px solid var(--color-btn-bg);
+}
+
+.btnBuscarAlumnos {
+    background-color: var(--color-btn-bg);
+    color: #191919;
+    border: 3px solid #191919;
+    padding: 0.6em 1.5em;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 1.1em;
+    white-space: nowrap;
+    border-radius: 0.6875em;
+    transition: background-color 0.3s ease;
+}
+.btnBuscarAlumnos:hover {
+    background-color: var(--color-btn-hover-bg);
+}
+
+.botonesAlumnos {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1.5em;
+    margin-bottom: 20px;
+}
+
+#addAlumno,
+#cargaMasivaAlumnos {
+    background: var(--color-btn-bg);
+    color: #191919;
+    border: 3px solid #191919;
+    padding: 0.6em 1.5em;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 1.1em;
+    border-radius: 0.6875em;
+    transition: all 0.3s ease;
+}
+#addAlumno:hover,
+#cargaMasivaAlumnos:hover {
+    background: var(--color-btn-hover-bg);
+}
+
+.tablaAlumnosContenedor {
+    background: var(--color-box-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border-radius: 0.6875em;
+}
+
+.tablaAlumnos {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Libre Baskerville', serif;
+}
+
+.tablaAlumnos thead {
+    background: var(--color-bg);
+}
+
+.tablaAlumnos thead th {
+    color: var(--color-box-bg);
+    padding: 18px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    user-select: none;
+}
+.tablaAlumnos thead th:hover {
+    background: #333333;
+}
+
+.tablaAlumnos tbody tr {
+    border-bottom: 1px solid #E5E7EB;
+    background: #FFFFFF;
+}
+.tablaAlumnos tbody tr:hover {
+    background: #E0E0F0;
+}
+
+.tablaAlumnos tbody td {
+    padding: 16px 20px;
+    color: #191919;
+    font-size: 0.95em;
+    vertical-align: middle;
+}
+.tablaAlumnos tbody tr:nth-child(even) {
+    background: #EDEDF8;
+}
+.tablaAlumnos tbody tr:nth-child(even):hover {
+    background: #E0E0F0;
+}
+
+.columnaAccionesAlumnos {
+    white-space: nowrap;
+}
+
+.flechaEstatico {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-left: 6px;
+    background: url('/Public/Assets/Images/StaticArrow.svg') no-repeat center center/contain;
+    vertical-align: middle;
+}
+
+/* ================================================= */
+/* --- ESTILOS DE LISTADO DE ALUMNOS (ADMIN/EMPRESA) --- */
+/* ================================================= */
+
+.listaAlumnosContenedor {
+    background: var(--color-box-bg);
+    border: 2px solid var(--color-accent); /* Borde azul de alumno */
+    border-radius: 1.5em;
+    padding: 2.2em;
+    margin: 2.5em auto;
+    max-width: 1200px;
+    box-shadow: 0 5px 15px var(--color-box-shadow);
+    font-family: 'Roboto', sans-serif;
+}
+
+.cabeceraAlumnos h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.1em;
+    color: var(--color-main);
+    margin: 0 0 1em 0;
+    font-weight: 700;
+}
+
+.busquedaAlumnos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 450px;
+}
+
+.busquedaAlumnos input[type="text"] {
+    padding: 0.7em;
+    border: 2px solid var(--color-form-input-border);
+    border-radius: 0.6em;
+    font-size: 1em;
+}
+
+.btnBuscarAlumnos {
+    background-color: var(--color-accent);
+    color: var(--color-btn-text);
+    border: none;
+    padding: 0.7em 1.5em;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1em;
+    border-radius: 0.6em;
+    transition: background-color 0.2s;
+}
+.btnBuscarAlumnos:hover {
+    background-color: var(--color-main);
+}
+
+.botonesAlumnos {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1em;
+    margin-bottom: 20px;
+}
+
+#addAlumno,
+#cargaMasivaAlumnos {
+    background: var(--color-header-dark);
+    color: var(--color-main);
+    border: 2px solid var(--color-main);
+    padding: 0.7em 1.2em;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.95em;
+    border-radius: 0.6em;
+    transition: all 0.2s ease;
+}
+#addAlumno:hover,
+#cargaMasivaAlumnos:hover {
+    background: var(--color-main);
+    color: var(--color-header-light);
+}
+
+/* Tablas */
+.tablaAlumnosContenedor {
+    overflow-x: auto;
+    border: 1px solid #ddd;
+    border-radius: 0.5em;
+}
+
+.tablaAlumnos {
+    min-width: 900px;
+}
+
+.tablaAlumnos thead {
+    background: var(--color-accent); /* Fondo azul principal */
+}
+
+.tablaAlumnos thead th {
+    color: var(--color-btn-text);
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95em;
+    padding: 15px 12px;
+}
+.tablaAlumnos thead th:hover {
+    background: var(--color-main);
+}
+
+.tablaAlumnos tbody tr {
+    border-bottom: 1px solid var(--color-bg);
+}
+.tablaAlumnos tbody tr:nth-child(even) {
+    background: #f0f4ff; /* Un azul muy claro */
+}
+
+.tablaAlumnos tbody td {
+    color: var(--color-card-text);
+    font-size: 0.95em;
+    padding: 12px;
+}
+.tablaAlumnos tbody tr:hover {
+    background: var(--color-header-light);
+    color: var(--color-main);
+}
+
+.action-btn {
+    padding: 6px 10px;
+    border: 1px solid var(--color-main);
+    cursor: pointer;
+    font-size: 0.85em;
+    border-radius: 0.4em;
+    margin: 0 2px;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.edit-btn {
+    background: var(--color-header-light);
+    color: var(--color-main);
+    border-color: var(--color-header-dark);
+}
+.edit-btn:hover {
+    background: var(--color-header-dark);
+}
+
+.delete-btn {
+    background: #d32f2f;
+    color: var(--color-btn-text);
+    border-color: #a82424;
+}
+.delete-btn:hover {
+    background: #a82424;
+}
+
+.ver-ficha-btn {
+    background: var(--color-accent);
+    color: var(--color-btn-text);
+    border-color: var(--color-main);
+}
+.ver-ficha-btn:hover {
+    background: var(--color-main);
+}
+
+
+/* ================================================= */
+/* --- ESTILOS DE MODALES (FICHA Y EDICIÓN) --- */
+/* ================================================= */
+
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(29, 53, 87, 0.7); /* Fondo semi-transparente (color-main con opacidad) */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content-wrapper {
+    background-color: var(--color-box-bg);
+    margin: 5% auto;
+    padding: 30px;
+    border: 3px solid var(--color-header-dark);
+    border-radius: 15px;
+    width: 90%; 
+    max-width: 700px; /* Ancho estándar para ficha */
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+}
+
+.modal-content-large {
+    max-width: 850px; /* Ancho mayor para el formulario de edición */
+}
+
+.close-button {
+    color: var(--color-main);
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    transition: color 0.2s;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #d32f2f;
+    text-decoration: none;
+}
+
+/* Estilos de Ficha de Lectura */
+
+.ficha-alumno-header {
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--color-accent);
+    margin-bottom: 20px;
+}
+
+.modal-foto-perfil, .modal-foto-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 4px solid var(--color-header-dark);
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+.ficha-alumno-header h2 {
+    color: var(--color-main);
+    font-size: 1.6em;
+    margin: 5px 0 0;
+}
+
+.modal-correo {
+    color: var(--color-card-text);
+    font-size: 1em;
+}
+
+.ficha-alumno-body h3 {
+    color: var(--color-accent);
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.modal-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px 30px;
+}
+
+.info-item strong {
+    color: var(--color-main);
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Estilos de estudios (Tags) */
+.modal-estudios {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag-estudio {
+    background-color: var(--color-header-light);
+    color: var(--color-main);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+    border: 1px solid var(--color-header-dark);
+}
+
+/* Documentos CV */
+.modal-documentos {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-documento {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--color-accent);
+    color: var(--color-btn-text);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    font-weight: bold;
+}
+
+.btn-documento.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ================================================= */
+/* --- ESTILOS DE FORMULARIO DE EDICIÓN --- */
+/* ================================================= */
+
+.editar-alumno-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.editar-alumno-form h2 {
+    color: var(--color-main);
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 0;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.editar-alumno-form label {
+    font-weight: 600;
+    color: var(--color-main);
+    margin-top: 5px;
+}
+
+.editar-alumno-form input:not([type="submit"]),
+.editar-alumno-form textarea {
+    padding: 10px;
+    border: 1px solid var(--color-form-input-border);
+    border-radius: 5px;
+    font-size: 1em;
+    background: var(--color-bg);
+}
+
+.foto-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px dashed var(--color-accent);
+    border-radius: 10px;
+}
+
+.cv-actual {
+    font-size: 0.9em;
+    color: var(--color-card-text);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btnAceptarEditar, .btnCancelarEditar {
+    padding: 10px 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Reutilizamos los colores del botón de edición */
+.btnAceptarEditar {
+    background: var(--color-header-dark);
+    color: var(--color-main);
+}
+.btnAceptarEditar:hover {
+    background: var(--color-accent);
+    color: var(--color-btn-text);
+}
+
+.btnCancelarEditar {
+    background: #ccc;
+    color: var(--color-main);
+}
+.btnCancelarEditar:hover {
+    background: #aaa;
+}
+
+
+/* EMPRESA DASHBOARD */
+
+.contenedor-dashboard {
+    max-width: 75em; 
+    margin: 2.5em auto;
+    padding: 0 1.5em;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Cabecera del Dashboard */
+.seccion-cabecera {
+    text-align: center;
+    margin-bottom: 3em;
+}
+
+.seccion-cabecera h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    color: var(--color-main); 
+    margin-bottom: 0.5em;
+    font-weight: 800;
+}
+
+.seccion-cabecera .resaltado {
+    color: var(--color-accent); 
+    font-weight: 700;
+}
+
+.subtitulo-dashboard {
+    color: var(--color-card-text); 
+    font-size: 1.1em;
+}
+
+
+.grid-kpi {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18em, 1fr));
+    gap: 2em;
+    margin-bottom: 3em;
+}
+
+.tarjeta-kpi {
+    background-color: var(--color-box-bg); /* Token usado */
+    border-radius: 0.75em; /* 12px */
+    padding: 1.5em;
+    display: flex;
+    align-items: center;
+    gap: 1.5em;
+    box-shadow: 0 0.25em 0.9em var(--color-box-shadow); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 0.3em solid transparent; 
+}
+
+.tarjeta-kpi:hover {
+    transform: translateY(-0.3em);
+    box-shadow: 0 0.5em 1.5em rgba(41, 91, 167, 0.2);
+}
+
+
+.kpi-ofertas {
+    border-left-color: var(--color-alumno-border); 
+}
+
+.kpi-solicitudes {
+    border-left-color: var(--color-empresa-border); 
+}
+
+.icono-kpi {
+    width: 3.75em; 
+    height: 3.75em;
+    object-fit: contain;
+    background-color: var(--color-bg); 
+    padding: 0.6em;
+    border-radius: 50%;
+}
+
+.contenido-kpi {
+    display: flex;
+    flex-direction: column;
+}
+
+.titulo-kpi {
+    font-size: 0.9em;
+    color: var(--color-card-text); 
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 0.3em 0;
+    font-weight: 600;
+}
+
+.valor-kpi {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--color-main); 
+    margin: 0;
+}
+
+/* Filas de Gráficos */
+.fila-graficos {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 2em;
+    margin-bottom: 2em;
+}
+
+.tarjeta-grafico {
+    background-color: var(--color-box-bg); 
+    border-radius: 0.75em;
+    padding: 1.5em;
+    box-shadow: 0 0.25em 0.9em var(--color-box-shadow); 
+    flex: 1; 
+    min-width: 22em; 
+    display: flex;
+    flex-direction: column;
+    border-top: 4px solid var(--color-main);
+}
+
+.titulo-grafico {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2em;
+    color: var(--color-main); 
+    margin-bottom: 1.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid var(--color-bg); 
+}
+
+/* Contenedor del Canvas (Importante para Chart.js) */
+.contenedor-canvas {
+    position: relative;
+    height: 18.75em; /* 300px */
+    width: 100%;
+}
+
+
+
+

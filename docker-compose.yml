@@ -18,6 +18,8 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: 1234 # Contraseña de la DB
       MYSQL_ROOT_PASSWORD: root
+    networks:
+      - red_personalizada
     ports:
       # Mapeo de puerto opcional para acceder desde el host (ej. con Workbench)
       - "3307:3306"
@@ -46,13 +48,29 @@ services:
       DB_HOST: db # Usa el nombre del servicio de la DB como hostname
       DB_NAME: portal_empleo
       DB_USER: user
-      DB_PASS: 1234 # <--- CORREGIDO: DEBE COINCIDIR CON MYSQL_PASSWORD
+      DB_PASS: 1234  
+      # Variables de entorno de PHPMAILER
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+    networks:
+      - red_personalizada
     links:
       - db
     depends_on:
       - db
+      - mailhog
 
-  
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8085:8085"
+      - "1025:1025"
+    networks:
+      - red_personalizada
+networks:
+  red_personalizada:
+    driver: bridge
   
 # Volúmenes para persistencia de datos
 volumes:

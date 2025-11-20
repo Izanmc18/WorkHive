@@ -16,7 +16,6 @@ class Usuario {
         $this->verificado = $verificado;
     }
 
-    // Getters y setters
 
     public function getId() {
         return $this->id;

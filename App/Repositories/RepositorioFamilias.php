@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\ConexionBD;
 use App\Models\Familia;
 
 class RepositorioFamilias {
@@ -46,12 +47,12 @@ class RepositorioFamilias {
         try {
             $this->bd->beginTransaction();
 
-            // Borro los ciclos relacionados con esta familia
+            
             $sqlCiclos = "DELETE FROM ciclos WHERE id_familia = :id";
             $stmtCiclos = $this->bd->prepare($sqlCiclos);
             $stmtCiclos->execute([':id' => $idFamilia]);
 
-            // Y ahora lo que hago es borrar la familia
+            
             $sql = "DELETE FROM familias WHERE id_familia = :id";
             $stmt = $this->bd->prepare($sql);
             $stmt->execute([':id' => $idFamilia]);

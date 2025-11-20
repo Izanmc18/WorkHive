@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\ConexionBD;
 use App\Models\Oferta;
 use PDO;
 
@@ -20,16 +21,16 @@ class RepositorioOfertas {
         return self::$instancia;
     }
 
-    // Crear oferta con relación a ciclos
+    
     public function crearConCiclos(Oferta $oferta, array $idsCiclos) {
         try {
             $this->bd->beginTransaction();
 
-            $sql = "INSERT INTO ofertas (idempresa, descripcion, fechainicio, fechafin, activa, titulo)
-                    VALUES (:idempresa, :descripcion, :fechainicio, :fechafin, :activa, :titulo)";
+            $sql = "INSERT INTO ofertas (id_empresa, descripcion, fechainicio, fechafin, activa, titulo)
+                    VALUES (:id_empresa, :descripcion, :fechainicio, :fechafin, :activa, :titulo)";
             $stmt = $this->bd->prepare($sql);
             $stmt->execute([
-                ':idempresa' => $oferta->getIdEmpresa(),
+                ':id_empresa' => $oferta->getIdEmpresa(),
                 ':descripcion' => $oferta->getDescripcion(),
                 ':fechainicio' => $oferta->getFechaInicio(),
                 ':fechafin' => $oferta->getFechaFin(),
@@ -38,7 +39,7 @@ class RepositorioOfertas {
             ]);
             $oferta->setIdOferta($this->bd->lastInsertId());
 
-            // Insertar relación oferta-ciclo
+            
             foreach ($idsCiclos as $idCiclo) {
                 $sqlCycle = "INSERT INTO oferta_ciclo (idoferta, idciclo) VALUES (:idoferta, :idciclo)";
                 $stmtCycle = $this->bd->prepare($sqlCycle);
@@ -64,7 +65,7 @@ class RepositorioOfertas {
         if (!$fila) return null;
         return new Oferta(
             $fila['idoferta'],
-            $fila['idempresa'],
+            $fila['id_empresa'],
             $fila['descripcion'],
             $fila['fechainicio'],
             $fila['fechafin'],
@@ -73,7 +74,7 @@ class RepositorioOfertas {
         );
     }
 
-    // Editar oferta y actualizar ciclos relacionados
+    
     public function editarConCiclos(Oferta $oferta, array $idsCiclos) {
         try {
             $this->bd->beginTransaction();
@@ -113,17 +114,17 @@ class RepositorioOfertas {
         }
     }
 
-    // Elimina oferta y relaciones en cascada
+    
     public function borrar($idOferta) {
         try {
             $this->bd->beginTransaction();
 
-            // Eliminar relaciones oferta-ciclo (por si no hay ON DELETE CASCADE)
+            
             $sqlRel = "DELETE FROM oferta_ciclo WHERE idoferta = :id";
             $stmtRel = $this->bd->prepare($sqlRel);
             $stmtRel->execute([':id' => $idOferta]);
 
-            // Eliminar la oferta
+            
             $sql = "DELETE FROM ofertas WHERE idoferta = :id";
             $stmt = $this->bd->prepare($sql);
             $stmt->execute([':id' => $idOferta]);
@@ -143,7 +144,7 @@ class RepositorioOfertas {
         while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $ofertas[] = new Oferta(
                 $fila['idoferta'],
-                $fila['idempresa'],
+                $fila['id_empresa'],
                 $fila['descripcion'],
                 $fila['fechainicio'],
                 $fila['fechafin'],
@@ -152,5 +153,38 @@ class RepositorioOfertas {
             );
         }
         return $ofertas;
+    }
+
+    public function contarOfertasPorEmpresa($id_empresa) {
+        $sql = "SELECT COUNT(*) as total FROM ofertas WHERE id_empresa = :id";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $id_empresa]);
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $fila ? (int)$fila['total'] : 0;
+    }
+
+    
+    public function obtenerEstadisticasEstado($id_empresa) {
+        $sql = "SELECT activa, COUNT(*) as cantidad 
+                FROM ofertas 
+                WHERE id_empresa = :id 
+                GROUP BY activa";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $id_empresa]);
+        return $stmt->fetchAll(PDO::FETCH_KEY_PAIR); 
+    }
+    
+    
+    public function obtenerTopOfertas($id_empresa) {
+        $sql = "SELECT o.titulo, COUNT(s.id_solicitud) as total_solicitudes
+                FROM ofertas o
+                LEFT JOIN solicitudes s ON o.id_oferta = s.id_oferta
+                WHERE o.id_empresa = :id
+                GROUP BY o.id_oferta, o.titulo
+                ORDER BY total_solicitudes DESC
+                LIMIT 5";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $id_empresa]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Repositories\ConexionBD;
+use App\Repositories\RepositorioUsuarios; 
 use App\Models\Empresa;
 use App\Models\Usuario;
 
@@ -22,17 +24,20 @@ class RepositorioEmpresas {
         return self::$instancia;
     }
 
+    /**
+     * LOGICA MODIFICADA: 
+     * 1. Transacción solo para insertar Usuario y Empresa.
+     * 2. Manejo de archivo fuera de la transacción para evitar Rollback si falla la imagen.
+     */
     public function crear(Empresa $empresa, Usuario $usuario, $archivoLogo = null) {
         try {
             $this->bd->beginTransaction();
 
-            // Creo un usuario
             $usuarioCreado = $this->repoUsuarios->crear($usuario);
             $empresa->setIdUsuario($usuarioCreado->getId());
 
-            // Inserto la empresa pero sin logo_url por ahora
             $sql = "INSERT INTO empresas (id_user, nombre, descripcion, logo_url, direccion)
-                    VALUES (:id_user, :nombre, :descripcion, '', :direccion)";
+                     VALUES (:id_user, :nombre, :descripcion, '', :direccion)";
             $stmt = $this->bd->prepare($sql);
             $stmt->execute([
                 ':id_user' => $empresa->getIdUsuario(),
@@ -43,37 +48,50 @@ class RepositorioEmpresas {
             $idEmpresa = $this->bd->lastInsertId();
             $empresa->setIdEmpresa($idEmpresa);
 
-            // Guardo el logo si está presente
-            if ($archivoLogo && $archivoLogo['error'] === UPLOAD_ERR_OK) {
+            
+            $this->bd->commit();
+
+        } catch (\Exception $e) {
+            if ($this->bd->inTransaction()) {
+                $this->bd->rollBack();
+            }
+            throw $e; 
+        }
+
+        // Gestion de logo despues de crear la em presa en al bd (Prueba segun silverio) 
+        if ($archivoLogo && $archivoLogo['error'] === UPLOAD_ERR_OK) {
+            try {
                 $extension = pathinfo($archivoLogo['name'], PATHINFO_EXTENSION);
                 $nombreArchivo = $idEmpresa . '.' . $extension;
-                $directorioDestino = __DIR__ . '/../../Public/Assets/Images/';
+                
+                $directorioBase = dirname(__DIR__, 1); 
+                $directorioDestino = $directorioBase . '/Public/Assets/Images/Empresa/';
                 $rutaDestino = $directorioDestino . $nombreArchivo;
 
                 if (!is_dir($directorioDestino)) {
-                    mkdir($directorioDestino, 0755, true);
+                    if (!mkdir($directorioDestino, 0777, true)) {
+                        error_log("Error RepositorioEmpresas: No se pudo crear directorio $directorioDestino");
+                    }
+                }
+                
+                if (move_uploaded_file($archivoLogo['tmp_name'], $rutaDestino)) {
+                    $sqlUpdate = "UPDATE empresas SET logo_url = :logo_url WHERE id_empresa = :id_empresa";
+                    $stmtUpdate = $this->bd->prepare($sqlUpdate);
+                    $stmtUpdate->execute([
+                        ':logo_url' => $nombreArchivo,
+                        ':id_empresa' => $idEmpresa
+                    ]);
+                    $empresa->setLogoUrl($nombreArchivo);
+                } else {
+                    error_log("Error RepositorioEmpresas: move_uploaded_file falló para ID $idEmpresa");
                 }
 
-                if (!move_uploaded_file($archivoLogo['tmp_name'], $rutaDestino)) {
-                    throw new \Exception("Error al guardar el logo.");
-                }
-
-                // Actualizo el campo logo_url
-                $sqlUpdate = "UPDATE empresas SET logo_url = :logo_url WHERE id_empresa = :id_empresa";
-                $stmtUpdate = $this->bd->prepare($sqlUpdate);
-                $stmtUpdate->execute([
-                    ':logo_url' => $nombreArchivo,
-                    ':id_empresa' => $idEmpresa
-                ]);
-                $empresa->setLogoUrl($nombreArchivo);
+            } catch (\Exception $eFile) {
+                error_log("Error subiendo logo empresa (ID $idEmpresa): " . $eFile->getMessage());
             }
-
-            $this->bd->commit();
-            return $empresa;
-        } catch (\Exception $e) {
-            $this->bd->rollBack();
-            throw $e;
         }
+
+        return $empresa;
     }
 
     public function leer($idEmpresa) {
@@ -94,15 +112,31 @@ class RepositorioEmpresas {
             $fila["direccion"]
         );
     }
+    
+    public function obtenerPorIdUsuario(int $idUsuario) : ?Empresa {
+        $sql = "SELECT id_empresa FROM empresas WHERE id_user = :id_user";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id_user' => $idUsuario]);
+        $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
 
+        if (!$fila) {
+            return null;
+        }
+        return $this->leer((int)$fila['id_empresa']);
+    }
+
+    /**
+     * Edición modificada: Primero actualiza datos, luego intenta subir archivo.
+     */
     public function editar(Empresa $empresa, Usuario $usuario, $archivoLogo = null) {
+        
         try {
             $this->bd->beginTransaction();
 
-            // Edito primero el usuario
+            
             $this->repoUsuarios->editar($usuario);
 
-            // Despues edito la empresa
+            
             $sql = "UPDATE empresas SET nombre = :nombre, descripcion = :descripcion, direccion = :direccion WHERE id_empresa = :id_empresa";
             $stmt = $this->bd->prepare($sql);
             $stmt->execute([
@@ -112,36 +146,57 @@ class RepositorioEmpresas {
                 ':id_empresa' => $empresa->getIdEmpresa()
             ]);
 
-            // Si hay un nuevo logo subido, lo que hago es reemplazar el archivo y actualizo en la BD
-            if ($archivoLogo && $archivoLogo['error'] === UPLOAD_ERR_OK) {
+            $this->bd->commit();
+
+        } catch (\Exception $e) {
+            if ($this->bd->inTransaction()) {
+                $this->bd->rollBack();
+            }
+            throw $e;
+        }
+
+        // PGestion logo pero guera de la transacion 
+        if ($archivoLogo && $archivoLogo['error'] === UPLOAD_ERR_OK) {
+            try {
+                $directorioBase = dirname(__DIR__, 1); 
+                $directorioDestino = $directorioBase . '/Public/Assets/Images/Empresa/';
+                
                 $extension = pathinfo($archivoLogo['name'], PATHINFO_EXTENSION);
                 $nombreArchivo = $empresa->getIdEmpresa() . '.' . $extension;
-                $directorioDestino = __DIR__ . '/../../Public/Assets/Images/';
                 $rutaDestino = $directorioDestino . $nombreArchivo;
 
                 if (!is_dir($directorioDestino)) {
-                    mkdir($directorioDestino, 0755, true);
+                    mkdir($directorioDestino, 0777, true);
+                }
+                
+                
+                if ($empresa->getLogoUrl()) {
+                    $rutaLogoAntiguo = $directorioDestino . $empresa->getLogoUrl();
+                    if (file_exists($rutaLogoAntiguo)) {
+                        @unlink($rutaLogoAntiguo);
+                    }
                 }
 
-                if (!move_uploaded_file($archivoLogo['tmp_name'], $rutaDestino)) {
-                    throw new \Exception("Error al guardar el logo.");
+                if (move_uploaded_file($archivoLogo['tmp_name'], $rutaDestino)) {
+                    
+                    $sqlUpdateLogo = "UPDATE empresas SET logo_url = :logo_url WHERE id_empresa = :id_empresa";
+                    $stmtUpdateLogo = $this->bd->prepare($sqlUpdateLogo);
+                    $stmtUpdateLogo->execute([
+                        ':logo_url' => $nombreArchivo,
+                        ':id_empresa' => $empresa->getIdEmpresa()
+                    ]);
+                    $empresa->setLogoUrl($nombreArchivo);
+                } else {
+                    error_log("Error RepositorioEmpresas: Fallo al mover archivo editado ID " . $empresa->getIdEmpresa());
                 }
 
-                $sqlUpdateLogo = "UPDATE empresas SET logo_url = :logo_url WHERE id_empresa = :id_empresa";
-                $stmtUpdateLogo = $this->bd->prepare($sqlUpdateLogo);
-                $stmtUpdateLogo->execute([
-                    ':logo_url' => $nombreArchivo,
-                    ':id_empresa' => $empresa->getIdEmpresa()
-                ]);
-                $empresa->setLogoUrl($nombreArchivo);
+            } catch (\Exception $eFile) {
+                error_log("Error subiendo nuevo logo empresa: " . $eFile->getMessage());
+                
             }
-
-            $this->bd->commit();
-            return true;
-        } catch (\Exception $e) {
-            $this->bd->rollBack();
-            return false;
         }
+
+        return true;
     }
 
     public function borrar($idEmpresa) {
@@ -153,64 +208,80 @@ class RepositorioEmpresas {
         try {
             $this->bd->beginTransaction();
 
-            // Borro la empresa
             $sql = "DELETE FROM empresas WHERE id_empresa = :id";
             $stmt = $this->bd->prepare($sql);
             $stmt->execute([':id' => $idEmpresa]);
 
-            // Borro el usuario asociado a esa empresa
             $this->repoUsuarios->borrar($empresa->getIdUsuario());
 
-            // Borro el archivo logo si existe
+            $this->bd->commit();
+            
+            // Tambien lo borro fuera de la transacion
             if ($empresa->getLogoUrl()) {
-                $rutaLogo = __DIR__ . '/../../Public/Assets/Images/' . $empresa->getLogoUrl();
+                $directorioBase = dirname(__DIR__, 1);
+                $rutaLogo = $directorioBase . '/Public/Assets/Images/Empresa/' . $empresa->getLogoUrl();
                 if (file_exists($rutaLogo)) {
-                    unlink($rutaLogo);
+                    @unlink($rutaLogo);
                 }
             }
 
-            $this->bd->commit();
             return true;
         } catch (\Exception $e) {
             $this->bd->rollBack();
             throw new \Exception("Error al borrar empresa: " . $e->getMessage());
         }
     }
-
+    
     public function listar() {
         $sql = "SELECT * FROM empresas";
         $stmt = $this->bd->query($sql);
         $empresas = [];
         while ($fila = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $empresas[] = new Empresa(
-                $fila["id_empresa"],
-                $fila["id_user"],
-                null,
-                $fila["nombre"],
-                $fila["descripcion"],
-                $fila["logo_url"],
-                $fila["direccion"]
-            );
+            $empresas[] = $this->leer($fila["id_empresa"]);
         }
-        return $empresas;
+        return array_filter($empresas); 
     }
 
     public function buscarPorNombre(string $texto) {
-        $sql = "SELECT * FROM empresas WHERE nombre LIKE :texto";
+        $sql = "SELECT e.id_empresa FROM empresas e WHERE e.nombre LIKE :texto";
         $stmt = $this->bd->prepare($sql);
         $stmt->execute([':texto' => '%' . $texto . '%']);
         $empresas = [];
         while ($fila = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $empresas[] = new Empresa(
-                $fila['idempresa'],
-                $fila['idusuario'],
-                $fila['correo'],
-                $fila['nombre'],
-                $fila['descripcion'],
-                $fila['logourl'],
-                $fila['direccion']
-            );
+            $empresas[] = $this->leer($fila['id_empresa']);
         }
-        return $empresas;
+        return array_filter($empresas);
+    }
+
+    public function findById(int $idEmpresa) {
+        return $this->leer($idEmpresa);
+    }
+
+    public function listarEmpresasValidadas() {
+        $sql = "SELECT e.id_empresa FROM empresas e WHERE e.validacion = 1";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute();
+        $empresas = [];
+        while ($fila = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+             $empresas[] = $this->leer($fila['id_empresa']);
+        }
+        return array_filter($empresas);
+    }
+
+    public function listarEmpresasPendientes() {
+        $sql = "SELECT e.id_empresa FROM empresas e WHERE e.validacion = 0";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute();
+        $empresas = [];
+        while ($fila = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $empresas[] = $this->leer($fila['id_empresa']);
+        }
+        return array_filter($empresas);
+    }
+
+    public function aprobarEmpresa(int $idEmpresa) {
+        $sql = "UPDATE empresas SET validacion = 1 WHERE id_empresa = :id_empresa";
+        $stmt = $this->bd->prepare($sql);
+        return $stmt->execute([':id_empresa' => $idEmpresa]);
     }
 }

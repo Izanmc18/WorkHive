@@ -1,21 +1,19 @@
 <?php 
 namespace App\Controllers;
-use League\Plates\Engine;
+use App\Helpers\Sesion;
+class LandingController
+{
 
-class LandingController {
-    private $engine;
+    public function renderLanding($engine)
+    {
 
-    public function __construct($engine = null) {
-        //$this->engine = new Engine(__DIR__ . '/../../Templates/LandingTemplates');
-        $this->engine = new \League\Plates\Engine(__DIR__ . '/../Templates');
-    }
+        $role = Sesion::obtenerRol() ?? 'ROLE_GUEST';
 
-    public function renderLanding() {
-        echo $this->engine->render('LandingTemplates::Landing');
-    }
-
-    public function renderSobreNosotros() {
-        echo $this->engine->render('sobreNosotros');
+        echo $engine->render('Pages/Landing',[
+                'title' => 'WorkHive - Pagina Principal',
+                'role' => $role,
+                'username' => Sesion::obtenerNombreUsuario()
+        ]);
     }
 }
 

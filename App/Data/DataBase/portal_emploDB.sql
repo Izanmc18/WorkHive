@@ -1,18 +1,41 @@
-CREATE DATABASE IF NOT EXISTS portal_empleo;
+-- 1. Borramos la base de datos antigua si existe para evitar conflictos
+DROP DATABASE IF EXISTS portal_empleo;
+
+-- 2. Creamos la base de datos nueva
+CREATE DATABASE portal_empleo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE portal_empleo;
+
+-- --------------------------------------------------------
+-- ESTRUCTURA DE TABLAS
+-- --------------------------------------------------------
 
 -- Tabla de usuarios base
 CREATE TABLE usuarios (
   id_user INT AUTO_INCREMENT PRIMARY KEY,
   correo VARCHAR(100) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL, -- Ahora guardará el Hash ($2y$10$...)
   fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  es_admin BOOLEAN NOT NULL DEFAULT FALSE,  -- Columna para determinar si es administrador
+  es_admin BOOLEAN NOT NULL DEFAULT FALSE,
   verificado BOOLEAN NOT NULL DEFAULT FALSE
 );
 
--- Tabla alumnos (especialización)
+-- Tabla familias profesionales
+CREATE TABLE familias (
+  id_familia INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- Ciclos formativos
+CREATE TABLE ciclos (
+  id_ciclo INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  tipo ENUM('basico','medio','superior','especializacion') NOT NULL,
+  id_familia INT NOT NULL,
+  FOREIGN KEY (id_familia) REFERENCES familias(id_familia) ON DELETE CASCADE
+);
+
+-- Tabla alumnos
 CREATE TABLE alumnos (
   id_alumno INT AUTO_INCREMENT PRIMARY KEY,
   id_user INT NOT NULL UNIQUE,
@@ -26,7 +49,7 @@ CREATE TABLE alumnos (
   FOREIGN KEY (id_user) REFERENCES usuarios(id_user) ON DELETE CASCADE
 );
 
--- Tabla empresas (especialización)
+-- Tabla empresas
 CREATE TABLE empresas (
   id_empresa INT AUTO_INCREMENT PRIMARY KEY,
   id_user INT NOT NULL UNIQUE,
@@ -34,25 +57,11 @@ CREATE TABLE empresas (
   descripcion TEXT,
   logo_url VARCHAR(255),
   direccion VARCHAR(250),
+  validacion BOOLEAN NOT NULL DEFAULT 0,
   FOREIGN KEY (id_user) REFERENCES usuarios(id_user) ON DELETE CASCADE
 );
 
--- Familias profesionales para ciclos
-CREATE TABLE familias (
-  id_familia INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(100) NOT NULL UNIQUE
-);
-
--- Ciclos formativos
-CREATE TABLE ciclos (
-  id_ciclo INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(100) NOT NULL,
-  tipo ENUM('basico','medio','superior','especializacion') NOT NULL,
-  id_familia INT NOT NULL,
-  FOREIGN KEY (id_familia) REFERENCES familias(id_familia) ON DELETE CASCADE  -- Agregado ON DELETE CASCADE
-);
-
--- Relación N:M alumnos-ciclos + info extra
+-- Relación Alumnos - Ciclos
 CREATE TABLE alumno_ciclo (
   id_alumno INT NOT NULL,
   id_ciclo INT NOT NULL,
@@ -60,15 +69,6 @@ CREATE TABLE alumno_ciclo (
   fecha_fin DATE DEFAULT NULL,
   PRIMARY KEY (id_alumno, id_ciclo, fecha_inicio),
   FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno) ON DELETE CASCADE,
-  FOREIGN KEY (id_ciclo) REFERENCES ciclos(id_ciclo) ON DELETE CASCADE
-);
-
--- Relación N:M ofertas-ciclos
-CREATE TABLE oferta_ciclo (
-  id_oferta INT NOT NULL,
-  id_ciclo INT NOT NULL,
-  PRIMARY KEY (id_oferta, id_ciclo),
-  FOREIGN KEY (id_oferta) REFERENCES ofertas(id_oferta) ON DELETE CASCADE,
   FOREIGN KEY (id_ciclo) REFERENCES ciclos(id_ciclo) ON DELETE CASCADE
 );
 
@@ -84,7 +84,16 @@ CREATE TABLE ofertas (
   FOREIGN KEY (id_empresa) REFERENCES empresas(id_empresa) ON DELETE CASCADE
 );
 
--- Solicitudes: alumnos que aplican a ofertas
+-- Relación Ofertas - Ciclos
+CREATE TABLE oferta_ciclo (
+  id_oferta INT NOT NULL,
+  id_ciclo INT NOT NULL,
+  PRIMARY KEY (id_oferta, id_ciclo),
+  FOREIGN KEY (id_oferta) REFERENCES ofertas(id_oferta) ON DELETE CASCADE,
+  FOREIGN KEY (id_ciclo) REFERENCES ciclos(id_ciclo) ON DELETE CASCADE
+);
+
+-- Solicitudes
 CREATE TABLE solicitudes (
   id_solicitud INT AUTO_INCREMENT PRIMARY KEY,
   id_oferta INT NOT NULL,
@@ -94,6 +103,16 @@ CREATE TABLE solicitudes (
   comentario TEXT,
   FOREIGN KEY (id_oferta) REFERENCES ofertas(id_oferta) ON DELETE CASCADE,
   FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno) ON DELETE CASCADE
+);
+
+-- Tokens de seguridad
+CREATE TABLE tokens (
+  id_token INT AUTO_INCREMENT PRIMARY KEY,
+  id_user INT NOT NULL,
+  token VARCHAR(64) NOT NULL UNIQUE,
+  fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  fecha_expiracion DATETIME DEFAULT NULL,
+  FOREIGN KEY (id_user) REFERENCES usuarios(id_user) ON DELETE CASCADE
 );
 
 -- Recuperación de contraseñas
@@ -115,14 +134,3 @@ CREATE TABLE historico_passwords (
   fecha_cambio DATETIME NOT NULL,
   FOREIGN KEY (id_user) REFERENCES usuarios(id_user) ON DELETE CASCADE
 );
-
-CREATE TABLE tokens (
-  id_token INT AUTO_INCREMENT PRIMARY KEY,
-  id_user INT NOT NULL,
-  token VARCHAR(64) NOT NULL UNIQUE,
-  fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  fecha_expiracion DATETIME DEFAULT NULL,
-  FOREIGN KEY (id_user) REFERENCES usuarios(id_user) ON DELETE CASCADE
-);
-
-Show databases;

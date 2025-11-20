@@ -1,4 +1,5 @@
 <?php
+namespace App\Helpers\Security;
 class TokenSecurity {
     private $duracion; 
 

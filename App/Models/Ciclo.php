@@ -8,7 +8,7 @@ class Ciclo {
     private $descripcion;
     private $idFamilia;
 
-    public function __construct($idCiclo = null, $nombre = null, $descripcion = null, $idFamilia = null) {
+    public function __construct($idCiclo, $nombre, $descripcion, $idFamilia) {
         $this->idCiclo = $idCiclo;
         $this->nombre = $nombre;
         $this->descripcion = $descripcion;
