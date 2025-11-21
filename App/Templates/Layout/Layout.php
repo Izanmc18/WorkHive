@@ -8,20 +8,18 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
     
-    <!-- 🛑 RUTA CSS CORREGIDA (Quitamos la barra inicial / para que funcione como relativa) -->
     <link rel="stylesheet" type="text/css" href="Assets/Css/style.css"/>
     
 </head>
 <body>
     <header>
-        <!-- Corregida la ruta de imagen para ser relativa al index.php -->
+        
         <img src="Assets/Images/unnamed3.png" alt="Logo WorkHive" class="logoImg">
         <nav class="menuNav">
             <?= $this->section('menu') ?>
         </nav>
     </header>
     <main>
-        <!-- El contenido específico de la página se inserta aquí -->
         <?= $this->section('pageContent') ?>
     </main>
     <footer class="pie">
@@ -57,7 +55,6 @@
                             <a href="tel:+34600111222" target="_blank" class="about-link">Contacto</a>
                         </li>
                         <li>
-                            <!-- Corregida la ruta del enlace WhatsApp -->
                             <a href="https://wa.me/34600111222" target="_blank" class="about-link">Chat</a>
                         </li>
                         <li>

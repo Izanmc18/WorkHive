@@ -21,12 +21,12 @@ class RepositorioCiclos {
     }
 
     public function crear(Ciclo $ciclo) {
-        $sql = "INSERT INTO ciclos (nombre, descripcion, id_familia)
-                VALUES (:nombre, :descripcion, :id_familia)";
+        $sql = "INSERT INTO ciclos (nombre, tipo, id_familia)
+                VALUES (:nombre, :tipo, :id_familia)";
         $stmt = $this->bd->prepare($sql);
         $stmt->execute([
             ':nombre' => $ciclo->getNombre(),
-            ':descripcion' => $ciclo->getDescripcion(),
+            ':tipo' => $ciclo->getTipo(), 
             ':id_familia' => $ciclo->getIdFamilia()
         ]);
         $ciclo->setIdCiclo($this->bd->lastInsertId());
@@ -39,15 +39,15 @@ class RepositorioCiclos {
         $stmt->execute([':id' => $idCiclo]);
         $fila = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$fila) return null;
-        return new Ciclo($fila['id_ciclo'], $fila['nombre'], $fila['descripcion'], $fila['id_familia']);
+        return new Ciclo($fila['id_ciclo'], $fila['nombre'], $fila['tipo'], $fila['id_familia']);
     }
 
     public function editar(Ciclo $ciclo) {
-        $sql = "UPDATE ciclos SET nombre = :nombre, descripcion = :descripcion, id_familia = :id_familia WHERE id_ciclo = :id";
+        $sql = "UPDATE ciclos SET nombre = :nombre, tipo = :tipo, id_familia = :id_familia WHERE id_ciclo = :id";
         $stmt = $this->bd->prepare($sql);
         return $stmt->execute([
             ':nombre'    => $ciclo->getNombre(),
-            ':descripcion' => $ciclo->getDescripcion(),
+            ':tipo' => $ciclo->getTipo(), 
             ':id_familia' => $ciclo->getIdFamilia(),
             ':id'         => $ciclo->getIdCiclo()
         ]);
@@ -84,7 +84,7 @@ class RepositorioCiclos {
         $stmt = $this->bd->query($sql);
         $ciclos = [];
         while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $ciclos[] = new Ciclo($fila['id_ciclo'], $fila['nombre'], $fila['descripcion'], $fila['id_familia']);
+            $ciclos[] = new Ciclo($fila['id_ciclo'], $fila['nombre'], $fila['tipo'], $fila['id_familia']);
         }
         return $ciclos;
     }
@@ -102,7 +102,7 @@ class RepositorioCiclos {
         return new Ciclo(
             $fila['id_ciclo'],    
             $fila['nombre'],
-            $fila['descripcion'],
+            $fila['tipo'], 
             $fila['id_familia'] 
         );
     }
@@ -123,7 +123,7 @@ class RepositorioCiclos {
             $ciclos[] = new Ciclo(
                 $fila['id_ciclo'], 
                 $fila['nombre'], 
-                $fila['tipo'],
+                $fila['tipo'], 
                 $fila['id_familia']
             );
         }

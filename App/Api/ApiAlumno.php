@@ -41,7 +41,9 @@ else if ($metodo === 'PUT' || ($metodo === 'POST' && isset($_POST['_method']) &&
 else {
     switch ($metodo) {
         case 'GET':
-            if (isset($_GET['buscar']) && $_GET['buscar'] !== '') {
+            if (isset($_GET['id']) && $_GET['id'] !== '') {
+                obtenerAlumnoPorId((int)$_GET['id']); 
+            } else if (isset($_GET['buscar']) && $_GET['buscar'] !== '') {
                 buscarAlumnos($_GET['buscar']);
             } else {
                 obtenerAlumnos();
@@ -89,7 +91,7 @@ function buscarAlumnos($texto) {
         $alumnos = $repo->buscarPorNombre(trim($texto));
         $respuesta = [];
         foreach ($alumnos as $alumno) {
-            if ($alumno instanceof Alumno) {
+            if ($alumno) { 
                 $respuesta[] = alumnoAArray($alumno);
             }
         }
@@ -234,22 +236,50 @@ function borrarAlumno($datos) {
     }
 }
 
-function alumnoAArray($alumno) {
-    $fotoDefault = 'placeholderUsers.png'; 
-    $nombreFoto = ($alumno->getFotoPerfil() && $alumno->getFotoPerfil() !== '')
-        ? $alumno->getFotoPerfil()
-        : $fotoDefault;
-    $url_foto = '/Assets/Images/' . $nombreFoto;
-    return [
-        'idalumno'     => $alumno->getIdAlumno(),
-        'iduser'       => $alumno->getIdUsuario(),
-        'correo'       => $alumno->getCorreo(),
-        'nombre'       => $alumno->getNombre(),
-        'apellido1'    => $alumno->getApellido1(),
-        'apellido2'    => $alumno->getApellido2(),
-        'direccion'    => $alumno->getDireccion(),
-        'edad'         => $alumno->getEdad(),
-        'curriculumurl'=> $alumno->getCurriculumUrl(),
-        'fotoperfil'   => $url_foto
-    ];
+    function alumnoAArray($alumno) {
+        $fotoDefault = 'placeholderUsers.png'; 
+        $nombreFoto = ($alumno->getFotoPerfil() && $alumno->getFotoPerfil() !== '')
+            ? $alumno->getFotoPerfil()
+            : $fotoDefault;
+        $url_foto = 'Assets/Images/' . $nombreFoto;
+        return [
+            'idalumno'     => $alumno->getIdAlumno(),
+            'iduser'       => $alumno->getIdUsuario(),
+            'correo'       => $alumno->getCorreo(),
+            'nombre'       => $alumno->getNombre(),
+            'apellido1'    => $alumno->getApellido1(),
+            'apellido2'    => $alumno->getApellido2(),
+            'direccion'    => $alumno->getDireccion(),
+            'edad'         => $alumno->getEdad(),
+            'curriculumurl'=> $alumno->getCurriculumUrl(),
+            'fotoperfil'   => $url_foto
+        ];
+    }
+
+    function obtenerAlumnoPorId($id) {
+    header('Content-Type: application/json');
+    try {
+        $repo = RepositorioAlumnos::getInstancia();
+        $alumno = $repo->leer($id); 
+
+        if ($alumno) {
+            
+            $respuesta = [
+                'success' => true,
+                'alumno' => alumnoAArray($alumno),
+                'estudios' => [] 
+            ];
+            echo json_encode($respuesta);
+        } else {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'error' => 'Alumno no encontrado.']);
+        }
+    } catch (\Exception $e) {
+        http_response_code(500);
+        // Esto ayudará a depurar el error 500 en los logs
+        error_log("Error al obtener Alumno por ID: " . $e->getMessage()); 
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
 }
+
+

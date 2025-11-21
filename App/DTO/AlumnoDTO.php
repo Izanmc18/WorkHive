@@ -5,7 +5,7 @@ class AlumnoDTO
 {
     private $idalumno;
     private $iduser;
-    private $correo; // 🛑 NUEVA PROPIEDAD
+    private $correo; 
     private $nombre;
     private $apellido1;
     private $apellido2;
@@ -18,7 +18,7 @@ class AlumnoDTO
     {
         $this->idalumno = $idalumno;
         $this->iduser = $iduser;
-        $this->correo = $correo; // 🛑 ASIGNAR CORREO
+        $this->correo = $correo; 
         $this->nombre = $nombre;
         $this->apellido1 = $apellido1;
         $this->apellido2 = $apellido2;
@@ -28,7 +28,7 @@ class AlumnoDTO
         $this->fotoperfil = $fotoperfil;
     }
 
-    // --- Getters Explícitos ---
+    // Getters Explícitos 
 
     public function getIdAlumno()
     {
@@ -80,7 +80,7 @@ class AlumnoDTO
         return $this->correo;
     }
 
-    // --- Setters Explícitos ---
+    // Setters
 
     public function setIdAlumno($idalumno)
     {

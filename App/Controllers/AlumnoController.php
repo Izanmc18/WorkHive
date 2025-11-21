@@ -8,20 +8,6 @@ use App\Models\Alumno;
 class AlumnoController
 {
 
-    // public function renderList($engine)
-    // {
-
-    //     $repoAlumnos = RepositorioAlumnos::getInstancia();
-        
-    //     $alumnosModelo = $repoAlumnos->listar();
-        
-    //     $alumnosDTO = Adapter::todosAlumnoADTO($alumnosModelo);
-        
-        
-    //     echo $engine->render('Pages/Alumno/ListadoAlumnos', [
-    //         'alumnos' => $alumnosDTO
-    //     ]);
-    // }
 
     public function renderDashboard($engine) {
         echo $engine->render('Pages/Alumno/DashboardAlumno');

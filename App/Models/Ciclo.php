@@ -5,13 +5,13 @@ namespace App\Models;
 class Ciclo {
     private $idCiclo;
     private $nombre;
-    private $descripcion;
+    private $tipo; 
     private $idFamilia;
 
-    public function __construct($idCiclo, $nombre, $descripcion, $idFamilia) {
+    public function __construct($idCiclo, $nombre, $tipo, $idFamilia) {
         $this->idCiclo = $idCiclo;
         $this->nombre = $nombre;
-        $this->descripcion = $descripcion;
+        $this->tipo = $tipo; 
         $this->idFamilia = $idFamilia;
     }
 
@@ -27,11 +27,11 @@ class Ciclo {
     public function setNombre($nombre) {
         $this->nombre = $nombre;
     }
-    public function getDescripcion() {
-        return $this->descripcion;
+    public function getTipo() {
+        return $this->tipo;
     }
-    public function setDescripcion($descripcion) {
-        $this->descripcion = $descripcion;
+    public function setTipo($tipo) {
+        $this->tipo = $tipo;
     }
     public function getIdFamilia() {
         return $this->idFamilia;

@@ -16,11 +16,7 @@ class Sesion
         }
     }
 
-    /**
-     * Establece las variables de sesión usando los datos verificados 
-     * y el rol específico proporcionado por el AuthController.
-     * @param array $datosSesion Array con las claves 'usuario', 'token' y 'rol'.
-     */
+    
     public static function establecerSesion($datosSesion)
     {
         

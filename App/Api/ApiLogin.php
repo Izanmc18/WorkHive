@@ -99,22 +99,21 @@ function procesarLogin($cuerpoPeticion) {
 
     $usuarioValido = Validator::validarUsuario($datos['correo'], $datos['contrasena']);
     if ($usuarioValido) {
-        // Genera token seguro y guárdalo en la base de datos y en sesión PHP
+        
         $tokenGenerado = Authorization::generarToken($usuarioValido);
         Sesion::iniciar();
 
-        // 🛑 CAMBIO CLAVE AQUÍ: Usamos roles consistentes con el Repositorio/Controller
-        // Asumiendo que tu repositorio maneja 'admin', 'alumno', 'empresa'.
+        
         $rolSesion = $usuarioValido->isAdmin() ? 'admin' : ($usuarioValido->isAlumno() ? 'alumno' : 'empresa');
 
         Sesion::establecerSesion([
             'usuario' => $usuarioValido,
             'token' => $tokenGenerado,
-            'rol' => $rolSesion // 'admin', 'alumno', o 'empresa'
+            'rol' => $rolSesion 
         ]);
 
         http_response_code(200);
-        // Devolvemos el rol que espera el cliente API (puedes mantener 'admin'/'usuario' o usar $rolSesion)
+        
         echo json_encode(['success' => true, 'token' => $tokenGenerado, 'rol' => $usuarioValido->isAdmin() ? 'admin' : 'usuario']); 
     } else {
         http_response_code(401);

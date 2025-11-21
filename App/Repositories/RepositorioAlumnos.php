@@ -24,9 +24,7 @@ class RepositorioAlumnos {
         return self::$instancia;
     }
 
-    /**
-     * Crear alumno modificado: BD primero, Archivos después (sin rollback por archivos).
-     */
+    
     public function create(Alumno $alumno, Usuario $usuario, $archivoFoto = null, $archivoCurriculum = null) {
         try {
             $this->bd->beginTransaction();
@@ -120,11 +118,9 @@ class RepositorioAlumnos {
         return $alumno;
     }
 
-    /**
-     * Edita un alumno existente y sus archivos (Lógica separada).
-     */
+    
     public function save(Alumno $alumno, Usuario $usuario, $archivoFoto = null, $archivoCurriculum = null) {
-        // PASO 1: ACTUALIZACIÓN DATOS
+        
         try {
             $this->bd->beginTransaction();
 
@@ -330,5 +326,12 @@ class RepositorioAlumnos {
             return null;
         }
         return $this->leer((int)$fila['id_alumno']);
+    }
+
+    public function contarTotalAlumnos() {
+        $sql = "SELECT COUNT(*) as total FROM alumnos";
+        $stmt = $this->bd->query($sql);
+        $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $fila ? (int)$fila['total'] : 0;
     }
 }

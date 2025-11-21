@@ -16,7 +16,7 @@ class CicloDTO
         $this->idfamilia = $idfamilia;
     }
 
-    // --- Getters Explícitos ---
+    //Getters Explícitos 
 
     public function getIdCiclo()
     {
@@ -38,7 +38,7 @@ class CicloDTO
         return $this->idfamilia;
     }
 
-    // --- Setters Explícitos ---
+    //Setters 
 
     public function setIdCiclo($idciclo)
     {

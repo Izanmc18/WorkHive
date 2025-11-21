@@ -5,6 +5,16 @@ $this->layout('Layout/Layout', [
 // La variable $alumnos viene del AlumnoController
 ?>
 
+<?php $this->start('menu') ?>
+    <ul class="menuLista">
+        <li><a href="?menu=landing">Inicio</a></li>
+        <li><a href="?menu=admin-dashboard" class="active">Dashboard</a></li>
+        <li><a href="?menu=admin-empresas">Gestión Empresas</a></li> 
+        <li><a href="?menu=admin-alumnos">Gestión Alumnos</a></li>
+        <li><a href="?menu=logout" class="btnLogout">Cerrar Sesión</a></li>
+    </ul>
+<?php $this->stop() ?>
+
 <?php $this->start('pageContent') ?>
 <div class="listaAlumnosContenedor">
     <div class="cabeceraAlumnos">
