@@ -54,4 +54,4 @@ Desarrollado por Izan Martínez Castro, Izanmc18, 2º Desarrollo de Aplicaciones
 
 ---
 
-**Licencia:** MIT o la que tú definas.
+**Licencia:** MIT.
