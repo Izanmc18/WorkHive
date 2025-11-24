@@ -281,5 +281,3 @@ function borrarAlumno($datos) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
 }
-
-

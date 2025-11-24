@@ -1,3 +1,53 @@
+/*
+============================================================================
+   ÍNDICE DE NAVEGACIÓN - WORKHIVE
+   (Copia el texto del comentario y usa Ctrl + F para ir a la sección)
+============================================================================
+
+1.  VARIABLES Y CONFIGURACIÓN
+    -- TOKENS DE LA PALETA DE COLORES --
+    -- CUERPO --
+    -- TITULOS --
+
+2.  ESTRUCTURA PRINCIPAL (LAYOUT)
+    -- Cabecera --
+    -- FOOTER--
+    -- MENU --
+
+3.  LANDING PAGE
+    -- BANNER LANDING --
+    -- EMPRESAS POPULARES --
+
+4.  ACCESO Y REGISTRO
+    -- LOGIN --
+    -- Redireccion --
+    -- REGISTRO ALUMNO --
+
+5.  ESTILOS GENERALES Y ANTIGUOS
+    -- LISTADOS --
+    -- FICHA EMPRESA --
+    -- Editar Empresa --
+    -- LISTA ALUMNOS --
+
+6.  GESTIÓN DE ALUMNOS 
+    -- ESTILOS DE LISTADO DE ALUMNOS (ADMIN/EMPRESA) -- 
+    -- ESTILOS DE MODALES (FICHA Y EDICIÓN) -- 
+    -- ESTILOS DE FORMULARIO DE EDICIÓN -- 
+
+7.  EMPRESA: DASHBOARD Y OFERTAS
+    -- EMPRESA DASHBOARD --
+    -- OFERTAS EMPRESA -- 
+    -- SOLICITUDES EMPRESA -- 
+    -- EDITAR OFERTA -- 
+
+8.  ADMINISTRACIÓN
+    -- ADMIN DASHBOARD -- 
+    -- GESTIÓN DE EMPRESAS (ADMIN) -- 
+    -- FICHA DE EMPRESA (ADMIN VIEW) -- 
+
+============================================================================
+*/
+
 /* TOKENS DE LA PALETA DE COLORES*/
 :root {
   --color-bg: #f6f8fa;
@@ -20,7 +70,6 @@
   --color-card-text: #4b5563;
   --color-empresa-border: #f9b233;
   --color-alumno-border: #295ba7;
-  --color-alumno-border: #295ba7;
   --color-danger-bg: #d32f2f;       
   --color-danger-hover: #a82424;    
   --color-danger-light: #fff0f0;    
@@ -30,27 +79,26 @@
   --color-badge-inactive-bg: #f8d7da;  
   --color-badge-inactive-text: #721c24;
 }
-/* Cuerpo */
+/* CUERPO */
 body {
   font-family: 'Roboto', Arial, sans-serif;
   margin: 0;
   padding: 0;
   background: var(--color-bg);
   color: var(--color-main); 
-
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 
 }
-/* Titulos */
+/* TITULOS */
 h1, h2, h3, nav, .menuLista a, .btnRegistro, .btnLogin, .btnRegister {
   font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
 }
 
 
 
-/*Cabecera*/
+/*CABECERA*/
 header {
   background: linear-gradient(90deg, var(--color-header-light), var(--color-header-dark));
   display: flex;
@@ -66,7 +114,7 @@ main {
     flex-grow: 1; 
     width: 100%; 
     box-sizing: border-box;
-    padding: 20px 0; 
+    padding: 0 0; 
 }
 /* FOOTER*/
 
@@ -527,11 +575,21 @@ main {
   color: var(--color-header-light);
 }
 
-@media (max-width: 700px) {
-  .loginContainer {
-    max-width: 96vw;
-    padding: 1.2em 4vw 1.2em 4vw;
-  }
+#mensajeError {
+  color: var(--color-danger-bg); 
+  font-weight: bold;
+  margin-bottom: 1.5em;
+  text-align: center;
+  display: none; 
+  padding: 0.5em;
+  border-radius: 0.5em;
+  background-color: var(--color-danger-light); 
+  border: 1px solid var(--color-danger-border);
+}
+
+
+#mensajeError.visible {
+  display: block;
 }
 
 /* REGISTRO ALUMNO */
@@ -657,13 +715,11 @@ main {
 /*LISTADOS*/
 
 /* Fondo base y contenedor principal */
-body {
-  background-color: var(--color-bg); 
-}
+
 
 .listaContenedor {
   background-color: var(--color-box-bg); 
-  border: 3px solid var(--color-main) !important;
+  border: 3px solid var(--color-main) ;
   border-radius: 2em;
   padding: 1.875em; 
   margin: 2.5em auto; 
@@ -686,70 +742,16 @@ h1 {
   text-align: left;
 }
 
-/* Buscador */
-.seccionBusqueda {
-  display: flex;
-  align-items: center;
-  gap: 0.625em; /* 10px */
-  max-width: 25em; /* 400px */
-}
 
-.seccionBusqueda input[type="text"] {
-  padding: 0.6em;
-  border: 3px solid #191919;
-  font-family: 'Poppins', sans-serif;
-  flex: 1;
-  font-size: 1em;
-  border-radius: 0.6875em; /* 11px */
-}
-
-.seccionBusqueda input[type="text"]:focus {
-  outline: none;
-  border: 3px solid var(--color-btn-bg); /* #EBD3FD */
-  box-shadow: none;
-}
-
-.botonBusqueda {
-  background-color: var(--color-btn-bg);
-  color: #191919;
-  border: 3px solid #191919;
-  padding: 0.6em 1.5em;
-  cursor: pointer;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  font-size: 1.1em;
-  white-space: nowrap;
-  border-radius: 0.6875em;
-  transition: background-color 0.3s ease;
-}
-
-.botonBusqueda:hover {
-  background-color: #d7b4f2;
-}
 
 /* Botón añadir */
 .contenedorBotonAgregar {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 1.25em; /* 20px */
+  margin-bottom: 1.25em; 
 }
 
-#agregar {
-  background: var(--color-btn-bg);
-  color: #191919;
-  border: 3px solid #191919;
-  padding: 0.6em 1.5em;
-  cursor: pointer;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  font-size: 1.1em;
-  border-radius: 0.6875em;
-  transition: background 0.3s ease;
-}
 
-#agregar:hover {
-  background: #d7b4f2;
-}
 
 /* Tabla */
 .contenedorTabla {
@@ -759,55 +761,7 @@ h1 {
   border-radius: 0.6875em;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: 'Libre Baskerville', serif;
-}
 
-thead {
-  background: var(--color-bg);
-}
-
-thead th {
-  color: var(--color-box-bg);
-  padding: 1.125em 1.25em; 
-  text-align: left;
-  font-weight: 600;
-  font-size: 0.95em;
-  text-transform: uppercase;
-  letter-spacing: 0.03125em; 
-  cursor: pointer;
-  user-select: none;
-}
-
-thead th:hover {
-  background: #333333;
-}
-
-tbody tr {
-  border-bottom: 1px solid #E5E7EB;
-  background: var(--color-btn-text)  ;
-}
-
-tbody tr:hover {
-  background: #E0E0F0;
-}
-
-tbody td {
-  padding: 1em 1.25em; 
-  color: #191919;
-  font-size: 0.95em;
-  vertical-align: middle;
-}
-
-tbody tr:nth-child(even) {
-  background: #EDEDF8;
-}
-
-tbody tr:nth-child(even):hover {
-  background: #E0E0F0;
-}
 
 /* Botones de acción */
 .action-btn {
@@ -864,16 +818,6 @@ tbody tr:nth-child(even):hover {
 }
 
 /*FICHA EMPRESA*/
-.fichaEmpresaContenedor {
-    background: var(--color-box-bg);
-    border: 3px solid var(--color-header-dark);
-    border-radius: 2em;
-    box-shadow: 0 0.3em 1.2em var(--color-box-shadow);
-    max-width: 44em;
-    margin: 4em auto 0 auto;
-    padding: 2.4em 1.5em 2.3em 1.5em;
-    font-family: 'Poppins', sans-serif;
-}
 
 .fichaEncabezado h1 {
     color: var(--color-main);
@@ -1840,7 +1784,7 @@ tbody tr:nth-child(even):hover {
 
 .listaContenedor.top-five-container {
     margin-top: 0;
-    border-color: var(--color-empresa-border) !important; 
+    border-color: var(--color-empresa-border) ; 
 }
 
 .listaContenedor h2 {
@@ -1951,12 +1895,12 @@ tbody tr:nth-child(even):hover {
 
 /* 1. Estilo de las celdas de cabecera (TH) */
 .tablaAlumnos thead {
-    background-color: var(--color-main) !important;
+    background-color: var(--color-main) ;
 }
 
 .tablaAlumnos thead th {
     background-color: var(--color-main); 
-    color: white !important;                        
+    color: white ;                        
     font-family: 'Montserrat', sans-serif;          
     font-weight: 800;
     text-transform: uppercase;
@@ -1968,7 +1912,7 @@ tbody tr:nth-child(even):hover {
 
 .tablaAlumnos thead th:hover {
     background-color: var(--color-main); 
-    color: white !important;
+    color: white ;
 }
 
 /* 2. Definición de Anchos de Columna para 5 celdas */
@@ -2006,17 +1950,17 @@ tbody tr:nth-child(even):hover {
 
 /* 3. Filas del cuerpo (TBODY) - Estilos */
 .tablaAlumnos tbody tr {
-    background: var(--color-box-bg) !important; 
+    background: var(--color-box-bg) ; 
     border-bottom: 1px solid #E5E7EB;
     transition: background-color 0.2s ease;
 }
 
 .tablaAlumnos tbody tr:nth-child(even) {
-    background: var(--color-bg) !important; 
+    background: var(--color-bg) ; 
 }
 
 .tablaAlumnos tbody tr:hover {
-    background-color: #fff9e6 !important; 
+    background-color: #fff9e6 ; 
 }
 
 /* Columnas de texto */
@@ -2078,7 +2022,7 @@ tbody tr:nth-child(even):hover {
 /* Fila vacía */
 .fila-vacia {
     text-align: center;
-    padding: 3em !important;
+    padding: 3em ;
     color: var(--color-card-text);
     font-style: italic;
     background-color: var(--color-box-bg);
@@ -2129,9 +2073,9 @@ tbody tr:nth-child(even):hover {
 }
 
 .view-btn.disabled {
-    background-color: #eee !important;
-    color: #aaa !important;
-    border-color: #ddd !important;
+    background-color: #eee ;
+    color: #aaa ;
+    border-color: #ddd ;
     cursor: not-allowed;
     pointer-events: none;
     opacity: 0.7;
@@ -2525,12 +2469,12 @@ tbody tr:nth-child(even):hover {
 
 /* Alineación de etiquetas de filtros */
 .form-label-spacing {
-    margin-top: 1.2em !important; /* Espacio extra para separar del select anterior */
+    margin-top: 1.2em ; /* Espacio extra para separar del select anterior */
 }
 
 /* Botón Volver (Cancelar) */
 .volver-ofertas-btn {
-    margin-top: 1.56em !important; /* 25px */
+    margin-top: 1.56em ; /* 25px */
 }
 
 /* ================================================= */
@@ -2659,7 +2603,7 @@ h1.tituloPendiente {
 .listaContenedor .tablaAlumnos tbody td:nth-child(1), /* Columna ID */
 .listaContenedor .tablaAlumnos tbody td:nth-child(3)  /* Columna Correo */
 {
-    text-align: left !important;
+    text-align: left ;
     font-weight: 500;
     color: var(--color-card-text);
 }
