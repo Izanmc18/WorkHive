@@ -19,11 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: formData 
                 });
 
-                
                 const data = await response.json();
 
                 if (response.ok && data.success) {
                     
+                    // --- CAMBIO APLICADO AQUÍ ---
+                    // Guardamos los datos recibidos en el localStorage
+                    if (data.token) localStorage.setItem('user_token', data.token);
+                    if (data.rol) localStorage.setItem('user_rol', data.rol);
+                    if (data.idUsuario) localStorage.setItem('user_id', data.idUsuario);
+                    // ----------------------------
+
                     window.location.href = data.redirect; 
                 } 
                 else {

@@ -10,6 +10,7 @@ class Empresa {
     private $descripcion;
     private $logoUrl;
     private $direccion;
+    private $validacion;
 
     public function __construct(
         $idEmpresa = null,
@@ -18,7 +19,8 @@ class Empresa {
         $nombre = null,
         $descripcion = null,
         $logoUrl = null,
-        $direccion = null
+        $direccion = null,
+        $validacion = 0
     ) {
         $this->idEmpresa = $idEmpresa;
         $this->idUsuario = $idUsuario;
@@ -27,6 +29,7 @@ class Empresa {
         $this->descripcion = $descripcion;
         $this->logoUrl = $logoUrl;
         $this->direccion = $direccion;
+        $this->validacion = $validacion;
     }
 
     public function getIdEmpresa() {
@@ -83,5 +86,17 @@ class Empresa {
 
     public function setDireccion($direccion) {
         $this->direccion = $direccion;
+    }
+    
+    public function getValidacion() {
+        return $this->validacion;
+    }
+
+    public function setValidacion($validacion) {
+        $this->validacion = $validacion;
+    }
+    
+    public function isValidada() {
+        return (bool)$this->validacion;
     }
 }

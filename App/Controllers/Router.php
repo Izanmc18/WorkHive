@@ -26,17 +26,17 @@ class Router
         Sesion::iniciar();
         
         $menu = $_GET['menu'] ?? 'landing'; 
-        $rolSesion = Sesion::obtenerRol(); // Devuelve 'ADMIN', 'EMPRESA', 'ALUMNO' o null
+        $rolSesion = Sesion::obtenerRol(); 
         
         $rutasSoloInvitados = ['login', 'regRedirect', 'regEmpresa', 'regAlumno'];
 
         if ($rolSesion && in_array($menu, $rutasSoloInvitados)) {
             $dashboard = $this->getDashboardRoute($rolSesion);
             header("Location: index.php?menu=$dashboard");
-            exit;
+            
         }
 
-        // --- API ---
+        // API 
         $apiAlumnoFile = __DIR__ . '/../Api/ApiAlumno.php';
         if (($menu === 'alumno-ficha-api' || $menu === 'alumno-editar-api')) {
             if (file_exists($apiAlumnoFile)) {
@@ -45,7 +45,7 @@ class Router
             }
         }
         
-        // --- RUTAS PÚBLICAS  ---
+        // RUTAS PÚBLICAS 
         
         switch ($menu) {
             case 'login':
@@ -72,21 +72,29 @@ class Router
         }
 
 
-        // CONTROL DE ACCESO (SI NO HAY SESIÓN)
-        // Si llegamos aquí, es una ruta privada. Si no hay rol, fuera.
-
         if (!$rolSesion) {
             header('Location: index.php?menu=login');
-            exit;
+            
         }
 
-        //CONTROL DE ACCESO POR ROLES 
+        //LISTA DE CONTROL DE ACCESO POR ROLES 
         $permisos = [
             'admin-dashboard' => ['ADMIN'],
             'admin-empresas'  => ['ADMIN'],
             'admin-alumnos'   => ['ADMIN'],
             'empresa-dashboard' => ['EMPRESA'],
+            'empresa-dashboard'      => ['EMPRESA'],
+            'empresa-ofertas'        => ['EMPRESA'], 
+            'empresa-eliminar-oferta'=> ['EMPRESA'], 
+            'empresa-crear-oferta'   => ['EMPRESA'], 
+            'empresa-editar-oferta'  => ['EMPRESA'],
+            'empresa-ver-solicitudes' => ['EMPRESA'],
+            'empresa-crear-oferta'         => ['EMPRESA'], 
+            'empresa-procesar-creacion-oferta' => ['EMPRESA'],
+            'empresa-procesar-solicitud' => ['EMPRESA'],
+            'empresa-generar-pdf' => ['EMPRESA'],
             'alumno-dashboard' => ['ALUMNO'],
+            'alumno-ver-ofertas' => ['ALUMNO'],
         ];
 
         if (array_key_exists($menu, $permisos)) {
@@ -109,24 +117,65 @@ class Router
             case 'alumno-dashboard':
                 $alumnoController->renderDashboard($this->engine);
                 break;
-            
+            case 'alumno-ofertas':
+                $alumnoController->verOfertas($this->engine);
+                break;
+
+            case 'alumno-ver-oferta':
+                $alumnoController->verDetalleOferta($this->engine);
+                break;
+            case 'alumno-ofertas-api':
+                require __DIR__ . '/../Api/ApiOfertas.php';
+                return;
+            case 'alumno-postular':
+                $alumnoController->procesarPostulacion();
+                break;
             case 'empresa-dashboard':
                 $empresaController->renderDashboard($this->engine); 
                 break;
 
+            case 'empresa-ofertas':
+                $empresaController->gestionarOfertas($this->engine);
+                break;
+
+            case 'empresa-editar-oferta': 
+                $empresaController->renderEditarOferta($this->engine);
+                break;
+
+            case 'empresa-eliminar-oferta':
+                $empresaController->eliminarOferta();
+                break;
+
+            case 'empresa-ver-solicitudes':
+                $empresaController->verSolicitudesOferta($this->engine);
+                break;
+            case 'empresa-generar-pdf':
+                $empresaController->generarPdfSolicitudes();
+                return;
+            case 'empresa-procesar-solicitud':
+                $empresaController->procesarSolicitud();
+                return;
+            case 'empresa-crear-oferta':
+                $empresaController->renderCrearOferta($this->engine);
+                return;
+            case 'empresa-procesar-creacion-oferta':
+                $empresaController->procesarCreacionOferta();
+                return;
             case 'admin-alumnos':
                 $adminController->renderListAlumnos($this->engine);
                 break;
+
             case 'admin-empresas':
                 $empresaController->mostrarListado($this->engine);
                 break;
+
             case 'admin-dashboard':
                 $adminController->renderDashboard($this->engine); 
                 break;
                 
             default:
                 header("Location: index.php?menu=$dashboardRoute"); 
-                exit;
+                
         }
     }
 

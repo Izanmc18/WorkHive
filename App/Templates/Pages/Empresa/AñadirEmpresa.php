@@ -10,30 +10,42 @@ $this->layout('Layout/Layout', [
     <h2>Añadir Nueva Empresa</h2>
 
     <form class="registerForm" action="index.php?menu=admin-empresas" method="POST" enctype="multipart/form-data">
+        
+        <div class="registerColumns">
+            
+            <div class="registerColumn">
+                
+                <label for="nombre">Nombre de la Empresa</label>
+                <input type="text" id="nombre" name="nombre" required placeholder="Ej: Tech Solutions">
 
-        <label for="nombre">Nombre de la Empresa </label><br>
-        <input type="text" id="nombre" name="nombre" required placeholder="Ej: Tech Solutions"><br><br>
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" id="correo" name="correo" required placeholder="email@empresa.com">
 
-        <label for="correo">Correo Electrónico</label><br>
-        <input type="email" id="correo" name="correo" required placeholder="email@empresa.com"><br><br>
+                <label for="clave">Contraseña</label>
+                <input type="password" id="clave" name="clave" required>
+                
+                <label for="logo">Logo de la Empresa</label>
+                <input type="file" id="logo" name="logo" accept="image/*">
+                
+            </div>
 
-        <label for="clave">Contraseña </label><br>
-        <input type="password" id="clave" name="clave" required><br><br>
+            <div class="registerColumn">
+                
+                <label for="direccion">Dirección Física</label>
+                <input type="text" id="direccion" name="direccion" placeholder="Calle, Número, Ciudad">
 
-        <label for="direccion">Dirección Física</label><br>
-        <input type="text" id="direccion" name="direccion"><br><br>
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion" name="descripcion" rows="5" placeholder="Breve descripción de la empresa..."></textarea>
+                
+                
+                <button type="submit" name="btnGuardarEmpresa" class="btnRegister">Guardar Empresa</button>
+                <a href="index.php?menu=admin-empresas" class="btnVolver" style="margin-top: 1.5em;">Cancelar</a>
+            </div>
+        </div>
 
-        <label for="descripcion">Descripción</label><br>
-        <textarea id="descripcion" name="descripcion" rows="5"></textarea><br><br>
-
-        <label for="logo">Logo de la Empresa</label><br>
-        <input type="file" id="logo" name="logo" accept="image/*"><br><br>
-
-        <hr>
-
-        <button type="submit" name="btnGuardarEmpresa" class="btnRegister">Guardar Empresa</button>
-
-        <a href="index.php?menu=admin-empresas" class="btnCancelarEditar">Cancelar</a>
+        
+        
+        
     </form>
 </div>
 <?php $this->stop() ?>

@@ -22,7 +22,7 @@ class RepositorioSolicitudes {
     }
 
     public function crear(Solicitud $solicitud) {
-        // No incluimos fecha_solicitud en el INSERT porque la BD usa DEFAULT CURRENT_TIMESTAMP
+        
         $sql = "INSERT INTO solicitudes (id_oferta, id_alumno, comentario, estado) 
                 VALUES (:idoferta, :idalumno, :comentario, :estado)";
         $stmt = $this->bd->prepare($sql);
@@ -37,7 +37,7 @@ class RepositorioSolicitudes {
     }
 
     public function leer($idSolicitud) {
-        // Asegúrate de que los nombres de columna coincidan con tu BD (he usado id_solicitud según tu imagen)
+        
         $sql = "SELECT * FROM solicitudes WHERE id_solicitud = :id";
         $stmt = $this->bd->prepare($sql);
         $stmt->execute([':id' => $idSolicitud]);
@@ -50,7 +50,7 @@ class RepositorioSolicitudes {
             $fila['id_alumno'],
             $fila['comentario'],
             $fila['estado'],
-            $fila['fecha_solicitud'] // 🆕
+            $fila['fecha_solicitud'] 
         );
     }
 
@@ -81,15 +81,13 @@ class RepositorioSolicitudes {
                 $fila['id_alumno'],
                 $fila['comentario'],
                 $fila['estado'],
-                $fila['fecha_solicitud'] // 🆕
+                $fila['fecha_solicitud'] 
             );
         }
         return $solicitudes;
     }
 
-    // --- MÉTODOS PARA DASHBOARD ---
 
-    // Cuenta total de solicitudes recibidas por una empresa
     public function contarSolicitudesPorEmpresa($idEmpresa) {
         $sql = "SELECT COUNT(s.id_solicitud) as total
                 FROM solicitudes s
@@ -133,4 +131,52 @@ class RepositorioSolicitudes {
         $stmt->execute([':id' => $idEmpresa]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerAlumnosPorOferta($idOferta) {
+        $sql = "SELECT s.*, a.nombre, a.apellido1, a.apellido2, a.curriculum_url, a.foto_perfil, u.correo
+                FROM solicitudes s
+                JOIN alumnos a ON s.id_alumno = a.id_alumno
+                JOIN usuarios u ON a.id_user = u.id_user
+                WHERE s.id_oferta = :id";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idOferta]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerAceptadosPorOferta($idOferta) {
+        $sql = "SELECT a.nombre, a.apellido1, a.apellido2, u.correo
+                FROM solicitudes s
+                JOIN alumnos a ON s.id_alumno = a.id_alumno
+                JOIN usuarios u ON a.id_user = u.id_user
+                WHERE s.id_oferta = :id
+                AND s.estado = 'aceptada'";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idOferta]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerSolicitudConAlumno($idSolicitud) {
+        $sql = "SELECT 
+                    s.*, a.nombre, a.apellido1, u.correo, o.titulo, o.id_oferta
+                FROM solicitudes s
+                JOIN alumnos a ON s.id_alumno = a.id_alumno
+                JOIN usuarios u ON a.id_user = u.id_user
+                JOIN ofertas o ON s.id_oferta = o.id_oferta
+                WHERE s.id_solicitud = :id";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idSolicitud]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC); 
+    }
+    
+    
+    public function actualizarEstado($idSolicitud, $nuevoEstado) {
+        $sql = "UPDATE solicitudes SET estado = :estado WHERE id_solicitud = :id";
+        $stmt = $this->bd->prepare($sql);
+        return $stmt->execute([
+            ':estado' => $nuevoEstado,
+            ':id' => $idSolicitud
+        ]);
+    }
+
+    
 }

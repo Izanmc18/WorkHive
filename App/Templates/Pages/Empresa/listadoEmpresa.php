@@ -1,95 +1,128 @@
 <?php
+/**
+ * @var array $empresasTotal (Validated Companies DTOs)
+ * @var array $pendientes (Pending Companies DTOs)
+ */
 $this->layout('Layout/Layout', [
-    'title' => 'WorkHive - Lista de Empresas'
+    'title' => 'WorkHive - Gestión de Empresas'
 ]);
 ?>
 
+<?php $this->start('menu') ?>
+    <ul class="menuLista">
+        <li><a href="?menu=landing">Inicio</a></li>
+        <li><a href="?menu=admin-dashboard">Dashboard</a></li>
+        <li><a href="?menu=admin-empresas" class="active">Gestión Empresas</a></li> 
+        <li><a href="?menu=admin-alumnos">Gestión Alumnos</a></li>
+        <li><a href="?menu=logout" class="btnLogout">Cerrar Sesión</a></li>
+    </ul>
+<?php $this->stop() ?>
+
 <?php $this->start('pageContent') ?>
+<div class="contenedor-dashboard">
+    
+    <div class="seccion-cabecera">
+        <h1>Gestión de <span class="resaltado">Empresas</span></h1>
+        <p class="subtitulo-dashboard">Listado de empresas validadas y pendientes de aprobación.</p>
+    </div>
 
-<?php if (isset($message)): ?>
-    <div class="alert-message"><?= $this->e($message) ?></div>
-<?php endif; ?>
-
-<div class="listaContenedor">
-    <div class="seccionEncabezado">
-        <form action="index.php?menu=admin-empresas" method="get">
-            <h1>Listado de Empresas</h1>
-            <div class="seccionBusqueda">
-                <input type="hidden" name="menu" value="admin-empresas">
-                <input type="text" name="buscar" id="buscar" placeholder="Buscar empresa..." value="<?= $_GET['buscar'] ?? '' ?>">
-                <button type="submit" id="botonBuscar" class="botonBusqueda">Buscar</button>
+    <div class="listaContenedor">
+        <div class="seccionEncabezado">
+            <div class="header-flex">
+                <h1>Empresas Validadas</h1>
+                <a href="index.php?menu=admin-empresas&action=add" id="agregar">+ AÑADIR EMPRESA</a>
             </div>
-        </form>
-    </div>
-    <div class="contenedorBotonAgregar">
-        <a href="index.php?menu=admin-empresas&action=add" id="agregar" class="botonBusqueda">AÑADIR EMPRESA</a>
-    </div>
-    <div class="contenedorTabla">
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Correo</th>
-                    <th>Nombre</th>
-                    <th>Dirección</th>
-                    <th class="columnaAcciones">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($empresasTotal as $empresa): ?>
-                    <tr>
-                        <td><?= $empresa->getIdempresa() ?></td>
-                        <td><?= $empresa->getCorreo() ?></td>
-                        <td><?= $empresa->getNombre() ?></td>
-                        <td><?= $empresa->getDireccion() ?></td>
-                        <td class="columnaAcciones">
-                            
-                            <a href="index.php?menu=admin-empresas&action=view&id=<?= $empresa->getIdempresa() ?>" class="botonAccion botonVerFicha">Ver Ficha</a>
-                            <a href="index.php?menu=admin-empresas&action=edit&id=<?= $empresa->getIdempresa() ?>" class="botonAccion botonEditar">Editar</a>
-                            
-                            <form action="index.php?menu=admin-empresas" method="post" style="display:inline;">
-                                <input type="hidden" name="id_empresa" value="<?= $empresa->getIdempresa() ?>">
-                                <button type="submit" class="botonAccion botonEliminar" name="btnEliminarEmpresa">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+        </div>
 
-<div class="listaContenedor">
-    <div class="seccionEncabezado">
-        <h1 class="tituloPendiente">Pendiente de confirmación</h1>
-    </div>
-    <div class="contenedorTabla">
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Correo</th>
-                    <th>Nombre</th>
-                    <th class="columnaAccionesPendientes">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($pendientes as $empresa): ?>
+        <div class="contenedorTabla">
+            <table class="tablaAlumnos">
+                <thead>
                     <tr>
-                        <td><?= $empresa->getIdempresa() ?></td>
-                        <td><?= $empresa->getCorreo() ?></td>
-                        <td><?= $empresa->getNombre() ?></td>
-                        <td class="columnaAccionesPendientes">
-                            <form action="index.php?menu=admin-empresas" method="post" style="display:inline;">
-                                <input type="hidden" name="id_empresa" value="<?= $empresa->getIdempresa() ?>">
-                                <button type="submit" class="botonAccion botonConfirmar" name="btnConfirmarEmpresa">Confirmar</button>
-                                <button type="submit" class="botonAccion botonEliminar" name="btnRechazarEmpresa">Rechazar</button>
-                            </form>
-                        </td>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Dirección</th>
+                        <th class="col-center">Acciones</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php if (empty($empresasTotal)): ?>
+                        <tr>
+                            <td colspan="5" class="fila-vacia">No hay empresas validadas en la base de datos.</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($empresasTotal as $empresa): ?>
+                            <tr>
+                                <td><?= $empresa->getIdempresa() ?></td>
+                                <td class="col-titulo"><?= $empresa->getNombre() ?></td>
+                                <td><?= $empresa->getCorreo() ?></td>
+                                <td><?= $empresa->getDireccion() ?></td>
+                                <td class="columnaAcciones">
+                                    <a href="index.php?menu=admin-empresas&action=view&id=<?= $empresa->getIdempresa() ?>" 
+                                       class="action-btn view-btn" style="text-decoration: none;">Ver Ficha</a>
+                                    
+                                    <a href="index.php?menu=admin-empresas&action=edit&id=<?= $empresa->getIdempresa() ?>" 
+                                       class="action-btn edit-btn" style="text-decoration: none;">Editar</a>
+                                    
+                                    <form action="index.php?menu=admin-empresas" method="post" class="inline-form" onsubmit="return confirm('¿Confirmar el borrado de la empresa y todos sus datos?');">
+                                        <input type="hidden" name="id_empresa" value="<?= $empresa->getIdempresa() ?>">
+                                        <button type="submit" class="action-btn delete-btn" name="btnEliminarEmpresa">Borrar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
+    
+    <div style="margin-top: 4em;"></div> 
+    
+    <div class="listaContenedor">
+        <div class="seccionEncabezado">
+            <h1 class="tituloPendiente">Pendientes de Validación (<?= count($pendientes) ?>)</h1>
+        </div>
+
+        <div class="contenedorTabla">
+            <table class="tablaAlumnos">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($pendientes)): ?>
+                        <tr>
+                            <td colspan="4" class="fila-vacia">No hay solicitudes de empresas pendientes.</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($pendientes as $empresa): ?>
+                            <tr>
+                                <td><?= $empresa->getIdempresa() ?></td>
+                                <td class="col-titulo"><?= $empresa->getNombre() ?></td>
+                                <td><?= $empresa->getCorreo() ?></td>
+                                <td class="columnaAcciones">
+                                    <form action="index.php?menu=admin-empresas" method="post" class="inline-form" onsubmit="return confirm('¿Aprobar la cuenta de <?= $empresa->getNombre() ?>?');">
+                                        <input type="hidden" name="id_empresa" value="<?= $empresa->getIdempresa() ?>">
+                                        <button type="submit" class="action-btn badge-active" name="btnConfirmarEmpresa">✅ Confirmar</button>
+                                    </form>
+                                    
+                                    <form action="index.php?menu=admin-empresas" method="post" class="inline-form" onsubmit="return confirm('¿Rechazar y eliminar la cuenta de <?= $empresa->getNombre() ?>?');">
+                                        <input type="hidden" name="id_empresa" value="<?= $empresa->getIdempresa() ?>">
+                                        <button type="submit" class="action-btn delete-btn" name="btnRechazarEmpresa">❌ Rechazar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 <?php $this->stop() ?>

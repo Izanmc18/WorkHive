@@ -155,6 +155,7 @@ class Adapter
             $empresasDTO[] = new EmpresaDTO(
                 $empresa->getIdEmpresa(),
                 $empresa->getIdUsuario(),
+                $empresa->getCorreo(),
                 $empresa->getNombre(),
                 $empresa->getDescripcion(),
                 $empresa->getLogoUrl(),
@@ -178,6 +179,7 @@ class Adapter
         return new EmpresaDTO(
             $empresa->getIdEmpresa(),
             $empresa->getIdUsuario(),
+            $empresa->getCorreo(),
             $empresa->getNombre(),
             $empresa->getDescripcion(),
             $empresa->getLogoUrl(),

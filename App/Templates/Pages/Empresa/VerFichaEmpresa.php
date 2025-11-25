@@ -15,8 +15,8 @@ $this->layout('Layout/Layout', [
             <div class="fichaLogoNombre">
                 <div class="fichaLogo">
                     <img src="<?= $empresaVer->getLogoUrl() 
-                    ? '/Assets/Images/Empresa/' . $empresaVer->getLogoUrl() 
-                    : '/Assets/Images/Empresa/placeholderUsers.png' 
+                    ? 'Assets/Images/Empresa/' . $empresaVer->getLogoUrl() 
+                    : 'Assets/Images/Empresa/placeholderUsers.png' 
                     ?>" alt="logo_empresa" />
                 </div>
                 

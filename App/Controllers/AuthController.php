@@ -7,6 +7,7 @@ use App\Helpers\Security\Authorization;
 use App\Repositories\RepositorioUsuarios;
 use App\Repositories\RepositorioEmpresas;
 use App\Repositories\RepositorioAlumnos;
+use App\Repositories\RepositorioTokens;
 use App\Models\Usuario;
 use App\Models\Empresa;
 use App\Models\Alumno;
@@ -25,7 +26,6 @@ class AuthController
         $this->repositorioAlumnos = RepositorioAlumnos::getInstancia();
     }
 
-    
     public function renderRegRedirect(Engine $engine)
     {
         echo $engine->render('Pages/Auth/RegRedirect');
@@ -47,10 +47,7 @@ class AuthController
     }
     
     // LÓGICA DE REGISTRO 
-
-    /**
-     * Procesa la creación de un nuevo registro de empresa.
-     */
+    
     public function procesarRegistroEmpresa(Engine $engine)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['correo'], $_POST['nombre'], $_POST['clave'])) {
@@ -88,7 +85,7 @@ class AuthController
 
             $_SESSION['registro_exito'] = 'Registro exitoso. Tu cuenta está pendiente de validación, puedes iniciar sesión ahora.';
             header('Location: index.php?menu=login');
-            exit;
+            
 
         } catch (\Exception $e) {
             if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
@@ -102,9 +99,6 @@ class AuthController
         }
     }
     
-    /**
-     * Procesa la creación de un nuevo registro de alumno.
-     */
     public function procesarRegistroAlumno(Engine $engine)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['correo'], $_POST['nombre'], $_POST['contrasena'])) {
@@ -150,7 +144,7 @@ class AuthController
 
             $_SESSION['registro_exito'] = 'Registro exitoso. Inicia sesión para completar tu perfil.';
             header('Location: index.php?menu=login');
-            exit;
+            
 
         } catch (\Exception $e) {
             if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
@@ -168,7 +162,6 @@ class AuthController
       
     public function procesarLogin(Engine $engine)
     {
-        // Le decimos al navegador que la respuesta es JSON
         header('Content-Type: application/json');
 
         $correo = $_POST['correo'] ?? '';
@@ -177,13 +170,11 @@ class AuthController
         if (empty($correo) || empty($contrasena)) {
             http_response_code(400);
             echo json_encode(['success' => false, 'message' => 'Debes completar todos los campos.']);
-            exit;
+            return;
         }
         
         $usuarioValido = Validator::validarUsuario($correo, $contrasena); 
         
-        //var_dump($usuarioValido);
-
         if ($usuarioValido) {
             
             $rol = $this->getSpecificRole($usuarioValido);
@@ -191,7 +182,7 @@ class AuthController
             if ($rol === null) {
                 http_response_code(403);
                 echo json_encode(['success' => false, 'message' => 'Error de configuración de usuario. Contacte al administrador.']);
-                exit;
+                return;
             }
 
             $token = Authorization::generarToken($usuarioValido);
@@ -205,23 +196,24 @@ class AuthController
             
             session_write_close(); 
             
-            // 🎯 CAMBIO CLAVE: En lugar de redirigir, devolvemos la URL en un JSON
             $dashboardRoute = $this->getDashboardRouteFromRole($rol); 
             
+        
             echo json_encode([
                 'success' => true,
-                'redirect' => "index.php?menu=$dashboardRoute" // Enviamos la URL destino
+                'redirect' => "index.php?menu=$dashboardRoute",
+                'token' => $token,
+                'rol' => $rol,
+                'idUsuario' => $usuarioValido->getId()
             ]);
-            exit;
+            
 
         } else {
             http_response_code(401); 
             echo json_encode(['success' => false, 'message' => 'Credenciales incorrectas']);
-            exit; 
         }
     }
 
-    // ... (El resto de funciones getSpecificRole, getDashboardRouteFromRole y logout se quedan igual) ...
     private function getSpecificRole(Usuario $usuario) : ?string
     {
         if ($usuario->isAdmin()) return 'admin';
@@ -247,7 +239,7 @@ class AuthController
         if ($token) Authorization::deleteToken($token);
         Sesion::cerrarSesion();
         header('Location: index.php?menu=login');
-        exit;
     }
 
+    
 }

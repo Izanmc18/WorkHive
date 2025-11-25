@@ -25,7 +25,6 @@ class RepositorioUsuarios {
 
         $hashPassword = PasswordSecurity::encriptar($usuario->getClave());
         
-        
         $usuario->setClave($hashPassword);
 
         $sql = "INSERT INTO usuarios (correo, password, es_admin, verificado) 
@@ -46,9 +45,6 @@ class RepositorioUsuarios {
         $stmt = $this->bd->prepare($sql);
         $stmt->execute([':id' => $idUsuario]);
 
-        $stmt->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, false); 
-        $stmt->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-
         $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
         
         if (!$fila) {
@@ -67,7 +63,6 @@ class RepositorioUsuarios {
     }
 
     public function editar(Usuario $usuario) {
-        
         
         $clave = $usuario->getClave();
         
@@ -128,12 +123,10 @@ class RepositorioUsuarios {
         $stmt = $this->bd->prepare($sql);
         $stmt->execute([':correo' => $correo]);
         
-        //$stmt->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, false); 
-        //$stmt->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-
-
+        
+        
         $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
-        //var_dump($fila);
+        
         if (!$fila) {
             return null;
         }
@@ -181,5 +174,12 @@ class RepositorioUsuarios {
         }
     
         return null; 
+    }
+
+    public function contarTotalUsuarios() {
+        $sql = "SELECT COUNT(*) as total FROM usuarios";
+        $stmt = $this->bd->query($sql);
+        $fila = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $fila ? (int)$fila['total'] : 0;
     }
 }

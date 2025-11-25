@@ -16,7 +16,7 @@ $this->layout('Layout/Layout', [
         
         <div class="editarGrid">
             <div class="editarLogo">
-                <img src="/Assets/Images/Empresa/<?= $empresaEdit->getLogoUrl() ?>" alt="logo_empresa" />
+                <img src="Assets/Images/Empresa/<?= $empresaEdit->getLogoUrl() ?>" alt="logo_empresa" />
                 <label for="nuevoLogo" class="labelLogo">Cambiar logo</label>
                 <input type="file" name="nuevoLogo" id="nuevoLogo" accept="image/*">
             </div>
