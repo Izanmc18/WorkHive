@@ -53,7 +53,7 @@ $this->layout('Layout/Layout', [
                         <td><?= $alumno->getCorreo() ?></td> 
                         <td class="columnaAccionesAlumnos">
                             <button type="button" class="action-btn edit-btn" data-id="<?= $alumno->getIdAlumno() ?>">Editar</button>
-                            <button type="button" class="action-btn delete-btn" data-id="<?= $alumno->getIdAlumno() ?>">Eliminar</button>
+                            <button type="button" class="action-btn delete-btn" data-id="<?= $alumno->getIdAlumno() ?>" data-nombre="<?= $alumno->getNombre() . ' ' . $alumno->getApellido1() ?>">Eliminar</button>
                             <button type="button" class="action-btn ver-ficha-btn" data-id="<?= $alumno->getIdAlumno() ?>">Ver Ficha</button>
                         </td>
                     </tr>
@@ -135,6 +135,66 @@ $this->layout('Layout/Layout', [
         </div>
     </div>
 </div>
+
+<div id="cargaMasivaModal" class="modal">
+    <div class="modal-content-wrapper modal-content-large">
+        <span class="close-button" data-modal="cargaMasivaModal">&times;</span>
+        <div id="cargaMasivaContent">
+            <h2 class="text-center">Carga Masiva de Alumnos</h2>
+            
+            <div class="instrucciones-csv" style="margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                <p><strong>Instrucciones:</strong> Sube un archivo <b>.csv</b>. La primera fila deben ser las cabeceras.</p>
+                <p><small>Formato esperado columnas: nombre, apellido1, apellido2, correo, contrasena, edad, direccion</small></p>
+            </div>
+
+            <div class="form-group" style="text-align: center; margin-bottom: 20px;">
+                <input type="file" id="archivoCSV" accept=".csv" style="padding: 10px;">
+            </div>
+
+            <div id="previewCsvContainer" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #ddd; display:none;">
+                <table class="tablaAlumnos" id="tablaPreview">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="checkTodos" checked></th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Correo</th>
+                            <th>Contraseña</th>
+                            <th>Edad</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div id="mensajeEstadoMasivo" style="text-align: center; font-weight: bold; margin-bottom: 15px;"></div>
+
+            <div class="form-actions" style="display: none; justify-content: center; gap: 10px;" id="accionesMasivas">
+                <button type="button" id="btnProcesarCarga" class="btnAceptarEditar">Registrar Seleccionados</button>
+                <button type="button" class="btnCancelarEditar" onclick="document.getElementById('cargaMasivaModal').style.display='none'">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="eliminarModal" class="modal">
+    <div class="modal-content-wrapper" style="max-width: 400px; text-align: center;">
+        <span class="close-button" data-modal="eliminarModal">&times;</span>
+        <div id="eliminarContent">
+            <h2 style="color: #e74c3c;">Eliminar Alumno</h2>
+            <p style="margin: 20px 0;">¿Estás seguro de que deseas eliminar a este alumno?</p>
+            <p id="nombreAlumnoEliminar" style="font-weight: bold; margin-bottom: 20px; color: #555;"></p>
+            
+            <p id="mensajeEstadoEliminar" style="font-weight: bold; margin-bottom: 15px;"></p>
+
+            <div class="form-actions" style="justify-content: center; gap: 15px;">
+                <button type="button" id="btnConfirmarEliminar" class="btnAceptarEditar" style="background-color: #e74c3c; border-color: #c0392b;">Sí, Eliminar</button>
+                <button type="button" class="btnCancelarEditar" onclick="document.getElementById('eliminarModal').style.display='none'">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php $this->stop() ?>
 
 <?php $this->start('js') ?>

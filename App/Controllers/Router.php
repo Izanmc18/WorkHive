@@ -94,6 +94,7 @@ class Router
             'empresa-procesar-solicitud' => ['EMPRESA'],
             'empresa-generar-pdf' => ['EMPRESA'],
             'alumno-dashboard' => ['ALUMNO'],
+            'alumno-ver-ofertas' => ['ALUMNO'],
         ];
 
         if (array_key_exists($menu, $permisos)) {
@@ -116,7 +117,19 @@ class Router
             case 'alumno-dashboard':
                 $alumnoController->renderDashboard($this->engine);
                 break;
-            
+            case 'alumno-ofertas':
+                $alumnoController->verOfertas($this->engine);
+                break;
+
+            case 'alumno-ver-oferta':
+                $alumnoController->verDetalleOferta($this->engine);
+                break;
+            case 'alumno-ofertas-api':
+                require __DIR__ . '/../Api/ApiOfertas.php';
+                return;
+            case 'alumno-postular':
+                $alumnoController->procesarPostulacion();
+                break;
             case 'empresa-dashboard':
                 $empresaController->renderDashboard($this->engine); 
                 break;

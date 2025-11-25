@@ -8,6 +8,10 @@ require_once __DIR__ . '/../Helpers/Autoloader.php';
 use App\Repositories\RepositorioAlumnos;
 use App\Models\Alumno;
 use App\Models\Usuario;
+use App\Helpers\Security\Authorization; 
+
+
+Authorization::verificarPermisos(['admin', 'alumno']); 
 
 
 ini_set('display_errors', 0);
@@ -16,7 +20,6 @@ ini_set('error_log', '/tmp/php_errors.log');
 
 $metodo = strtoupper($_SERVER["REQUEST_METHOD"] ?? 'GET');
 $esMultipart = (strpos($_SERVER['CONTENT_TYPE'] ?? '', 'multipart/form-data') !== false);
-
 
 function getInputData() {
     $rawInput = file_get_contents("php://input");
@@ -31,10 +34,14 @@ function getInputData() {
     return $jsonData;
 }
 
+// --- ENRUTAMIENTO DE ACCIONES ---
+
 if ($metodo === 'POST' && $esMultipart) {
+    
     crearAlumnoConArchivos($_POST, $_FILES);
 } 
 else if ($metodo === 'PUT' || ($metodo === 'POST' && isset($_POST['_method']) && strtoupper($_POST['_method']) === 'PUT')) {
+    
     $datos = getInputData();
     editarAlumno($datos, $_FILES);
 } 
@@ -49,24 +56,35 @@ else {
                 obtenerAlumnos();
             }
             break;
+
         case 'POST':
             $datos = getInputData();
-            crearAlumno($datos);
+            
+            if (isset($datos[0]) && is_array($datos[0])) {
+                crearAlumnosMasivo($datos);
+            } else {
+                crearAlumno($datos);
+            }
             break;
+
         case 'PUT':
             $datos = getInputData();
             editarAlumno($datos, []);
             break;
+
         case 'DELETE':
             $datos = getInputData();
             borrarAlumno($datos);
             break;
+
         default:
             http_response_code(405);
             echo json_encode(['success' => false, 'message' => 'Método no permitido']);
             break;
     }
 }
+
+// --- FUNCIONES DE LÓGICA ---
 
 function obtenerAlumnos() {
     header('Content-Type: application/json');
@@ -102,6 +120,30 @@ function buscarAlumnos($texto) {
     }
 }
 
+function obtenerAlumnoPorId($id) {
+    header('Content-Type: application/json');
+    try {
+        $repo = RepositorioAlumnos::getInstancia();
+        $alumno = $repo->leer($id); 
+
+        if ($alumno) {
+            $respuesta = [
+                'success' => true,
+                'alumno' => alumnoAArray($alumno),
+                'estudios' => [] 
+            ];
+            echo json_encode($respuesta);
+        } else {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'error' => 'Alumno no encontrado.']);
+        }
+    } catch (\Exception $e) {
+        http_response_code(500);
+        error_log("Error al obtener Alumno por ID: " . $e->getMessage()); 
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
+}
+
 function crearAlumno($datos) {
     header('Content-Type: application/json');
     procesarCreacion($datos, null, null);
@@ -112,6 +154,67 @@ function crearAlumnoConArchivos($datos, $archivos) {
     $foto = $archivos['fotoPerfil'] ?? null;
     $cv = $archivos['curriculum'] ?? null;
     procesarCreacion($datos, $foto, $cv);
+}
+
+
+function crearAlumnosMasivo($listaAlumnos) {
+    header('Content-Type: application/json');
+    
+    $creados = 0;
+    $errores = [];
+    $repo = RepositorioAlumnos::getInstancia();
+
+    foreach ($listaAlumnos as $index => $datos) {
+        // Validación básica
+        if (empty($datos['correo']) || empty($datos['nombre']) || empty($datos['contrasena'])) {
+            $errores[] = "Fila " . ($index + 1) . ": Datos incompletos.";
+            continue;
+        }
+
+        $alumno = new Alumno(
+            null, null,
+            $datos['correo'],
+            $datos['nombre'],
+            $datos['apellido1'],
+            $datos['apellido2'] ?? '',
+            $datos['direccion'] ?? '',
+            !empty($datos['edad']) ? (int)$datos['edad'] : null,
+            '', ''
+        );
+
+        $usuario = new Usuario(
+            null,
+            $datos['correo'],
+            $datos['contrasena'],
+            false, 
+            true   
+        );
+
+        try {
+            $resultado = $repo->create($alumno, $usuario, null, null);
+            if ($resultado) {
+                $creados++;
+            }
+        } catch (\Exception $e) {
+            $errores[] = "Error en alumno {$datos['correo']}: " . $e->getMessage();
+        }
+    }
+
+    if ($creados > 0) {
+        http_response_code(201);
+        echo json_encode([
+            'success' => true, 
+            'message' => "Se registraron $creados alumnos correctamente.",
+            'errores' => $errores 
+        ]);
+    } else {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false, 
+            'error' => "No se pudo registrar ningún alumno.",
+            'detalles' => $errores
+        ]);
+    }
 }
 
 function procesarCreacion($datos, $foto, $cv) {
@@ -178,17 +281,20 @@ function procesarEdicion($datos, $foto, $cv) {
         return;
     }
 
+    
     $alumno->setNombre($datos['nombre'] ?? $alumno->getNombre());
     $alumno->setApellido1($datos['apellido1'] ?? $alumno->getApellido1());
     $alumno->setApellido2($datos['apellido2'] ?? $alumno->getApellido2());
     $alumno->setDireccion($datos['direccion'] ?? $alumno->getDireccion());
     $alumno->setEdad($datos['edad'] ?? $alumno->getEdad());
+    
     $alumno->setCurriculumurl($datos['curriculumurl'] ?? $alumno->getCurriculumurl());
 
+    
     $usuario = new Usuario(
         $alumno->getIdUsuario(),
         $datos['correo'] ?? $alumno->getCorreo(),
-        $datos['contrasena'] ?? '',
+        $datos['contrasena'] ?? '', 
         false,
         false
     );
@@ -236,48 +342,26 @@ function borrarAlumno($datos) {
     }
 }
 
-    function alumnoAArray($alumno) {
-        $fotoDefault = 'placeholderUsers.png'; 
-        $nombreFoto = ($alumno->getFotoPerfil() && $alumno->getFotoPerfil() !== '')
-            ? $alumno->getFotoPerfil()
-            : $fotoDefault;
-        $url_foto = 'Assets/Images/' . $nombreFoto;
-        return [
-            'idalumno'     => $alumno->getIdAlumno(),
-            'iduser'       => $alumno->getIdUsuario(),
-            'correo'       => $alumno->getCorreo(),
-            'nombre'       => $alumno->getNombre(),
-            'apellido1'    => $alumno->getApellido1(),
-            'apellido2'    => $alumno->getApellido2(),
-            'direccion'    => $alumno->getDireccion(),
-            'edad'         => $alumno->getEdad(),
-            'curriculumurl'=> $alumno->getCurriculumUrl(),
-            'fotoperfil'   => $url_foto
-        ];
-    }
+function alumnoAArray($alumno) {
+    
+    $fotoDefault = 'placeholderUsers.png'; 
+    $nombreFoto = ($alumno->getFotoPerfil() && $alumno->getFotoPerfil() !== '')
+        ? $alumno->getFotoPerfil()
+        : $fotoDefault;
+    
+    
+    $url_foto = 'Assets/Images/' . $nombreFoto;
 
-    function obtenerAlumnoPorId($id) {
-    header('Content-Type: application/json');
-    try {
-        $repo = RepositorioAlumnos::getInstancia();
-        $alumno = $repo->leer($id); 
-
-        if ($alumno) {
-            
-            $respuesta = [
-                'success' => true,
-                'alumno' => alumnoAArray($alumno),
-                'estudios' => [] 
-            ];
-            echo json_encode($respuesta);
-        } else {
-            http_response_code(404);
-            echo json_encode(['success' => false, 'error' => 'Alumno no encontrado.']);
-        }
-    } catch (\Exception $e) {
-        http_response_code(500);
-        // Esto ayudará a depurar el error 500 en los logs
-        error_log("Error al obtener Alumno por ID: " . $e->getMessage()); 
-        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
-    }
+    return [
+        'idalumno'     => $alumno->getIdAlumno(),
+        'iduser'       => $alumno->getIdUsuario(),
+        'correo'       => $alumno->getCorreo(),
+        'nombre'       => $alumno->getNombre(),
+        'apellido1'    => $alumno->getApellido1(),
+        'apellido2'    => $alumno->getApellido2(),
+        'direccion'    => $alumno->getDireccion(),
+        'edad'         => $alumno->getEdad(),
+        'curriculumurl'=> $alumno->getCurriculumUrl(),
+        'fotoperfil'   => $url_foto
+    ];
 }

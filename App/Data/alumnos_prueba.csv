@@ -1,0 +1,4 @@
+Nombre,Primer Apellido,Segundo Apellido,Correo,Contraseña,Edad,Direccion
+Juan,Perez,Gomez,juan.perez@test.com,clave123,20,Calle Falsa 123
+Maria,Lopez,Diaz,maria.lopez@test.com,clave456,22,Avenida Siempre Viva 742
+Carlos,Sanchez,,carlos.sanchez@test.com,clave789,25,Plaza Mayor 1

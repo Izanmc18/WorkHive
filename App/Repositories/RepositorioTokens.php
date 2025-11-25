@@ -99,4 +99,21 @@ class RepositorioTokens {
         }
         return $tokens;
     }
+
+    public function obtenerUsuarioIdPorToken($token)
+    {
+        $sql = "SELECT id_user FROM tokens WHERE token = :token AND fecha_expiracion > NOW()";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':token' => $token]);
+        
+        $resultado = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $resultado ? $resultado['id_user'] : null;
+    }
+
+    public function borrarTokensUsuario($idUsuario)
+    {
+        $sql = "DELETE FROM tokens WHERE id_user = :id";
+        $stmt = $this->bd->prepare($sql);
+        $stmt->execute([':id' => $idUsuario]);
+    }
 }

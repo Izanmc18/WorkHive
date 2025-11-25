@@ -2863,3 +2863,267 @@ h1.tituloPendiente {
     line-height: 1;
     color: #495057;
 }
+
+/* ================================================= */
+/* --- DASHBOARD ALUMNO --- */
+/* ================================================= */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: var(--color-box-bg);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px var(--color-box-shadow);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid var(--color-bg); 
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.icon-blue {
+    background-color: var(--color-bg);
+    color: var(--color-accent);
+    border: 2px solid var(--color-accent);
+}
+
+.icon-green {
+    background-color: var(--color-badge-success-bg);
+    color: var(--color-badge-success-text);
+}
+
+.icon-orange {
+    background-color: var(--color-header-light);
+    color: var(--color-header-dark); 
+}
+
+.stat-info h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--color-main);
+}
+
+.stat-info p {
+    margin: 0;
+    color: var(--color-card-text);
+    font-size: 0.9rem;
+}
+
+
+.ofertas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.oferta-card {
+    background: var(--color-box-bg);
+    border: 1px solid var(--color-bg);
+    border-radius: 8px;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px var(--color-box-shadow);
+}
+
+.oferta-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--color-box-shadow);
+}
+
+.oferta-header h4 {
+    margin: 0 0 5px 0;
+    color: var(--color-main);
+}
+
+.badge-empresa {
+    font-size: 0.75rem;
+    background: var(--color-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--color-card-text);
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.oferta-desc {
+    font-size: 0.9rem;
+    color: var(--color-card-text);
+    margin: 10px 0;
+    line-height: 1.4;
+}
+
+.oferta-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: var(--color-card-text);
+}
+
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-badge.pendiente {
+    background: var(--color-header-light);
+    color: var(--color-main);
+}
+
+.status-badge.aceptada {
+    background: var(--color-badge-success-bg);
+    color: var(--color-badge-success-text);
+}
+
+.status-badge.rechazada {
+    background: var(--color-badge-inactive-bg);
+    color: var(--color-badge-inactive-text);
+}
+
+/* ================================================= */
+/* --- MODAL VER OFERTA (ALUMNO) --- */
+/* ================================================= */
+
+.modal-oferta-header {
+    border-bottom: 2px solid var(--color-header-dark);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.modal-oferta-titulo {
+    color: var(--color-main);
+    font-size: 1.8em;
+    margin: 0 0 10px 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+}
+
+.modal-oferta-empresa {
+    background-color: var(--color-bg);
+    color: var(--color-card-text);
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.modal-oferta-body {
+    color: var(--color-card-text);
+    line-height: 1.6;
+    font-size: 1em;
+}
+
+.modal-seccion-info {
+    background-color: var(--color-bg);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--color-form-input-border);
+    margin-bottom: 20px;
+}
+
+.modal-label {
+    display: block;
+    color: var(--color-main);
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 1.05em;
+}
+
+.modal-lista-detalles {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modal-lista-detalles li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.modal-lista-detalles li::before {
+    content: "•";
+    color: var(--color-accent);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.modal-oferta-footer {
+    border-top: 1px solid var(--color-bg);
+    padding-top: 20px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-postular {
+    background-color: var(--color-header-dark);
+    color: var(--color-main);
+    font-size: 1.1em;
+    padding: 12px 30px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-postular:hover {
+    background-color: var(--color-main);
+    color: var(--color-header-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--color-box-shadow);
+}
+
+.btn-postular:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+
+.mensaje-feedback {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    display: none; 
+}
+
+.feedback-exito {
+    background-color: var(--color-badge-success-bg);
+    color: var(--color-badge-success-text);
+}
+
+.feedback-error {
+    background-color: var(--color-badge-inactive-bg);
+    color: var(--color-badge-inactive-text);
+}

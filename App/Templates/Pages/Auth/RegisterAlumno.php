@@ -19,14 +19,14 @@ $this->start('pageContent');
 <section class="registerContainer">
     <h2>Registrarse como Alumno</h2>
 
-    <!-- Muestra mensajes de error o éxito de la sesión -->
+    
     <?php if (isset($_SESSION['error'])): ?>
         <p style="color: red; border: 1px solid red; padding: 10px;">
             <?= $_SESSION['error']; unset($_SESSION['error']); ?>
         </p>
     <?php endif; ?>
 
-    <!-- ✅ CORRECCIÓN CRÍTICA: action apunta a la ruta de procesamiento POST -->
+    
     <form class="registerForm" action="index.php?menu=regAlumno" method="POST" enctype="multipart/form-data">
         <div class="registerColumns">
             <div class="registerColumn">
@@ -47,18 +47,18 @@ $this->start('pageContent');
             </div>
             
             <div class="registerColumn">
-                <!-- ✅ CORRECCIÓN: Nombre del campo de archivo debe ser 'curriculum' -->
+                
                 <label for="curriculumurl">Curriculum (PDF)</label>
                 <input type="file" id="curriculumurl" name="curriculum" accept=".pdf">
                 
-                <!-- ✅ CORRECCIÓN: Nombre del campo de archivo debe ser 'fotoPerfil' -->
+        
                 <label for="fotoperfil">Foto de perfil</label>
                 <input type="file" id="fotoperfil" name="fotoPerfil" accept="image/*">
                 
                 <label for="correo">Correo electrónico</label>
                 <input type="email" id="correo" name="correo" required>
                 
-                <!-- ✅ CORRECCIÓN: Nombre del campo de contraseña debe ser 'contrasena' -->
+                
                 <label for="contrasena">Contraseña</label>
                 <input type="password" id="contrasena" name="contrasena" required>
                 
